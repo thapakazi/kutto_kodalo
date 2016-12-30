@@ -1,0 +1,17 @@
+#
+# shellrc - common rc file for {zsh,bash}
+# config highly motivated from github.com/rhoit
+# 
+# cheesy fix
+if [[ -e /etc/profile.d/vte.sh ]]; then
+    source /etc/profile.d/vte.sh
+    chpwd_functions+=(__vte_osc7)
+    cd $PWD
+fi
+
+if [[ -d ~/.shellrc.d ]]; then
+    for f in ~/.shellrc.d/*; do
+	source "$f"
+    done
+    unset f
+fi

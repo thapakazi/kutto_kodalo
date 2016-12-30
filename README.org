@@ -1,0 +1,23 @@
+##+TITLE: my shell configs
+#+DATE: Friday, Dec 30 2016
+#+DESCRIPTION: making configs portable
+
+* Generalization
+** motivation
+   #+BEGIN_QUOTE
+   portability makes things simple
+   #+END_QUOTE
+** config consists of
+   - config backups
+   - dirty shell stuffs
+** depends on:
+   - git
+   - zsh
+   - lots of things I still have no idea
+
+* Flow
+  - Shellrc
+     a giant looper 🐒 that loops inside *~/shellrc.d* and pollutes all
+     the things.
+  - 
+
