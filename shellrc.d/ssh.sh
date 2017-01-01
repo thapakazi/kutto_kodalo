@@ -21,3 +21,13 @@ ssh_config_refresh() {
 ssh_config_refresh
 
 # incomplete
+
+# x2x fun
+ssh_with_x2x(){
+    HOST=${1:-192.168.2.55}
+    USER=${2:-nikesh}
+    DIRECTION=${3:-east}
+    DISPLAY=${4:-:0.0}
+    echo "ssh ${HOST} -l${USER} -Y x2x -${DIRECTION} -to ${DISPLAY}"
+    ssh ${HOST} -l${USER} -Y x2x -${DIRECTION} -to ${DISPLAY}
+}
