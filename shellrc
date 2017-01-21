@@ -9,8 +9,11 @@ if [[ -e /etc/profile.d/vte.sh ]]; then
     cd $PWD
 fi
 
+# some private things i source to do my everyday earnings
+source ~/.myoffice/env
+
 if [[ -d ~/.shellrc.d ]]; then
-    for f in ~/.shellrc.d/*; do
+    for f in ~/.shellrc.d/* ~/.shellrc.d/*/*; do
 	source "$f"
     done
     unset f

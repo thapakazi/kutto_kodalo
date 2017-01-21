@@ -31,3 +31,12 @@ ssh_with_x2x(){
     echo "ssh ${HOST} -l${USER} -Y x2x -${DIRECTION} -to ${DISPLAY}"
     ssh ${HOST} -l${USER} -Y x2x -${DIRECTION} -to ${DISPLAY}
 }
+
+
+get_hosts(){
+    awk '/prod-worker/||/prod-app/||/production-app/||/production-worker/{print$2}' ~/.ssh/config
+}
+
+get_hosts_grp(){
+    get_hosts | grep -i ${1:-client}
+}

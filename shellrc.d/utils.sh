@@ -43,7 +43,10 @@ alias wget.grab.all='wget --recursive --no-clobber --page-requisites --html-exte
 
 
 eval "$(fasd --init auto)"
-buffer(){xclip -sel c < $1}
+
+# buffer hacks
+buffer(){xclip -sel c}
+buffercopy(){buffer < $1}
 
 alias curl.json='curl -i -H "Accept: application/json"'
 

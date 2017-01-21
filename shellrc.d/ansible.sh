@@ -1,4 +1,6 @@
 # ansible cheeses
+# # FIXME: if _ansible_ssh_port is blank put it 22
+[ -z $_ansible_ssh_port ] && export _ansible_ssh_port=22
 export ANSIBLE_SSH_PORT="${_ansible_ssh_port}" # it comes from somewhere else
 export ANSIBLE_SSH_ARGS="-o ForwardAgent=yes -o StrictHostKeyChecking=no -o Port=${ANSIBLE_SSH_PORT}"
 
