@@ -1,5 +1,5 @@
 lets_go_home(){
-    while true; do sleep 10s; systemctl suspend; done
+    while true; do sleep 10s; systemctl suspend; sleep 10s; done
 }
 
 lets_go_office(){

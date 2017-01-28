@@ -3,22 +3,19 @@ export PYTHONUSERBASE=$HOME/.pip
 mkdir -p $PYTHONUSERBASE
 
 # pip install to default userbase
-pip() {
-    _ifinstalling=$1
-    if [ "$_ifinstalling" = "install" ]; then
-        if [ -z "${PYTHONUSERBASE+x}" ]; then
-            echo "PYTHONUSERBASE is not set "
-            pip "$@"
-        else
-            echo "PYTHONUSERBASE is set to ${PYTHONUSERBASE}"
-            pip "$@" --user
-        fi
+mypip() {
+    _task_is_to_install=$1
+    if [ "$_task_is_to_install" = "install" ]; then
+        echo "$BGreen Installing to $PYTHONUSERBASE"
+        \pip $@ --user -v
     fi
 }
 
+# commenting, it breaks autocompletion on TAB TAB :(
+# alias pip=mypip
+
 # pip autocomplete
-shellrcd_gendir=$HOME/.shellrc.d/generated && mkdir -p "${shellrcd_gendir}"
-autocomplete_file=${shellrcd_gendir}/pip_autocomplete.sh
+autocomplete_file=${SHELLRCD_GENDIR}/pip_autocomplete.sh
 [ ! -s "$autocomplete_file" ] \
     || [ ! -f "$autocomplete_file" ]  \
     && /usr/bin/pip completion --"$(echo ${SHELL##*/})"  > $autocomplete_file

@@ -3,6 +3,7 @@
 # pulled from arch wiki
 # Reset
 Color_Off='\e[0m'       # Text Reset
+Color_Reset='\e[0m'       # Text Reset
 
 # Regular Colors
 Black='\e[0;30m'        # Black
