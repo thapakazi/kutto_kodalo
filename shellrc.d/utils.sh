@@ -19,7 +19,7 @@ function gitio() {
 
 #sick of ssh keys pull
 public_keys_of () {
-    curl -SsL https://github.com/${1:-thapakazi}.keys | xclip -sel c
+   echo "$(curl -SsL https://github.com/${1:-thapakazi}.keys) $1" | xclip -sel c
 }
 # public key self
 public_key(){xclip -sel c < ~/.ssh/id_rsa.pub}
@@ -111,12 +111,6 @@ get_youtube_urls(){
     sed  's#.*\(https*://.*v=[a-zA-Z0-9_-]*\).*#\1#g' "$@"
 }
 
-#openssl, getting hands dirty
-openssl_details_on(){
-    file_to_details_on="$1"
-    openssl x509 -text -noout -in ${file_to_details_on}
-}
-
 # # FIXME: too lazy for now
 # find raspberrypi in network
 find_pi(){
@@ -128,4 +122,4 @@ find_pi(){
 alias nmap_hachers_way='nmap -oS - -sP'
 
 # public_ip
-public_ip(){curl -sS http://jsonip.com| jq .ip}
+public_ip(){curl -sS https://jsonip.com| jq .ip}

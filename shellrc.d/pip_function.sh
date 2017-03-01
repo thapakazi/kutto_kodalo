@@ -6,7 +6,7 @@ mkdir -p $PYTHONUSERBASE
 mypip() {
     _task_is_to_install=$1
     if [ "$_task_is_to_install" = "install" ]; then
-        echo "$BGreen Installing to $PYTHONUSERBASE"
+        echo "$BGreen Installing to $PYTHONUSERBASE $Color_Reset"
         \pip $@ --user -v
     fi
 }
