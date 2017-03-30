@@ -14,6 +14,13 @@ pacman_remove_orpahns(){
     sudo pacman -Rns $(pacman_list_orpahns)
 }
 
+# remove old packages version
+# running out of disk space :(
+# url: https://wiki.archlinux.org/index.php/pacman#Cleaning_the_package_cache
+pacman_remove_all_old_pkgs(){
+    echo "removing the old packages"
+    sudo pacman -Sc
+}
 # desc: how much time spent by a process
 # url: https://bbs.archlinux.org/viewtopic.php?pid=431774#p431774
 ptimer(){
