@@ -48,6 +48,9 @@ eval "$(fasd --init auto)"
 buffer(){xclip -sel c}
 buffercopy(){buffer < $1}
 
+# yell and copy in buffer
+buffer_with_cow(){ echo "$@" | buffer && xcowsay "$@"}
+
 alias curl.json='curl -i -H "Accept: application/json"'
 
 # not sure how much relavent is it ?

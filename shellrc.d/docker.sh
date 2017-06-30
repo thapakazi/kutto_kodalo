@@ -65,6 +65,10 @@ alias docker-clean-exited-containers='docker ps -aqf status=exited | xargs -n1 d
 function docker_ips(){
     docker ps -q | xargs -n 1 docker inspect --format '{{ .NetworkSettings.IPAddress }} {{ .Name }}' | sed 's/ \// /'
 }
+docker_network_info(){
+    docker network ls -q| \
+        xargs  docker network inspect --format "{{json .Name}} {{json .IPAM}}"
+}
 
 function docker_img_sort_size(){
     docker images --format '{{.ID}}   {{.Size}}   {{.Repository}}:{{.Tag}}' |sort -n -k 2

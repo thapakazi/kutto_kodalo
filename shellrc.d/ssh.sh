@@ -40,3 +40,17 @@ get_hosts(){
 get_hosts_grp(){
     get_hosts | grep -i ${1:-client}
 }
+
+ssh_keys_generator(){
+    APPLICATION_NAME=$1
+    KEYS_TO_GENERATE_AT=/tmp/ssh_keys_list && mkdir -p $KEYS_TO_GENERATE_AT
+    ssh-keygen -t rsa -b 4096 -C "${APPLICATION_NAME}" -f $KEYS_TO_GENERATE_AT/$APPNAME -N ""
+}
+
+# application
+ssh_keygen_all(){
+    # later: check if $APPLICATION_LIST exists
+    for APPNAME in $APPLICATION_LIST; do
+        ssh_keys_generator $APPNAME
+    done
+}

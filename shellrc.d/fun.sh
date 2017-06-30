@@ -11,3 +11,13 @@ alias mplayer_matrix="m_mplayer matrixview  ${@}"
 uptime(){
  echo "lol, YOU BEEN UP ALL NIGHT HIGH all season"
 }
+
+# custom, I don't care if you don't have it
+# but if you are stuborrn: github.com/haude/upisdown
+UPDOWN_BIN=${UPDOWN_BIN:-'/home/thapakazi/github/haude/upisdown'}
+flip_it(){
+    $UPDOWN_BIN/main.sh "$@" | xclip -sel c
+}
+just_flip(){
+    $UPDOWN_BIN/main.sh "$@" 
+}
