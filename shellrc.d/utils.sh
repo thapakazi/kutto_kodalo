@@ -126,3 +126,28 @@ alias nmap_hachers_way='nmap -oS - -sP'
 
 # public_ip
 public_ip(){curl -sS https://jsonip.com| jq .ip}
+
+# package sharing, entrie installation
+tarball_pkg(){
+    TMPDIR=$(mktemp -d)
+    TMP=/tmp
+    PKG_NAME=${1:-openssl}
+    for i in $(pacman -Ql $PKG_NAME|awk '{print $2}'|xargs); do
+        [ -d $i ] && mkdir -p $TMPDIR/$i || cp -pr $i $TMPDIR/$i;
+    done
+    tar -cf $TMP/$PKG_NAME.tar.gz $TMPDIR &&  rm -rf $TMPDIR
+    echo $Green tarball ready: $TMP/$PKG_NAME.tar.gz $Color_Off
+}
+
+
+# get your ISP
+get_my_isp_name(){
+    echo "$Green work in progress $Color_Off"
+    curl -sA $FIREFOX_A http://whatismyipaddress.com/ | awk -F'>' '/ISP:/{print$5}'
+}
+
+# tcpdump verbose output
+# help_url: https://serverfault.com/a/246877/206277
+dump_tcp_headers(){
+    sudo tcpdump -n -S -s 0 -A 'tcp dst port 80'
+}
