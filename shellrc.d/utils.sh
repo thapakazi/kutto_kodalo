@@ -22,7 +22,9 @@ public_keys_of () {
    echo "$(curl -SsL https://github.com/${1:-thapakazi}.keys) $1" | xclip -sel c
 }
 # public key self
-public_key(){xclip -sel c < ~/.ssh/id_rsa.pub}
+public_key(){
+    xclip -sel c < ~/.ssh/id_rsa.pub
+}
 
 #python json validator
 alias jcat='cat $1 |python -m json.tool'
@@ -45,8 +47,12 @@ alias wget.grab.all='wget --recursive --no-clobber --page-requisites --html-exte
 eval "$(fasd --init auto)"
 
 # buffer hacks
-buffer(){xclip -sel c}
-buffercopy(){buffer < $1}
+buffer(){
+    xclip -sel c
+}
+buffercopy(){
+    buffer < $1
+}
 
 # yell and copy in buffer
 buffer_with_cow(){ echo "$@" | buffer && xcowsay "$@"}
@@ -57,11 +63,18 @@ alias curl.json='curl -i -H "Accept: application/json"'
 alias startx='ssh-add startx'
 
 #random password of desired length
-randpassd(){ < /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c${1:-16};echo;}
-randpass(){randpassd ${1:-16}|xclip -sel c}
+randpassd(){
+    < /dev/urandom tr -dc '_A-Z-a-z-0-9+-~!@#$%^&*()_+=-'| head -c${1:-16};echo;
+    # openssl rand -base64 |head -c${1:-16};echo;
+}
+randpass(){
+    randpassd ${1:-16}|xclip -sel c
+}
 
 #mimicing .split(",") #quick_hack
-split_string(){echo $1|sed 's/ /","/g'|awk '{print "[\"" $0 "\"]"}'}
+split_string(){
+    echo $1|sed 's/ /","/g'|awk '{print "[\"" $0 "\"]"}'
+}
 
 # # FIXME: check and warn for too not found
 # deps: imdbtool, jq
@@ -71,7 +84,9 @@ imdb(){ IFS=" " imdbtool -t "$1" -r JSON |jq }
 lsich() { ls -la `which -a $1`}
 
 #grep environment variable
-envgrep(){env|grep -i "$1"}
+envgrep(){
+    env|grep -i "$1"
+}
 
 # tranfer files with ease:
 # kudos: https://github.com/dutchcoders/transfer.sh/
@@ -125,7 +140,9 @@ find_pi(){
 alias nmap_hachers_way='nmap -oS - -sP'
 
 # public_ip
-public_ip(){curl -sS https://jsonip.com| jq .ip}
+public_ip(){
+    curl -sS https://jsonip.com| jq .ip
+}
 
 # package sharing, entrie installation
 tarball_pkg(){
@@ -150,4 +167,17 @@ get_my_isp_name(){
 # help_url: https://serverfault.com/a/246877/206277
 dump_tcp_headers(){
     sudo tcpdump -n -S -s 0 -A 'tcp dst port 80'
+}
+
+# decode base64
+base64_d(){
+    echo -e "$@"|base64 -d
+}
+    
+# reviselater, only work with bash
+# https://superuser.com/a/229038/361714
+whereis_func(){
+    shopt -s extdebug
+    declare -F "$@"
+    shopt -u extdebug
 }

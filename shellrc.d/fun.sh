@@ -21,3 +21,11 @@ flip_it(){
 just_flip(){
     $UPDOWN_BIN/main.sh "$@" 
 }
+
+# quick output mic to speakers
+# https://askubuntu.com/a/887658
+mic_to_speaker(){
+    arecord -f cd - | aplay -
+    # wanna save it too
+    # arecord -f cd - | tee output.wav | aplay -
+}

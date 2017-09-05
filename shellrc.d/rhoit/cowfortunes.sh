@@ -5,13 +5,16 @@ case $(($RANDOM%2)) in
 esac
 
 function mascot {
-    case $(($RANDOM%5)) in
-	0) echo "tux";;
-	1) echo "default";;
-	2) echo "elephant";;
-	3) echo "koala";;
-	4) echo "moose";;
-    esac
+    export COWPATH='/usr/share/cows' # few offensive ones removed manually
+    ls $COWPATH -1 |shuf -n 1
+    # case $(($RANDOM%6)) in
+    # 	0) echo "tux";;
+    # 	1) echo "default";;
+    # 	2) echo "elephant";;
+    # 	3) echo "koala";;
+    # 	4) echo "moose";;
+    # 	5) echo "dragon";;
+    # esac
 }
 
 function eye {
