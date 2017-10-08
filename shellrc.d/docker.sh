@@ -1,3 +1,27 @@
+# please play with docker
+# Eg: play_with_docker http://host3.labs.play-with-docker.com/p/35ef3b7d-c45a-4df9-aadd-f282f328c804
+play_with_docker(){
+    export PWD_URL="$1"
+    rand_num="$(seq 1 100|shuf -n 1)"
+    nodeX="node$rand_num"
+    docker-machine create -d pwd $nodeX
+    eval $(docker-machine env $nodeX)
+    docker ps
+}
+
+play_with_docker_cleanup(){
+    #quick_help: https://stackoverflow.com/a/27875395
+    echo -n "$Red You sure we are cleaning everything in ~/.docker/machine (y/n)? $Color_Off"
+    read answer
+    if echo "$answer" | grep -iq "^y" ;then
+	rm -vrf ~/.docker/machine
+    else
+	echo -n "we were about to clean these: \n$(tree ~/.docker/machine/machines/ -L 1)"
+	echo "$Green Nothing's changed !!$Color_Off"
+    fi
+}
+
+
 function dimg {
     docker images $@ |
         sed "s/  \+/;/g" |
