@@ -26,6 +26,11 @@ public_key(){
     xclip -sel c < ~/.ssh/id_rsa.pub
 }
 
+whois_(){
+    user="$@"
+    xdg-open https://github.com/$user
+}
+
 #python json validator
 alias jcat='cat $1 |python -m json.tool'
 
@@ -180,4 +185,15 @@ whereis_func(){
     shopt -s extdebug
     declare -F "$@"
     shopt -u extdebug
+}
+
+QRCODE=/tmp/qrcode
+txt_2_qrcode_gen(){
+
+    txt_2_encode="$@"
+    qrencode "$txt_2_encode" -o $QRCODE &&  xcowsay -d  $QRCODE
+}
+
+txt_2_qrcode(){
+    txt_2_qrcode_gen "$@" && rm $QRCODE
 }
