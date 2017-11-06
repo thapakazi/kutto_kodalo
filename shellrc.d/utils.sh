@@ -197,3 +197,9 @@ txt_2_qrcode_gen(){
 txt_2_qrcode(){
     txt_2_qrcode_gen "$@" && rm $QRCODE
 }
+
+# directory with date name
+mkdir_with_date(){
+    export DUMP_DATE=$(date +%Y%m%d-%H_%M_%S)
+    mkdir -pv $1_$DUMP_DATE
+}
