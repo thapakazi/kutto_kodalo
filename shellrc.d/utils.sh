@@ -77,10 +77,15 @@ randpass(){
 }
 
 #mimicing .split(",") #quick_hack
-split_string(){
+split_string_like_js(){
     echo $1|sed 's/ /","/g'|awk '{print "[\"" $0 "\"]"}'
 }
 
+#spliting comma ',' seperated values into new multiple line values
+# one day in future: split_strings_to_new_line aaa,bbbb,ccc,ddd,eee |xargs -I line echo -q line|xargs
+split_strings_to_new_line(){
+    echo $@|tr ',' '\n'
+}
 # # FIXME: check and warn for too not found
 # deps: imdbtool, jq
 imdb(){ IFS=" " imdbtool -t "$1" -r JSON |jq }
@@ -202,4 +207,16 @@ txt_2_qrcode(){
 mkdir_with_date(){
     export DUMP_DATE=$(date +%Y%m%d-%H_%M_%S)
     mkdir -pv $1_$DUMP_DATE
+}
+
+get_binary(){
+    #loop in input : https://stackoverflow.com/a/29906163
+    while read char; do
+	a=$(LC_CTYPE=C printf '%d' "'$char"); echo "$char: $(echo "obase=2;$a" | bc)"
+    done < <(fold -w1 <<<"$@")
+}
+
+get_binary_one_line(){
+    # sth like echo -n hello | xxd -b
+    echo "$(get_binary $@ | awk 'BEGIN{ORS=" "};{print $2}') $@"
 }

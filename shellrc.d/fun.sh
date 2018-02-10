@@ -29,3 +29,8 @@ mic_to_speaker(){
     # wanna save it too
     # arecord -f cd - | tee output.wav | aplay -
 }
+
+can_u(){
+
+    ~/.go/bin/pamcan;sleep 1s; clear
+}

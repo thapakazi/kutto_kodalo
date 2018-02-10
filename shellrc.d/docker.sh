@@ -87,7 +87,7 @@ alias docker-clean-exited-containers='docker ps -aqf status=exited | xargs -n1 d
 # list all host and ips
 # https://gist.github.com/ipedrazas/2c93f6e74737d1f8a791
 function docker_ips(){
-    docker ps -q | xargs -n 1 docker inspect --format '{{ .NetworkSettings.IPAddress }} {{ .Name }}' | sed 's/ \// /'
+    docker ps -q | xargs -n 1 docker inspect --format '{{ .NetworkSettings.Networks.invoice_default.IPAddress }} {{ .Config.Hostname }} {{ .Name }}' | sed 's/ \// /'
 }
 docker_network_info(){
     docker network ls -q| \
@@ -97,3 +97,13 @@ docker_network_info(){
 function docker_img_sort_size(){
     docker images --format '{{.ID}}   {{.Size}}   {{.Repository}}:{{.Tag}}' |sort -n -k 2
 }
+
+
+function dk(){docker-compose "$@" }
+function dke(){dk exec "$@" }
+function dkl(){dk logs -f "$@" }
+function dkr(){dk restart "$@" }
+function dkps(){dk ps "$@" }
+
+function dkb(){dke ${1:-app} bundle }
+# function dkbe(){dkb exec 
