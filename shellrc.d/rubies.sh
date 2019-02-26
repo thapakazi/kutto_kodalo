@@ -9,3 +9,5 @@ clean_ruby(){
     echo "No such $RUBY_VERSION to clean, or check the ruby version string"
 }
 
+#set default ruby, very wrong way
+chruby ruby

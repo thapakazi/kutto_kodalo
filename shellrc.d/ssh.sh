@@ -15,7 +15,7 @@ ssh_config_refresh() {
       ControlPersist 600    
       ForwardAgent true" > ~/.ssh/config
      
-    cat ~/.ssh/config.d/* >> ~/.ssh/config
+    cat ~/.ssh/config.d/*.config >> ~/.ssh/config
 }
 
 ssh_config_refresh
