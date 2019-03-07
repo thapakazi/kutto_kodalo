@@ -13,9 +13,23 @@
 alacritty_conf_dir=~/.config/alacritty
 alacritty_themes_dir=~/.config/alacritty/themes
 alacritty_upstream_themes=https://github.com/thapakazi/alacritty-theme
+
+# time agnostic 
 change_theme(){
     default_theme=${1:-bright}.yaml
+    is_night && default_theme=${1:-nord}.yaml
     sed -e  "/#+begin_theme/,/#+end_theme/c\#+begin_theme\n $(sed -e 's/$/ \\/' ~/.config/alacritty/themes/$default_theme) \n#+end_theme" $alacritty_conf_dir/alacritty.yml -i
+}
+
+is_night(){
+    time=$(date +%H)
+    [ "$time" -gt 18 ] && return 0 || return 1
+}
+
+# lol, test function to see if day or night :D
+greetings(){
+    is_night && echo "goodnight $(whoami)" && return 0
+    echo "good-day $(whoami)"
 }
 
 check_if_themes_exists(){

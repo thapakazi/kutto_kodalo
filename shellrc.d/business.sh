@@ -15,8 +15,8 @@ GCALCLI_CONFIG_DIR=$HOME/.gcalcli
 # generic function to do same thing on both of the servers
 # default: is to list the agenda
 gcalcli_all(){
-    action=${1:-agenda}
-    ls -1 $GCALCLI_CONFIG_DIR | xargs -I {} gcalcli --configFolder $GCALCLI_CONFIG_DIR/{} ${action}
+    action=${@:-agenda}
+    ls -1 $GCALCLI_CONFIG_DIR | xargs -I {} gcalcli --config-folder $GCALCLI_CONFIG_DIR/{} ${action}
 }
 
 # TODO: run thing parallel 🤔
