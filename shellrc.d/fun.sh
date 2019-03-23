@@ -42,3 +42,19 @@ can_u(){
 
     ~/.go/bin/pamcan;sleep 1s; clear
 }
+
+# handy remainder
+# Usage:   remind in <time> <action i want to do>
+# Example: remind in 30m i need to start studying
+# Default: remind in 5m lets go eat :)
+remind(){
+    time=${2:-5m}
+    rest=${${@:3}:-"lets go eat :)"}
+    echo "ok, will remind you in $time about ${rest:0:12}..."
+    {
+        sleep $time && \
+            xcowsay  --cow-size=med -t 15  \
+                     #--image=$HOME/Pictures/xcowsay/alarm-clock.png \
+                     --think "${rest}"
+    }& 
+}

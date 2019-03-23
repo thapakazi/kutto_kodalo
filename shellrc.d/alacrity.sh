@@ -23,7 +23,7 @@ change_theme(){
 
 is_night(){
     time=$(date +%H)
-    [ "$time" -gt 18 ] && return 0 || return 1
+    [ "$time" -gt 17 ] && return 0 || return 1
 }
 
 # lol, test function to see if day or night :D
