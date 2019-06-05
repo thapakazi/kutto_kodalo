@@ -1,3 +1,32 @@
+#desperate time desperate measures :)
+# demo: https://showterm.io/89006be66e19b6e70bc4b#
+free_up_space(){
+
+    echo "WARNING:: this is destructive command, don't blame me afterwards"
+    echo "----------------------------------------------------------------"
+    echo "You will gain the following space back: "
+    pacman_pkgs=/var/cache/pacman/pkg
+    junks=( \
+        $pacman_pkgs \
+        /var/log/journal/4834be0b8d3c43df9a86e9c410227275 \
+    )
+    du -sh ${junks[@]}
+    while true; do
+        echo
+        read YN\?"Let's clean your shits [Y/n]? "
+        echo
+        case $YN in
+            [Nn]* ) echo "no harm done"; break;;
+            [Yy]* ):
+                   echo "Nothing fancy, just saving your ass"
+                   sudo rm -rf $pacman_pkgs/*            # toldya, its kinda bad
+                   sudo journalctl --vacuum-time=1d      # run your vacuum cleaner
+                   break;;
+            * ) echo "Damn it, खुरुक्क y/n type गर्त";;
+        esac
+    done
+}
+
 mkcd(){
     # mkdir "$1"; cd "$1"
     mkdir -p "$@" && cd "$_";
