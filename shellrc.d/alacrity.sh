@@ -38,6 +38,7 @@ check_if_themes_exists(){
 
 fetch_themes(){
     if ! check_if_themes_exists; then
+        cd $alacritty_conf_dir
         git clone $alacritty_upstream_themes $alacritty_themes_dir
     fi
     update_themes

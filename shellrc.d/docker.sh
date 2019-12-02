@@ -87,7 +87,7 @@ alias docker-clean-exited-containers='docker ps -aqf status=exited | xargs -n1 d
 # list all host and ips
 # https://gist.github.com/ipedrazas/2c93f6e74737d1f8a791
 function docker_ips(){
-    docker ps -q | xargs -n 1 docker inspect --format '{{ .NetworkSettings.Networks.invoice_default.IPAddress }} {{ .Config.Hostname }} {{ .Name }}' | sed 's/ \// /'
+    docker ps -q | xargs -n 1 docker inspect --format '{{ .NetworkSettings.IPAddress }} {{ .Config.Hostname }} {{ .Name }}' | sed 's/ \// /'
 }
 docker_network_info(){
     docker network ls -q| \
@@ -107,3 +107,15 @@ function dkps(){dk ps "$@" }
 
 function dkb(){dke ${1:-app} bundle }
 # function dkbe(){dkb exec 
+
+
+# list all tags of a image
+# Credits: http://www.googlinux.com/list-all-tags-of-docker-image/index.html
+dk-tags() {
+    i=0
+    
+    while [ $? == 0 ]; do
+        i=$((i+1))
+        curl https://registry.hub.docker.com/v2/repositories/library/${1:-"golang"}/tags/?page=$i 2>/dev/null|jq '."results"[]["name"]'
+    done
+}

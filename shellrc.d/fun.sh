@@ -54,7 +54,19 @@ remind(){
     {
         sleep $time && \
             xcowsay  --cow-size=med -t 15  \
-                     #--image=$HOME/Pictures/xcowsay/alarm-clock.png \
+                     --image=$HOME/Pictures/xcowsay/alarm-clock.png \
                      --think "${rest}"
     }& 
 }
+
+
+##  inspired from tweet: https://twitter.com/kathyra_/status/1160810013113237504/photo/1
+alias damn_it='sudo $(fc -ln -1)'
+
+# credits: https://twitter.com/nixcraft/status/1201354335747051520
+old_tv(){
+    P=(' ' █ ░ ▒ ▓);
+    while :;do
+        printf "\e[$[RANDOM%LINES+1];$[RANDOM%COLUMNS+1]f${P[$RANDOM%5]}";
+    done
+} 

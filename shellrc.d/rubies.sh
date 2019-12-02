@@ -10,4 +10,4 @@ clean_ruby(){
 }
 
 #set default ruby, very wrong way
-chruby ruby
+#chruby ruby

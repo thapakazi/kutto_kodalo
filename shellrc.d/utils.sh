@@ -6,9 +6,15 @@ free_up_space(){
     echo "----------------------------------------------------------------"
     echo "You will gain the following space back: "
     pacman_pkgs=/var/cache/pacman/pkg
+    go_mod_cache=/home/`whoami`/go/pkg/mod
+    yarn_shit=/home/`whoami`/.cache/yarn
+    yay_shit=/home/`whoami`/.cache/yay/
     junks=( \
-        $pacman_pkgs \
-        /var/log/journal/4834be0b8d3c43df9a86e9c410227275 \
+            $pacman_pkgs \
+            $go_mod_cache \
+            /var/log/journal/4834be0b8d3c43df9a86e9c410227275 \
+            $yarn_shit \
+            $yay_shit \
     )
     du -sh ${junks[@]}
     while true; do
@@ -19,8 +25,9 @@ free_up_space(){
             [Nn]* ) echo "no harm done"; break;;
             [Yy]* ):
                    echo "Nothing fancy, just saving your ass"
-                   sudo rm -rf $pacman_pkgs/*            # toldya, its kinda bad
-                   sudo journalctl --vacuum-time=1d      # run your vacuum cleaner
+                   sudo rm -rf $pacman_pkgs/* $yarn_shit $yay_shit  # toldya, its kinda bad
+                   sudo journalctl --vacuum-time=1d                 # run your vacuum cleaner
+                   # go clean --modcache                            # if you do have go mod caches
                    break;;
             * ) echo "Damn it, खुरुक्क y/n type गर्त";;
         esac
@@ -248,4 +255,12 @@ get_binary(){
 get_binary_one_line(){
     # sth like echo -n hello | xxd -b
     echo "$(get_binary $@ | awk 'BEGIN{ORS=" "};{print $2}') $@"
+}
+
+#get back webacm
+turn_on_cam(){
+    sudo modprobe uvcvideo
+}
+test_webcam(){
+    mplayer tv:// -tv driver=v4l2:device=/dev/video0:width=1280:height=720:fps=30:outfmt=yuy2
 }
