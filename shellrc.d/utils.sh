@@ -27,7 +27,9 @@ free_up_space(){
                    echo "Nothing fancy, just saving your ass"
                    sudo rm -rf $pacman_pkgs/* $yarn_shit $yay_shit  # toldya, its kinda bad
                    sudo journalctl --vacuum-time=1d                 # run your vacuum cleaner
-                   # go clean --modcache                            # if you do have go mod caches
+                   go clean --modcache                              # if you do have go mod caches
+                   go clean --cache                                 # clean ~/.cache/go-build
+                   npm cache clean --force                          # clean up ~/.npm/_cache
                    break;;
             * ) echo "Damn it, खुरुक्क y/n type गर्त";;
         esac

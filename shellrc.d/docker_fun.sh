@@ -14,10 +14,12 @@ EOF
 docker_hack(){
     DISK_UUID=8a741529-d1f6-4c90-9f90-9dc96cddf9fc
     sudo mount UUID=${DISK_UUID} /mnt/sandisk
-    sudo systemctl restart docker
     sudo iptables-restore < ~/.docker/iptables.config
+    sudo systemctl restart docker
 }
 
 docker_hack_cleanup(){
     #TODO: cleanups
+    sudo systemctl stop docker
+    sudo umount  /mnt/sandisk
 }
