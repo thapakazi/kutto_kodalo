@@ -63,10 +63,10 @@ _browser(){
 
 _editor(){
     theme=${1:-'spacemacs-dark'}
-    WID=$(search_windows_wmctrl "Emacs")
     echo $theme | buffer
-    xdotool key --window $WID super+F12 ctrl+y ctrl+j
-
+    WID=$(search_windows_wmctrl $(my_editor))
+    test $WID &&     xdotool key --window $WID super+F12 ctrl+y ctrl+j
+    search_windows $(my_editor) |xargs -I WID xdotool key --window WID super+F12 ctrl+y ctrl+j && return 0
 }
 
 _x_helper_get_window_info(){

@@ -12,7 +12,7 @@ source ~/.kubectl_aliases
 
 # print secrets
 kubectl_print_secrets(){
-    kubectl get secrets/${1:-'api-secrets'} -o yaml \
+    kubectl get secrets/${1:-'api-secrets'} -n ${2:-'default'} -o yaml \
         | awk '/^data:$/,/^kind:/ {print }' \
         | sed -e '1d' -e '$d' \
         | awk -F: '{printf("\n%s:",$1);system("base64 -d <<<" $2)}'
@@ -21,4 +21,17 @@ kubectl_print_secrets(){
 
 encode_base64(){
   echo -n $@ | base64 -w 0
+}
+
+
+# kube ps: https://github.com/jonmosco/kube-ps1
+# grab it from AUR and then
+#  looks like little bit too much, but I need it so common these days
+source '/opt/kube-ps1/kube-ps1.sh'
+PROMPT='$(kube_ps1)'$PROMPT
+
+
+# debug pod
+haribahadur_launch_debug_pod(){
+    kubectl run -i --tty --rm debug --image=ubuntu --restart=Never -- bash
 }

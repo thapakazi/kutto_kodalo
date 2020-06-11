@@ -54,3 +54,23 @@ ssh_keygen_all(){
         ssh_keys_generator $APPNAME
     done
 }
+
+EASYSSH_BIN=`which easyssh`
+SSH_CONFIG_DIR="$HOME/.ssh/config.d"
+hostgen(){
+    account=${1:-"dibya"}
+    region=${2:-"us-east-1"}
+    port=${3:-"22"}
+    ssh_user=${4:-"ubuntu"}
+    export AWS_REGION=$region
+
+    echo "generating list"
+    source ~/.aws-$account
+
+    SSH_CONFIG=$SSH_CONFIG_DIR/$account-$region.config
+    echo "" >> $SSH_CONFIG
+    ${EASYSSH_BIN} -port $port -username $ssh_user | tee  $SSH_CONFIG
+    echo "" >> $SSH_CONFIG
+    echo "...pulling server list from there"
+    ssh_config_refresh
+}

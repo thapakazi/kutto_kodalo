@@ -266,3 +266,19 @@ turn_on_cam(){
 test_webcam(){
     mplayer tv:// -tv driver=v4l2:device=/dev/video0:width=1280:height=720:fps=30:outfmt=yuy2
 }
+
+# handy generator
+gen_pg_syntax(){
+
+    db_name=$1
+    user=$2
+    password=$3
+
+    echo "
+    create role $user with login;
+    create database $db_name;
+    ALTER USER $user WITH PASSWORD $password';
+    grant all privileges on database $db_name to $user;
+    "
+}
+
