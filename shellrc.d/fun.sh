@@ -70,3 +70,7 @@ old_tv(){
         printf "\e[$[RANDOM%LINES+1];$[RANDOM%COLUMNS+1]f${P[$RANDOM%5]}";
     done
 } 
+
+emoji(){
+    awk /$1/'{print $0}' ~/.emoji
+}

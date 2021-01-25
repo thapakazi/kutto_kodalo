@@ -62,11 +62,10 @@ hostgen(){
     region=${2:-"us-east-1"}
     port=${3:-"22"}
     ssh_user=${4:-"ubuntu"}
-    export AWS_REGION=$region
-
     echo "generating list"
     source ~/.aws-$account
-
+    aws sts get-caller-identity
+    export AWS_REGION=$region
     SSH_CONFIG=$SSH_CONFIG_DIR/$account-$region.config
     echo "" >> $SSH_CONFIG
     ${EASYSSH_BIN} -port $port -username $ssh_user | tee  $SSH_CONFIG

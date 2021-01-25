@@ -1,5 +1,5 @@
 # this is why god invented CAPS LOCKS
-setxkbmap -option ctrl:nocaps
+# setxkbmap -option ctrl:nocaps
 
 # emacs is the editor
 export EDITOR='emacs';

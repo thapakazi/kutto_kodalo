@@ -8,6 +8,6 @@
 alias gover='go get -v'
 
 # set go version
-eval $(gimme 1.13.6)
+eval $(gimme 1.14)
 export GOPATH=~/go
 export PATH=$PATH:$GOPATH/bin

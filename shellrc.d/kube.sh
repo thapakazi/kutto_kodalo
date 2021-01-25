@@ -33,5 +33,5 @@ PROMPT='$(kube_ps1)'$PROMPT
 
 # debug pod
 haribahadur_launch_debug_pod(){
-    kubectl run -i --tty --rm debug --image=ubuntu --restart=Never -- bash
+    kubectl run -i --tty --rm debug --image=${1:-'ubuntu'} -n=${2:-'default'} --restart=Never -- sh
 }

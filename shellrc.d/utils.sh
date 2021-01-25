@@ -1,3 +1,31 @@
+# nuke all node_modules
+find_all_node_modules(){
+    node_junk=/tmp/node_junk
+    [ -f $node_junk ] && cat $node_junk || find . -name 'node_modules' -type d -prune | xargs du -sh|sort -h |tee $node_junk
+}
+
+find_all_node_modules_raw(){
+    rm -rf /tmp_node_junk && find_all_node_modules
+}
+
+# FIXME: make it usable to general public
+find_and_nuke_node_modules(){
+    [ ${#@} -gt 0 ] && dont_remove_these_matches=$(echo -n ${@} |tr  ' ' '|')
+    nuke_these=$(find_all_node_modules | grep -Ev $dont_remove_these_matches)
+    echo "all these times, your node junk looks like this:"
+    echo $nuke_these
+    echo '------------------------'
+    read YN\?"YOU BEEN WARNED, don't come to me crying afterwards [Y/n]?"
+    if [ $YN == 'n' ]
+    then
+        echo "No harm done."
+        return 0
+    fi
+    echo "ok, lets nuke them all"
+    echo ${nuke_these} |awk '{print $2}' |xargs -I {} echo removing {} && rm -rf {}
+}
+
+
 #desperate time desperate measures :)
 # demo: https://showterm.io/89006be66e19b6e70bc4b#
 free_up_space(){
@@ -277,8 +305,21 @@ gen_pg_syntax(){
     echo "
     create role $user with login;
     create database $db_name;
-    ALTER USER $user WITH PASSWORD $password';
+    ALTER USER $user WITH PASSWORD $password;
     grant all privileges on database $db_name to $user;
     "
+}
+
+# lastpass in cli :o
+# https://github.com/lastpass/lastpass-cli
+lastpass(){
+    lpass show -c --password $(lpass ls  | fzf | awk '{print $(NF)}' | sed 's/\]//g')    
+}
+
+
+
+### extract http urls
+extract_urls(){
+  curl -sL --user-agent $FIREFOX_A $(xclip -o) | tr '"' '\n' | tr "'" '\n' | grep -e '^https://' -e '^http://' -e'^//' | sort | uniq     
 }
 
