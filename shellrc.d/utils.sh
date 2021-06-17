@@ -131,7 +131,7 @@ buffer_with_cow(){ echo "$@" | buffer && xcowsay "$@"}
 alias curl.json='curl -i -H "Accept: application/json"'
 
 # not sure how much relavent is it ?
-alias startx='ssh-add startx'
+#alias startx='ssh-add startx'
 
 #random password of desired length
 randpassd(){

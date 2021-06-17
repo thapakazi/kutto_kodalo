@@ -1,8 +1,8 @@
 # ansible cheeses
 # # FIXME: if _ansible_ssh_port is blank put it 22
-[ -z $_ansible_ssh_port ] && export _ansible_ssh_port=22
-export ANSIBLE_SSH_PORT="${_ansible_ssh_port}" # it comes from somewhere else
-export ANSIBLE_SSH_ARGS="-o ForwardAgent=yes -o StrictHostKeyChecking=no -o Port=${ANSIBLE_SSH_PORT}"
+# [ -z $_ansible_ssh_port ] && export _ansible_ssh_port=22
+# export ANSIBLE_SSH_PORT="${_ansible_ssh_port}" # it comes from somewhere else
+# export ANSIBLE_SSH_ARGS="-o ForwardAgent=yes -o StrictHostKeyChecking=no -o Port=${ANSIBLE_SSH_PORT}"
 
 # cows are awesome
 #export ANSIBLE_NOCOWS=1
@@ -14,14 +14,14 @@ export ANSIBLE_SSH_ARGS="-o ForwardAgent=yes -o StrictHostKeyChecking=no -o Port
 
 # new easy-way
 # it could break; BEAWARE
-PYTHON_2=`which python2`
-export ANSIBLE_PYTHON_INTERPRETER=${PYTHON_2}
+# PYTHON_2=`which python2`
+# export ANSIBLE_PYTHON_INTERPRETER=${PYTHON_2}
 
 # if above don't work 
 # alias ansible-playbook="/usr/bin/env ansible-playbook -e 'ansible_python_interpreter=/usr/bin/python2'"
 
 # assuming there exists ~/.localhost inventory
-export ANSIBLE_LOCAL_FLAGS='-c local -i ~/.localhost'
+# export ANSIBLE_LOCAL_FLAGS='-c local -i ~/.localhost'
 
 ## archive museum samples
 ## just putting them in limbo for the respect

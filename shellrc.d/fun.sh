@@ -74,3 +74,35 @@ old_tv(){
 emoji(){
     awk /$1/'{print $0}' ~/.emoji
 }
+
+a_2_z(){
+echo "
+a - awk
+b - bash
+c - cat
+d - dig
+e - emacs
+f - find
+g - git
+h - hostname
+i - ip
+j - jq
+k - kubectl
+l - less
+m - mtr
+n - nc
+o - openssl
+p - ping
+q - quick_pg
+r - rm
+s - sed
+t - tail
+u - unset
+v - vim
+w - watch
+x - xkill
+y - yes
+z - zip
+" 
+}
+

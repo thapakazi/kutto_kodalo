@@ -63,7 +63,7 @@ hostgen(){
     port=${3:-"22"}
     ssh_user=${4:-"ubuntu"}
     echo "generating list"
-    source ~/.aws-$account
+    source ~/.aws/keys/$account
     aws sts get-caller-identity
     export AWS_REGION=$region
     SSH_CONFIG=$SSH_CONFIG_DIR/$account-$region.config
