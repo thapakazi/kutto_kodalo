@@ -54,19 +54,24 @@ function configmap_to_json(){
     configmap_cleanup $@ | jq -R 'split(" ")|{service:.[0], server:.[1], status:.[2]}'
 }
 
-
-# ssm paramater store
-aws_get_sm_parm_value(){
+###############################################
+## SSM / Paramater Store | Helper Utilsities ##
+###############################################
+aws_ssm_get_param_raw(){
     app=$1
     env=${2:-'development'}
     suffix=${3:-'env'}
-    aws ssm get-parameters \
-        --names "/${env}/${app}/${suffix}" \
-        --with-decryption \
-        | jq -r .Parameters[].Value
+    aws ssm get-parameter --region $AWS_REGION --with-decryption  \
+        --name "/${env}/${app}/${suffix}" \
+        --query  "Parameter.Value"
 }
 
-aws_put_sm_parm_value(){
+aws_ssm_get_param(){
+    : ${1?"Usage: $0 appname environment{development,staging} secret_type{env,config/appsettings.json} "}
+    aws_ssm_get_param_raw "$@" | jq -r
+}
+
+aws_ssm_put_param(){
     app=$1
     env=${2:-'development'}
     suffix=${3:-'env'}
@@ -78,17 +83,21 @@ aws_put_sm_parm_value(){
         --type "SecureString"
 }
 
+aws_ssm_new_ssm(){
+    : ${1?"Usage: $0 appname environment{development,staging} secret_type{env,config/appsettings.json} "}
+    aws_ssm_put_param  "$@"
+}
 # edit ssm paramater store
-aws_edit_sm_value(){
-
-    tmp_file=/tmp/${app}_${env}.json
+aws_ssm_edit_param(){
+    : ${1?"Usage: $0 appname environment{development,staging} secret_type{env,config/appsettings.json} "}
     env=${2:-'development'}
     app=$1
     suffix=${3:-'env'}
-    aws_get_sm_parm_value $app $env $suffix |tee $tmp_file
+    tmp_file=$(mktemp -u)-${app}_${env}.$(date +%F-%R).json
+    aws_ssm_get_param $app $env $suffix |tee $tmp_file
     vim $tmp_file
     values=$(cat $tmp_file|jq -c)
-    aws_put_sm_parm_value $app $env $suffix $values
+    aws_ssm_put_param $app $env $suffix $values
 }
 
 # get iam user for key
@@ -107,7 +116,7 @@ aws_iam_create_user(){
 }
 
 aws_iam_sample_policy(){
-   bucket_name=$1
+    bucket_name=$1
     cat <<EOF > /tmp/${bucket_name}-policy.json
 {
     "Version": "2012-10-17",
@@ -131,7 +140,7 @@ aws_iam_create_policy(){
     aws iam create-policy --policy-name $policy_name --policy-document file:///tmp/${bucket_name}-policy.json
 }
 aws_iam_attach_policy(){
-   aws iam attach-user-policy --user-name $1 --policy-arn $2
+    aws iam attach-user-policy --user-name $1 --policy-arn $2
 }
 
 aws_iam_create_user_with_policy(){
