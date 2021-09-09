@@ -96,9 +96,33 @@ aws_ssm_edit_param(){
     tmp_file=$(mktemp -u)-${app}_${env}.$(date +%F-%R).json
     aws_ssm_get_param $app $env $suffix |tee $tmp_file
     vim $tmp_file
-    values=$(cat $tmp_file|jq -c)
-    aws_ssm_put_param $app $env $suffix $values
+    values=$(cat $tmp_file|jq -c) && aws_ssm_put_param $app $env $suffix $values
 }
+
+# assuming you follow convention
+# parameter store name: /env/app/env or /env/app/config/...
+aws_ssm_get_all_params(){
+    aws ssm describe-parameters | jq '.Parameters[].Name' -r
+}
+
+aws_ssm_get_param_easy(){
+    aws_ssm_get_param $(echo $1 | cut -d/ -f3) $(echo $1 | cut -d/ -f2) $(echo $1 | cut -d/ -f4-)
+}
+
+aws_ssm_edit_param_easy(){
+    aws_ssm_edit_param $(echo $1 | cut -d/ -f3) $(echo $1 | cut -d/ -f2) $(echo $1 | cut -d/ -f4-)
+}
+
+# Disclaimer: you been warned, very very fragile/hariy function, don't use it on yours
+# selfnote: make sure you export respective AWS profiles first
+aws_ssm_copy_param(){
+    source=$1
+    dest=$2
+    export AWS_PROFILE=$SOURCE_PROFILE; aws_ssm_get_param_easy $source | buffer
+    export AWS_PROFILE=$DEST_PROFILE; aws_ssm_edit_param_easy $dest
+}
+
+##################################
 
 # get iam user for key
 aws_get_iam_user_for_key(){
