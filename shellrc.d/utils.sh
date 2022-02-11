@@ -295,31 +295,24 @@ test_webcam(){
     mplayer tv:// -tv driver=v4l2:device=/dev/video0:width=1280:height=720:fps=30:outfmt=yuy2
 }
 
-# handy generator
-gen_pg_syntax(){
-
-    db_name=$1
-    user=$2
-    password=$3
-
-    echo "
-    create role $user with login;
-    create database $db_name;
-    ALTER USER $user WITH PASSWORD $password;
-    grant all privileges on database $db_name to $user;
-    "
-}
-
-# lastpass in cli :o
-# https://github.com/lastpass/lastpass-cli
-lastpass(){
-    lpass show -c --password $(lpass ls  | fzf | awk '{print $(NF)}' | sed 's/\]//g')    
-}
-
-
 
 ### extract http urls
 extract_urls(){
   curl -sL --user-agent $FIREFOX_A $(xclip -o) | tr '"' '\n' | tr "'" '\n' | grep -e '^https://' -e '^http://' -e'^//' | sort | uniq     
 }
 
+
+### letusencrypt
+letsencrypt_gen(){
+
+    DOMAIN=${1:-'cloudrickshaw.com'}
+    EMAIL=${2:-"bot@$DOMAIN"}
+    mkdir -p /tmp/certs && cd /tmp/certs
+	mkdir -p ./logs
+	certbot --manual --config-dir=. --work-dir=. \
+            --logs-dir ./logs \
+            certonly \
+            --preferred-challenges dns \
+            --agree-tos \
+            -m $EMAIL -d $DOMAIN
+}

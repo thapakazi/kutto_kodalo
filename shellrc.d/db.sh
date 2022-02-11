@@ -38,3 +38,18 @@ db_pg_read_only_user_syntax(){
    # https://stackoverflow.com/a/42044878
    #ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO $db_user;
 }
+
+# handy generator
+gen_pg_syntax(){
+
+    db_name=$1
+    user=$2
+    password=$3
+
+    echo "
+    create role $user with login;
+    create database $db_name;
+    ALTER USER $user WITH PASSWORD $password;
+    grant all privileges on database $db_name to $user;
+    "
+}
