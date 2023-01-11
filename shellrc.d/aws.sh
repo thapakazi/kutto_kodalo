@@ -177,3 +177,13 @@ aws_iam_create_user_with_policy(){
     aws_iam_create_policy $bucket_name $policy_name
     echo aws iam attach-user-policy --user-name $1 --policy-arn POLICY_ARN
 }
+
+aws_diff_last_two_lt_version(){
+    lt_id=$1
+    tmp_file=/tmp/$lt_id.json
+
+    echo "assuming aws right aws keys are in place, i.e AWS_PROFILE:$AWS_PROFILE AWS_REGION:$AWS_REGION"
+    aws ec2 describe-launch-template-versions --launch-template-id $lt_id  >$tmp_file
+
+    diff <(cat /tmp/lt-087e3c65222e939b3.json | jq '.LaunchTemplateVersions[0]') <(cat /tmp/lt-087e3c65222e939b3.json | jq '.LaunchTemplateVersions[1]')
+}
