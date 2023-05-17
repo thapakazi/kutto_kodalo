@@ -2,6 +2,7 @@
 get_kubectl-alias(){
     curl -sL https://raw.githubusercontent.com/ahmetb/kubectl-alias/master/.kubectl_aliases -o ~/.kubectl_aliases 
 }
+
 ! [ -f ~/.kubectl_aliases ] && get_kubectl-alias
 source ~/.kubectl_aliases
 
@@ -24,14 +25,15 @@ encode_base64(){
 }
 
 
-# kube ps: https://github.com/jonmosco/kube-ps1
-# grab it from AUR and then
-#  looks like little bit too much, but I need it so common these days
-source '/opt/kube-ps1/kube-ps1.sh'
-PROMPT='$(kube_ps1)'$PROMPT
-
-
 # debug pod
 haribahadur_launch_debug_pod(){
     kubectl run -i --tty --rm debug --image=${1:-'ubuntu'} -n=${2:-'default'} --restart=Never -- sh
+}
+
+# krew from https://krew.sigs.k8s.io/docs/user-guide/setup/install/#bash
+export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
+
+# k get nodes 
+k_get_nodes(){
+    kubectl get nodes -o=json | jq -r '.items[] | {name: .metadata.name, ami_id: .metadata.labels."karpenter.k8s.aws/instance-ami-id", instance_type: .metadata.labels."beta.kubernetes.io/instance-type"} | select(.ami_id and .instance_type) | "\(.name) \(.ami_id) \(.instance_type)'
 }

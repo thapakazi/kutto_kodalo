@@ -7,8 +7,8 @@ esac
 function mascot {
 	# offensive ones: removed manually
 	# head-in.cow sodomized.cow telebears.cow
-    export COWPATH='/usr/share/cows'
-    ls $COWPATH -1 |shuf -n 1
+    export COWPATH='/opt/homebrew/Cellar/cowsay/3.04_1/share/cows'
+    ls -1 $COWPATH |shuf -n 1
     # case $(($RANDOM%6)) in
     # 	0) echo "tux";;
     # 	1) echo "default";;
