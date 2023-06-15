@@ -117,17 +117,6 @@ alias wget.grab.all='wget --recursive --no-clobber --page-requisites --html-exte
 
 eval "$(fasd --init auto)"
 
-# buffer hacks
-buffer(){
-    xclip -sel c
-}
-buffercopy(){
-    buffer < $1
-}
-
-# yell and copy in buffer
-buffer_with_cow(){ echo "$@" | buffer && xcowsay "$@"}
-
 alias curl.json='curl -i -H "Accept: application/json"'
 
 # not sure how much relavent is it ?
@@ -135,12 +124,26 @@ alias curl.json='curl -i -H "Accept: application/json"'
 
 #random password of desired length
 randpassd(){
-    < /dev/urandom tr -dc '_A-Z-a-z-0-9+-~!@#$%^&*()_+=-'| head -c${1:-16};echo;
+
+    LC_ALL=C tr -dc '_A-Z-a-z-0-9+-~!@#$%^&*()_+=-' < /dev/urandom  | head -c${1:-16};echo;
     # openssl rand -base64 |head -c${1:-16};echo;
 }
 randpass(){
-    randpassd ${1:-16}|xclip -sel c
+    randpassd ${1:-16}| buffer
 }
+
+# buffer hacks
+buffer(){
+    test $(command -v xclip) && xclip -sel c || pbcopy
+}
+
+buffercopy(){
+    buffer < $1
+}
+
+# yell and copy in buffer
+buffer_with_cow(){ echo "$@" | buffer && xcowsay "$@"}
+
 
 #mimicing .split(",") #quick_hack
 split_string_like_js(){
@@ -177,7 +180,7 @@ transferX() {
 # http://www.picpaste.com/ :Put your pictures online, easy and quick
 # Storage time: 30mins(1) to unlimited(9)
 # Supported formats: Only JP(E)G, PNG, GIF, BMP
-# Size limit =< 7 megabyte 
+# Size limit =< 7 megabyte
 picpaste () {
     opts=( -F storetime={9:-$2} -F addprivacy=1 -F rules=yes )
     link=http://www.picpaste.com/upload.php
@@ -249,7 +252,7 @@ dump_tcp_headers(){
 base64_d(){
     echo -e "$@"|base64 -d
 }
-    
+
 # reviselater, only work with bash
 # https://superuser.com/a/229038/361714
 whereis_func(){
@@ -278,7 +281,7 @@ mkdir_with_date(){
 get_binary(){
     #loop in input : https://stackoverflow.com/a/29906163
     while read char; do
-	a=$(LC_CTYPE=C printf '%d' "'$char"); echo "$char: $(echo "obase=2;$a" | bc)"
+    a=$(LC_CTYPE=C printf '%d' "'$char"); echo "$char: $(echo "obase=2;$a" | bc)"
     done < <(fold -w1 <<<"$@")
 }
 
@@ -298,7 +301,7 @@ test_webcam(){
 
 ### extract http urls
 extract_urls(){
-  curl -sL --user-agent $FIREFOX_A $(xclip -o) | tr '"' '\n' | tr "'" '\n' | grep -e '^https://' -e '^http://' -e'^//' | sort | uniq     
+  curl -sL --user-agent $FIREFOX_A $(xclip -o) | tr '"' '\n' | tr "'" '\n' | grep -e '^https://' -e '^http://' -e'^//' | sort | uniq
 }
 
 
@@ -308,8 +311,8 @@ letsencrypt_gen(){
     DOMAIN=${1:-'cloudrickshaw.com'}
     EMAIL=${2:-"bot@$DOMAIN"}
     mkdir -p /tmp/certs && cd /tmp/certs
-	mkdir -p ./logs
-	certbot --manual --config-dir=. --work-dir=. \
+    mkdir -p ./logs
+    certbot --manual --config-dir=. --work-dir=. \
             --logs-dir ./logs \
             certonly \
             --preferred-challenges dns \
