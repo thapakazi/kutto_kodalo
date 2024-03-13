@@ -1,4 +1,3 @@
-
 # depends on ansible
 # FIXME: check if ansible is installed and warn
 function ami_finder(){
@@ -188,3 +187,43 @@ aws_diff_last_two_lt_version(){
     aws ec2 describe-launch-template-versions --launch-template-id $lt_id  >$tmp_file
     diff <(cat $tmp_file | jq ".LaunchTemplateVersions[${2-1}]") <(cat $tmp_file | jq ".LaunchTemplateVersions[${3-0}]")
 }
+
+
+ensure_env_var_set() {
+    local env_var="$1"
+    local value=$(eval echo \$$env_var)
+
+    if [ -z "$value" ]; then
+        echo "Error: $env_var is not set." >&2
+        return 1
+    fi
+}
+
+# Function to list instances. Simplified for illustration.
+aws_ssm_list_instances() {
+    ensure_env_var_set "AWS_PROFILE" && ec2-session --list >  /tmp/$AWS_PROFILE
+}
+
+alias assmli=aws_ssm_list_instances
+
+# Function to start an SSM session
+assm() {
+    name=$1
+    instance=$(awk  /$name/'{print $1}' /tmp/$AWS_PROFILE)
+    # Command to start SSM session, simplified for illustration
+    echo "Starting SSM session to $name: $instance"
+    ec2-session $instance -u ubuntu
+}
+
+# Define the completion function
+_assm() {
+    local -a candidates
+    candidates=($(awk '{print $3}' /tmp/$AWS_PROFILE | xargs))
+    _describe 'assm option' candidates
+}
+
+# Associate the function with assm command
+compdef _assm assm
+
+# Autoload setup for assm
+autoload -Uz assm
