@@ -12,13 +12,13 @@
 # Credits to theme pool: https://github.com/eendroroy/alacritty-theme
 alacritty_conf_dir=~/.config/alacritty
 alacritty_themes_dir=~/.config/alacritty/themes
-alacritty_upstream_themes=https://github.com/thapakazi/alacritty-theme
+alacritty_upstream_themes=https://github.com/alacritty/alacritty-theme
 
-# time agnostic 
+# time agnostic
 change_theme(){
-    default_theme=${1:-bright}.yaml
-    is_night && default_theme=${1:-nord}.yaml
-    sed -e  "/#+begin_theme/,/#+end_theme/c\#+begin_theme\n $(sed -e 's/$/ \\/' ~/.config/alacritty/themes/$default_theme) \n#+end_theme" $alacritty_conf_dir/alacritty.yml -i
+    default_theme=${1:-noctis-lux}
+    is_night && default_theme=${1:-night_owl}
+    sed  "s|~/.config/alacritty/themes/themes/[^.]*\.toml|~/.config/alacritty/themes/themes/${default_theme}.toml|g" ~/.config/alacritty/alacritty.toml -i
 }
 
 is_night(){
@@ -52,7 +52,7 @@ list_themes(){
     if check_if_themes_exists; then
         echo "=== your available themes ==="
         echo "-----------------------------"
-        ls -1 $alacritty_themes_dir/*.yaml|sed -r 's/(.*)\/(.*).yaml/    \2/g'
+        ls -1 $alacritty_themes_dir/themes/*.toml|sed -r 's/(.*)\/(.*).toml/    \2/g' | paste - - - | column -t
     else
         echo "=== sorry no themes, use fn: fetch_themes ==="
     fi
@@ -64,6 +64,14 @@ remove_themes(){
 }
 
 alacritty_init_conf(){
-    echo 'fetching vanilla conf from: https://gist.github.com/thapakazi/c19cc42be668a4fc66e63b1423c150d7.pibb'
-    curl -sL https://git.io/fhNYu >  $alacritty_conf_dir/alacritty.yml
+    echo '
+    import = [
+        "~/.config/alacritty/themes/themes/dracula.toml"
+    ]'  >  $alacritty_conf_dir/alacritty.toml
+}
+
+alacritty_do_it_all(){
+   alacritty_init_conf
+   fetch_themes
+   change_theme
 }
