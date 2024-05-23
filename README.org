@@ -21,3 +21,9 @@
      the things.
   - 
 
+* Setup
+  #+begin_src bash
+  make
+
+  # ensure you update your shellrc
+  #+end_src

@@ -11,6 +11,13 @@ all: clean_before
 	ln -s $(WD)/$(SHELLRC_F) $(SHELLRC)
 	ln -s $(WD)/$(SHELLRC_D) $(SHELLRCD)
 
+	@echo Ensure following lines exists on your .zshrc
+	@echo \#---
+	@echo autoload -Uz compinit
+	@echo compinit
+	@echo source ~/.shellrc
+	@echo \#---
+
 clean_before:
 	 @[ -h $(SHELLRC) ] && mv $(SHELLRC) $(SHELLRC).bak_$(DATE) || echo "nothing to do here"
 	 @[ -h $(SHELLRCD) ] &&  mv -vf $(SHELLRCD) $(SHELLRCD).bak_$(DATE) || echo "nothing to do here"
