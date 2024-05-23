@@ -1,9 +1,6 @@
 # one liner to adjust the alacritty theme
 # this func actually seds in themes
-# assumption: your theme resides inside a block like:
-#   #+begin_theme
-#   ...  << this gets populated from different color_theme.yml files
-#   #+end_theme
+# update: there is new imports syntax, which is easier to change
 #
 # Usage:
 #    $ alacritty_init_conf
@@ -13,12 +10,13 @@
 alacritty_conf_dir=~/.config/alacritty
 alacritty_themes_dir=~/.config/alacritty/themes
 alacritty_upstream_themes=https://github.com/alacritty/alacritty-theme
+alacritty_conf_file=$(readlink -f $alacritty_conf_dir/alacritty.toml)
 
 # time agnostic
 change_theme(){
     default_theme=${1:-noctis-lux}
     is_night && default_theme=${1:-night_owl}
-    sed  "s|~/.config/alacritty/themes/themes/[^.]*\.toml|~/.config/alacritty/themes/themes/${default_theme}.toml|g" ~/.config/alacritty/alacritty.toml -i
+    sed  "s|~/.config/alacritty/themes/themes/[^.]*\.toml|~/.config/alacritty/themes/themes/${default_theme}.toml|g" $alacritty_conf_file -i
 }
 
 is_night(){
@@ -67,7 +65,7 @@ alacritty_init_conf(){
     echo '
     import = [
         "~/.config/alacritty/themes/themes/dracula.toml"
-    ]'  >  $alacritty_conf_dir/alacritty.toml
+    ]'  >  $alacritty_conf_file
 }
 
 alacritty_do_it_all(){
