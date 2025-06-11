@@ -9,5 +9,7 @@ clean_ruby(){
     echo "No such $RUBY_VERSION to clean, or check the ruby version string"
 }
 
-#set default ruby, very wrong way
-#chruby ruby
+# chruby
+[ -f /opt/homebrew/opt/chruby/share/chruby/auto.sh ] && source /opt/homebrew/opt/chruby/share/chruby/auto.sh
+[ -f /opt/homebrew/opt/chruby/share/chruby/chruby.sh ] && source /opt/homebrew/opt/chruby/share/chruby/chruby.sh
+

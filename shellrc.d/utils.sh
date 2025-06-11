@@ -261,15 +261,8 @@ whereis_func(){
     shopt -u extdebug
 }
 
-QRCODE=/tmp/qrcode
-txt_2_qrcode_gen(){
-
-    txt_2_encode="$@"
-    qrencode "$txt_2_encode" -o $QRCODE &&  xcowsay -d  $QRCODE
-}
-
 txt_2_qrcode(){
-    txt_2_qrcode_gen "$@" && rm $QRCODE
+    qrencode -t ansiutf8 "${@}"
 }
 
 # directory with date name

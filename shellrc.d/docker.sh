@@ -99,7 +99,7 @@ function docker_img_sort_size(){
 }
 
 
-function dk(){docker-compose "$@" }
+function dk(){docker compose "$@" }
 function dke(){dk exec "$@" }
 function dkl(){dk logs -f "$@" }
 function dkr(){dk restart "$@" }
