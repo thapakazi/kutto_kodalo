@@ -114,9 +114,6 @@ youtube.dlmp3(){
 # some crawling stuffs
 alias wget.grab.all='wget --recursive --no-clobber --page-requisites --html-extension --convert-links --restrict-file-names=windows --no-parent'
 
-
-eval "$(fasd --init auto)"
-
 alias curl.json='curl -i -H "Accept: application/json"'
 
 # not sure how much relavent is it ?

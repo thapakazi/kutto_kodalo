@@ -5,9 +5,8 @@ case $(($RANDOM%2)) in
 esac
 
 function mascot {
-	# offensive ones: removed manually
-	# head-in.cow sodomized.cow telebears.cow
-    export COWPATH='/opt/homebrew/Cellar/cowsay/3.04_1/share/cows'
+    version=$(brew list --version| awk '/cowsay/{print $NF}')
+    export COWPATH="`brew --prefix`/Cellar/cowsay/$version/share/cowsay/cows"
     ls -1 $COWPATH |shuf -n 1
     # case $(($RANDOM%6)) in
     # 	0) echo "tux";;
