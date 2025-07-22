@@ -16,7 +16,14 @@ alacritty_conf_file=$(readlink -f $alacritty_conf_dir/alacritty.toml)
 change_theme(){
     default_theme=${1:-noctis-lux}
     is_night && default_theme=${1:-night_owl}
-    sed  "s|~/.config/alacritty/themes/themes/[^.]*\.toml|~/.config/alacritty/themes/themes/${default_theme}.toml|g" $alacritty_conf_file -i
+
+    if [[ "$(uname)" == "Darwin" ]]; then
+        # firt: brew install gnu-sed
+        SED=/opt/homebrew/Cellar/gnu-sed/4.9/bin/gsed
+    else
+        SED=sed
+    fi
+    $SED "s|~/.config/alacritty/themes/themes/[^.]*\.toml|~/.config/alacritty/themes/themes/${default_theme}.toml|g" -i "$alacritty_conf_file"
 }
 
 is_night(){
@@ -61,15 +68,7 @@ remove_themes(){
     rm -irf $alacritty_themes_dir
 }
 
-alacritty_init_conf(){
-    echo '
-    import = [
-        "~/.config/alacritty/themes/themes/dracula.toml"
-    ]'  >  $alacritty_conf_file
-}
-
 alacritty_do_it_all(){
-   alacritty_init_conf
    fetch_themes
    change_theme
 }
