@@ -11,15 +11,6 @@ alias emcas='emacs'
 alias emcsa='emacs'
 alias meacs='emacs'
 
-## little bit of robery helps :D
-## thanks: https://github.com/karan/dotfiles/blob/master/.bashrc
-##
-# Increase history size. Allow 32³ entries; the default is 500.
-export HISTSIZE='32768';
-export HISTFILESIZE="${HISTSIZE}";
-# Omit duplicates and commands that begin with a space from history.
-export HISTCONTROL='ignoreboth';
-
 # Prefer US English and use UTF-8.
 export LANG='en_US.UTF-8';
 export LC_ALL='en_US.UTF-8';

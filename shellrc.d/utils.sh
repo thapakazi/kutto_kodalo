@@ -104,11 +104,11 @@ alias jcat='cat $1 |python -m json.tool'
 alias duh='du -sh *|sort -h'
 
 # some temporary buffering in hdd
-alias youtube.dl='youtube-dl -t --console-title'
-alias youtube.dlf='youtube-dl -t --console-title -f'
-alias youtube.dlF='youtube-dl -F'
+alias youtube.dl='yt-dlp -t --console-title'
+alias youtube.dlf='yt-dlp -t --console-title -f'
+alias youtube.dlF='yt-dlp -F'
 youtube.dlmp3(){
-    youtube-dl --extract-audio --audio-format mp3 "$@"
+    yt-dlp --extract-audio --audio-format mp3 "$@"
 }
 
 # some crawling stuffs
@@ -308,4 +308,16 @@ letsencrypt_gen(){
             --preferred-challenges dns \
             --agree-tos \
             -m $EMAIL -d $DOMAIN
+}
+
+### source .env file
+source_envfile(){
+    local file=${1:-'.env'}
+    export `sed '/^#.*/d' $file|xargs`
+}
+
+## unset env
+unset_envfile(){
+    local file=${1:-'.env'}
+    unset `sed '/^#.*/d' $file|awk -F= '{print $1}'|xargs`
 }
