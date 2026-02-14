@@ -1,22 +1,22 @@
 # --- Internal Helpers ---
 _mc_get_size() {
-    local path=$1
-    if [[ -e "$path" ]]; then
+    local _path=$@
+    if [[ -e "$_path" ]]; then
         # Reliable size parsing for Zsh (index 1) and Bash (index 0)
-        local du_output=($(du -sh "$path" 2>/dev/null))
-        if [ -n "$ZSH_VERSION" ]; then echo "${du_output[1]}"; else echo "${du_output[0]}"; fi
+        local du_output=($(du -sh "$_path" 2>/dev/null))
+        echo $du_output | awk '{printf "%s", $1}'
     else
         echo "0B"
     fi
 }
 
 _mc_report_del() {
-    local path=$1
-    if [[ -e "$path" ]]; then
-        local size=$(_mc_get_size "$path")
-        local display_path="${path#$HOME/}"
+    local _path=$1
+    if [[ -e "$_path" ]]; then
+        local size=$(_mc_get_size "$_path")
+        local display_path="${_path#$HOME/}"
         printf "  \033[0;90m[-] Removing %-40s (%s)...\033[0m\n" "$display_path" "$size"
-        rm -rf "$path" 2>/dev/null
+        rm -rf "$_path" 2>/dev/null
     fi
 }
 
@@ -86,6 +86,16 @@ mc-ai() {
         hf cache scan -vvv
         hf cache delete --disable-tui
     fi
+
+    # Target the heavy Claude VM
+    #$HOME/Library/Application Support/Claude/vm_bundles/claudevm.bundle/rootfs.img
+    claudevm_bundle="$HOME/Library/Application Support/Claude/vm_bundles/claudevm.bundle"
+    if [[ -f "$claudevm_bundle" ]]; then
+        local cvm_size=$(_mc_get_size "$claudevm_bundle")
+        echo -e "  \033[0;90m[-] Removing Claude VM Bundle ($cvm_size)...\033[0m"
+        rm -rf "$claudevm_bundle"
+    fi
+
     echo -e "  ✅ AI Phase Complete\n"
 }
 
