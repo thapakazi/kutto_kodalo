@@ -104,8 +104,8 @@ alias jcat='cat $1 |python -m json.tool'
 alias duh='du -sh *|sort -h'
 
 # some temporary buffering in hdd
-alias youtube.dl='yt-dlp -t --console-title'
-alias youtube.dlf='yt-dlp -t --console-title -f'
+alias youtube.dl='yt-dlp'
+alias youtube.dlf='yt-dlp --console-title -f'
 alias youtube.dlF='yt-dlp -F'
 youtube.dlmp3(){
     yt-dlp --extract-audio --audio-format mp3 "$@"
@@ -320,4 +320,14 @@ source_envfile(){
 unset_envfile(){
     local file=${1:-'.env'}
     unset `sed '/^#.*/d' $file|awk -F= '{print $1}'|xargs`
+}
+
+
+## du
+dushd(){
+    du -sh ${@:-'.*'} | sort -h -k1
+}
+
+dush(){
+    dushd *
 }
