@@ -12,6 +12,7 @@
  *                               -> src/data/modules.json                 (landing page grid)
  *   ../docs/reference/<mod>.md  -> src/content/docs/reference/<mod>.md
  *   ../docs/CONVENTIONS.md      -> src/content/docs/conventions.md
+ *   ../docs/DEVELOPING.md      -> src/content/docs/developing.md
  *   ../docs/functions.json      -> src/data/functions.json               (function browser)
  *
  * Node builtins only — no dependencies.
@@ -232,8 +233,29 @@ function transformConventions(raw) {
 
     const note =
         `:::tip[Hand-written]\n` +
-        `This is the only page in the documentation that is *not* generated. ` +
+        `One of the two pages here that is *not* generated. ` +
         `Source: [\`docs/CONVENTIONS.md\`](${blobUrl('docs/CONVENTIONS.md')}).\n:::\n\n`;
+
+    return `${frontmatter}\n${note}${md}\n`;
+}
+
+// docs/DEVELOPING.md -> src/content/docs/developing.md
+function transformDeveloping(raw) {
+    const md = rewriteDocLinks(stripBanner(raw))
+        .replace(/^#\s+Developing\s*\n+/, '')
+        .trimStart();
+    const frontmatter = [
+        '---',
+        'title: Developing',
+        'description: "Adding a module, how the docs are generated, machine-local config, and what CI enforces."',
+        '---',
+        '',
+    ].join('\n');
+
+    const note =
+        `:::tip[Hand-written]\n` +
+        `One of the two pages here that is *not* generated. ` +
+        `Source: [\`docs/DEVELOPING.md\`](${blobUrl('docs/DEVELOPING.md')}).\n:::\n\n`;
 
     return `${frontmatter}\n${note}${md}\n`;
 }
@@ -258,6 +280,9 @@ async function main() {
 
     const conventionsRaw = await readFile(path.join(DOCS_DIR, 'CONVENTIONS.md'), 'utf8');
     await writeFile(path.join(CONTENT_DIR, 'conventions.md'), transformConventions(conventionsRaw));
+
+    const developingRaw = await readFile(path.join(DOCS_DIR, 'DEVELOPING.md'), 'utf8');
+    await writeFile(path.join(CONTENT_DIR, 'developing.md'), transformDeveloping(developingRaw));
 
     const referenceDir = path.join(DOCS_DIR, 'reference');
     const files = (await readdir(referenceDir)).filter((f) => f.endsWith('.md')).sort();
