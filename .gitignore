@@ -26,6 +26,15 @@ shellrc.d/experimental*
 *.bak_*
 .zcompdump*
 
+# The Astro docs site in site/. Its source IS committed; everything below is
+# build output or vendored deps. site/src/content/docs/ is DERIVED from docs/ by
+# the site's prebuild step — edit docs/ (or the doc blocks it comes from), never
+# the copy.
+site/node_modules/
+site/dist/
+site/.astro/
+site/src/content/docs/
+
 # ------------------------------------------------------------ os + editors --
 .DS_Store
 **/.DS_Store

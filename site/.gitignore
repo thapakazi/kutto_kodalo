@@ -1,0 +1,13 @@
+# Build output and Astro's caches.
+dist/
+.astro/
+node_modules/
+
+# DERIVED CONTENT — written by scripts/sync-docs.mjs from ../docs/ on every
+# `npm run sync` (which `dev` and `build` run first). Never hand-edit, never
+# commit: the source of truth is the doc block above each shell function.
+src/content/docs/
+src/data/
+
+.DS_Store
+*.log

@@ -7,6 +7,9 @@ A shell configuration for bash and zsh, on macOS and Linux, where **every
 function documents itself** and the documentation is generated from the source.
 Nothing here is hand-maintained prose that can drift out of date.
 
+- **[thapakazi.github.io/kutto_kodalo](https://thapakazi.github.io/kutto_kodalo/)**
+  — the same docs, searchable, in a browser. Generated and deployed on every
+  push to the default branch.
 - [`docs/INDEX.md`](docs/INDEX.md) — every function, one line each. Generated.
 - [`docs/functions.json`](docs/functions.json) — the same thing for machines and
   AI agents. Generated.
@@ -169,6 +172,31 @@ actually broken.
 just check     # what CI runs
 just clean     # drop the runtime cache and editor droppings
 just fmt       # shfmt, 4-space indent
+```
+
+## CI
+
+[`.github/workflows/check.yml`](.github/workflows/check.yml) runs on every pull
+request and on pushes to the default branch, on **`ubuntu-latest` and
+`macos-latest` both** — cross-platform correctness is the entire point of this
+repo, so a change that only works on one of them fails. It enforces four things:
+
+| Check | Fails when |
+|-------|-----------|
+| `shellcheck -s bash` over `shellrc`, `lib/`, `modules/`, `bin/` | a new warning appears (the dual bash+zsh files carry a documented exclusion list) |
+| `bin/shellrc-doc --check` | a doc block changed and `just docs` was not run |
+| sourcing `shellrc` under `bash -c` and `zsh -c` | either exits non-zero or writes **anything** to stderr |
+| `bin/doctor`, after `bin/bootstrap --no-install` | the config installs but the resulting shell state is wrong |
+
+[`.github/workflows/pages.yml`](.github/workflows/pages.yml) regenerates the
+docs with `bin/shellrc-doc`, builds the Astro site in `site/`, and publishes it
+to GitHub Pages — so the published docs are derived from the doc blocks in the
+shell source on every push, never hand-written and never stale.
+
+```sh
+just site-dev      # the docs site locally, hot reload
+just site-build    # regenerate docs + build site/dist, as CI does
+just site-preview  # serve the built site/dist
 ```
 
 ## Requirements

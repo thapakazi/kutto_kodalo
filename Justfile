@@ -15,6 +15,7 @@ SHELLRC_LINK := HOME_DIR + "/.shellrc"
 
 BIN  := REPO + "/bin"
 DOCS := REPO + "/docs"
+SITE := REPO + "/site"
 
 # List every recipe (this is what `just` with no arguments runs).
 default:
@@ -35,6 +36,40 @@ docs:
 # Report the health of this machine's installation.
 doctor:
     "{{ BIN }}/doctor"
+
+# ---------------------------------------------------------------- docs site --
+#
+# site/ is an Astro app that renders docs/ into the published documentation at
+# https://thapakazi.github.io/kutto_kodalo/. Its own prebuild step re-derives
+# site content from docs/, so `just docs` first is only needed when you want the
+# doc blocks re-scanned from the shell source.
+#
+# Deliberately NOT folded into `just check`: that recipe is the CI gate and must
+# stay fast and node-free (bin/bootstrap depends on it being so). The site is
+# built by .github/workflows/pages.yml, checked by .github/workflows/check.yml
+# only insofar as docs/ must be current.
+
+# Run the docs site locally with hot reload.
+site-dev:
+    cd "{{ SITE }}" && npm install && npm run dev
+
+# Build the docs site into site/dist, exactly as CI does.
+site-build:
+    "{{ BIN }}/shellrc-doc"
+    cd "{{ SITE }}" && npm ci && npm run build
+
+# Serve the built site/dist locally, to check it before pushing.
+site-preview:
+    cd "{{ SITE }}" && npm run preview
+
+# Drop the docs site's build output and dependencies.
+site-clean:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    for d in dist .astro node_modules src/content/docs; do
+        target="{{ SITE }}/$d"
+        if [ -e "$target" ]; then rm -rf "$target"; echo "removed site/$d"; fi
+    done
 
 # Everything CI runs: lint, docs freshness, and a clean load in bash and zsh.
 check:
@@ -102,3 +137,4 @@ paths:
     @echo "shellrc      {{ SHELLRC_SRC }}"
     @echo "symlink      {{ SHELLRC_LINK }}"
     @echo "docs         {{ DOCS }}"
+    @echo "site         {{ SITE }}"

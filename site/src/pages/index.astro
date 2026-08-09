@@ -1,0 +1,194 @@
+---
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+import Prompt from '../components/Prompt.astro';
+import meta from '../data/modules.json';
+import { withBase } from '../lib/url';
+
+const { totals, modules, repo } = meta;
+const repoUrl = `https://github.com/${repo}`;
+---
+
+<StarlightPage
+    frontmatter={{
+        title: 'kutto_kodalo',
+        description: `A self-documenting bash and zsh configuration: ${totals.functions} functions across ${totals.modules} modules, all documented from their own source.`,
+        template: 'splash',
+        tableOfContents: false,
+    }}
+    hasSidebar={false}
+>
+    <p class="lede">
+        A shell configuration for bash and zsh, on macOS and Linux, where every function documents
+        itself. <strong>{totals.functions} functions across {totals.modules} modules</strong> — the
+        reference pages, the index and the machine-readable
+        <code>functions.json</code> are all generated from the <code>#&nbsp;@</code> doc blocks above
+        the functions themselves. Nothing here is hand-maintained prose that can drift out of date.
+    </p>
+
+    <Prompt />
+
+    <h2 class="kk-h">Install</h2>
+    <pre class="kk-install"><code>git clone {repoUrl} ~/repos/kutto_kodalo
+cd ~/repos/kutto_kodalo && ./bin/bootstrap</code></pre>
+    <p class="kk-note">
+        One symlink, one command. <code>--dry-run</code> prints every action and changes nothing.
+    </p>
+
+    <h2 class="kk-h">Where to go</h2>
+    <div class="kk-cards">
+        <a class="kk-card" href={withBase('functions/')}>
+            <span class="kk-card-title">Function browser →</span>
+            <span class="kk-card-body"
+                >All {totals.functions} functions in one filterable list. Type to search names,
+                usage and descriptions; narrow by module, OS or danger.</span
+            >
+        </a>
+        <a class="kk-card" href={withBase('reference/')}>
+            <span class="kk-card-title">Module reference →</span>
+            <span class="kk-card-body"
+                >One page per module with full usage, examples, requirements and a link to the exact
+                source line.</span
+            >
+        </a>
+    </div>
+
+    <h2 class="kk-h">Modules</h2>
+    <ul class="kk-modules" data-pagefind-ignore>
+        {
+            modules.map((mod) => (
+                <li>
+                    <a href={withBase(`reference/${mod.name}/`)}>
+                        <code>{mod.name}</code>
+                    </a>
+                    <span class="kk-count">{mod.count}</span>
+                    <span class="kk-summary">{mod.summary}</span>
+                </li>
+            ))
+        }
+    </ul>
+
+    <p class="kk-note">
+        Searching from the shell instead? <code>shelp ssm</code> greps the same data with
+        <code>jq</code>, or awk when <code>jq</code> is missing. See
+        <a href={withBase('conventions/')}>Conventions</a> for the rules every module follows.
+    </p>
+</StarlightPage>
+
+<style>
+    .lede {
+        font-size: 1.0625rem;
+        line-height: 1.7;
+        max-width: 46rem;
+        margin-bottom: 1.75rem;
+    }
+
+    .kk-h {
+        font-size: 0.75rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--kk-fg-muted);
+        border-bottom: 1px solid var(--sl-color-hairline);
+        padding-bottom: 0.4rem;
+        margin: 2.75rem 0 1rem;
+        font-weight: 500;
+    }
+
+    .kk-install {
+        font-family: var(--kk-mono);
+        font-size: 0.8125rem;
+        line-height: 1.7;
+        background: var(--kk-code-bg);
+        border: 1px solid var(--sl-color-hairline);
+        border-radius: 2px;
+        padding: 0.9rem 1rem;
+        overflow-x: auto;
+    }
+
+    .kk-note {
+        font-size: 0.875rem;
+        color: var(--kk-fg-muted);
+        margin-top: 0.75rem;
+    }
+
+    .kk-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+        gap: 1rem;
+    }
+
+    .kk-card {
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+        padding: 1rem;
+        border: 1px solid var(--sl-color-hairline-light);
+        border-radius: 2px;
+        text-decoration: none;
+        color: var(--sl-color-text);
+    }
+
+    .kk-card:hover,
+    .kk-card:focus-visible {
+        border-color: var(--kk-cyan);
+    }
+
+    .kk-card-title {
+        font-family: var(--kk-mono);
+        font-size: 0.9375rem;
+        color: var(--kk-cyan);
+    }
+
+    .kk-card-body {
+        font-size: 0.875rem;
+        line-height: 1.6;
+        color: var(--kk-fg-muted);
+    }
+
+    .kk-modules {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: grid;
+        gap: 0.1rem;
+    }
+
+    .kk-modules li {
+        display: grid;
+        grid-template-columns: 9rem 2.5rem 1fr;
+        align-items: baseline;
+        gap: 0.5rem;
+        padding: 0.3rem 0;
+        border-bottom: 1px solid var(--sl-color-hairline);
+        font-size: 0.875rem;
+    }
+
+    .kk-modules a {
+        text-decoration: none;
+    }
+
+    .kk-modules code {
+        font-family: var(--kk-mono);
+        font-size: 0.875rem;
+    }
+
+    .kk-count {
+        font-family: var(--kk-mono);
+        font-size: 0.75rem;
+        color: var(--kk-fg-muted);
+        text-align: right;
+    }
+
+    .kk-summary {
+        color: var(--kk-fg-muted);
+        line-height: 1.5;
+    }
+
+    @media (max-width: 40rem) {
+        .kk-modules li {
+            grid-template-columns: 1fr auto;
+        }
+        .kk-summary {
+            grid-column: 1 / -1;
+        }
+    }
+</style>

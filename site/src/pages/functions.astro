@@ -1,0 +1,526 @@
+---
+import StarlightPage from '@astrojs/starlight/components/StarlightPage.astro';
+import functions from '../data/functions.json';
+import meta from '../data/modules.json';
+import { withBase, sourceUrl } from '../lib/url';
+
+/**
+ * The function browser.
+ *
+ * Everything is rendered at build time from docs/functions.json (copied into
+ * src/data/ by scripts/sync-docs.mjs). The client-side script only shows and
+ * hides rows that are already in the document — no framework, no fetch, no
+ * runtime JSON parse, and the page still works with JavaScript disabled: you
+ * get the full, unfiltered list.
+ */
+
+const { repo, branch } = meta;
+
+type Fn = {
+    name: string;
+    module: string;
+    file: string;
+    line: number;
+    describe: string;
+    usage: string;
+    examples: string[];
+    requires: string[];
+    os: string;
+    danger: string;
+    see: string[];
+    private: boolean;
+};
+
+const all = (functions as Fn[]).filter((fn) => !fn.private);
+const rows = [...all].sort((a, b) => a.name.localeCompare(b.name));
+
+const moduleNames = [...new Set(rows.map((fn) => fn.module))].sort((a, b) => a.localeCompare(b));
+const moduleCounts = new Map<string, number>();
+for (const fn of rows) moduleCounts.set(fn.module, (moduleCounts.get(fn.module) ?? 0) + 1);
+
+const osOptions = [
+    { value: 'any', label: 'any' },
+    { value: 'darwin', label: 'darwin' },
+    { value: 'linux', label: 'linux' },
+].filter((opt) => rows.some((fn) => (fn.os || 'any') === opt.value));
+
+const dangerCount = rows.filter((fn) => fn.danger).length;
+
+/** What the search box matches against. */
+const haystack = (fn: Fn) =>
+    [fn.name, fn.usage, fn.describe, fn.module, ...(fn.requires ?? [])]
+        .join(' ')
+        .toLowerCase();
+
+const osLabel = (os: string) =>
+    os === 'darwin' ? 'macOS only' : os === 'linux' ? 'Linux only' : 'any';
+---
+
+<StarlightPage
+    frontmatter={{
+        title: 'Function browser',
+        description: `Search and filter all ${rows.length} kutto_kodalo shell functions by name, usage, description, module, OS and danger.`,
+        tableOfContents: false,
+    }}
+>
+    <p>
+        Every function in the configuration, generated from the doc blocks in <code>lib/</code> and
+        <code>modules/</code>. Filtering happens in the page — nothing is fetched. Press
+        <kbd>/</kbd> to jump to the search box.
+    </p>
+
+    <div class="fx" data-pagefind-ignore>
+        <div class="fx-search">
+            <label class="sr-only" for="fx-q">Search functions</label>
+            <input
+                id="fx-q"
+                type="search"
+                autocomplete="off"
+                spellcheck="false"
+                placeholder="filter by name, usage or description…"
+            />
+            <p class="fx-count" aria-live="polite">
+                <span id="fx-shown">{rows.length}</span> of {rows.length}
+            </p>
+        </div>
+
+        <div class="fx-filters">
+            <fieldset class="fx-group">
+                <legend>os</legend>
+                {
+                    osOptions.map((opt) => (
+                        <button
+                            type="button"
+                            class="fx-chip"
+                            data-filter="os"
+                            data-value={opt.value}
+                            aria-pressed="false"
+                        >
+                            {opt.label}
+                        </button>
+                    ))
+                }
+                {
+                    dangerCount > 0 && (
+                        <button
+                            type="button"
+                            class="fx-chip fx-chip-danger"
+                            data-filter="danger"
+                            data-value="1"
+                            aria-pressed="false"
+                        >
+                            ⚠ danger ({dangerCount})
+                        </button>
+                    )
+                }
+                <button type="button" class="fx-chip fx-reset" data-filter="reset">clear</button>
+            </fieldset>
+
+            <fieldset class="fx-group fx-modules">
+                <legend>module</legend>
+                {
+                    moduleNames.map((name) => (
+                        <button
+                            type="button"
+                            class="fx-chip"
+                            data-filter="module"
+                            data-value={name}
+                            aria-pressed="false"
+                        >
+                            {name} <span class="fx-chip-n">{moduleCounts.get(name)}</span>
+                        </button>
+                    ))
+                }
+            </fieldset>
+        </div>
+
+        <p class="fx-empty" id="fx-empty" hidden>
+            Nothing matches. <button type="button" class="fx-link" data-filter="reset"
+                >Clear the filters</button
+            >.
+        </p>
+
+        <ul class="fx-list" id="fx-list">
+            {
+                rows.map((fn) => (
+                    <li
+                        class="fx-row"
+                        data-module={fn.module}
+                        data-os={fn.os || 'any'}
+                        data-danger={fn.danger ? '1' : '0'}
+                        data-hay={haystack(fn)}
+                    >
+                        <div class="fx-line">
+                            <a class="fx-name" href={withBase(`reference/${fn.module}/#${fn.name}`)}>
+                                {fn.name}
+                            </a>
+                            <span class="fx-tags">
+                                <a
+                                    class="kk-badge"
+                                    data-kind="module"
+                                    href={withBase(`reference/${fn.module}/`)}
+                                >
+                                    {fn.module}
+                                </a>
+                                {(fn.os || 'any') !== 'any' && (
+                                    <span class="kk-badge" data-os={fn.os}>
+                                        {osLabel(fn.os)}
+                                    </span>
+                                )}
+                                {fn.danger && (
+                                    <span class="kk-badge" data-kind="danger" title={fn.danger}>
+                                        ⚠ danger
+                                    </span>
+                                )}
+                                <a
+                                    class="kk-badge fx-src"
+                                    href={sourceUrl(repo, branch, fn.file, fn.line)}
+                                    rel="noopener"
+                                >
+                                    {fn.file}:{fn.line}
+                                </a>
+                            </span>
+                        </div>
+                        {fn.usage && <code class="fx-usage">{fn.usage}</code>}
+                        <p class="fx-desc">{fn.describe || 'Undocumented.'}</p>
+                    </li>
+                ))
+            }
+        </ul>
+    </div>
+</StarlightPage>
+
+<script>
+    // Vanilla, no framework. Rows are already in the DOM; we only toggle them.
+    const root = document.querySelector<HTMLElement>('.fx');
+    if (root) {
+        const input = root.querySelector<HTMLInputElement>('#fx-q')!;
+        const shown = root.querySelector<HTMLElement>('#fx-shown')!;
+        const empty = root.querySelector<HTMLElement>('#fx-empty')!;
+        const rows = [...root.querySelectorAll<HTMLElement>('.fx-row')].map((el) => ({
+            el,
+            hay: el.dataset.hay ?? '',
+            module: el.dataset.module ?? '',
+            os: el.dataset.os ?? 'any',
+            danger: el.dataset.danger === '1',
+        }));
+
+        const state = {
+            q: '',
+            modules: new Set<string>(),
+            os: new Set<string>(),
+            danger: false,
+        };
+
+        function apply() {
+            const terms = state.q.toLowerCase().split(/\s+/).filter(Boolean);
+            let count = 0;
+            for (const row of rows) {
+                const ok =
+                    (state.modules.size === 0 || state.modules.has(row.module)) &&
+                    (state.os.size === 0 || state.os.has(row.os)) &&
+                    (!state.danger || row.danger) &&
+                    terms.every((t) => row.hay.includes(t));
+                row.el.hidden = !ok;
+                if (ok) count++;
+            }
+            shown.textContent = String(count);
+            empty.hidden = count !== 0;
+            syncUrl();
+        }
+
+        function syncUrl() {
+            const params = new URLSearchParams();
+            if (state.q) params.set('q', state.q);
+            if (state.modules.size) params.set('module', [...state.modules].join(','));
+            if (state.os.size) params.set('os', [...state.os].join(','));
+            if (state.danger) params.set('danger', '1');
+            const query = params.toString();
+            history.replaceState(null, '', query ? `?${query}` : location.pathname);
+        }
+
+        function paint() {
+            for (const chip of root!.querySelectorAll<HTMLButtonElement>('.fx-chip')) {
+                const { filter, value } = chip.dataset;
+                if (filter === 'module') {
+                    chip.setAttribute('aria-pressed', String(state.modules.has(value!)));
+                } else if (filter === 'os') {
+                    chip.setAttribute('aria-pressed', String(state.os.has(value!)));
+                } else if (filter === 'danger') {
+                    chip.setAttribute('aria-pressed', String(state.danger));
+                }
+            }
+        }
+
+        root.addEventListener('click', (event) => {
+            const chip = (event.target as HTMLElement).closest<HTMLElement>('[data-filter]');
+            if (!chip) return;
+            const { filter, value } = chip.dataset;
+            if (filter === 'module') toggle(state.modules, value!);
+            else if (filter === 'os') toggle(state.os, value!);
+            else if (filter === 'danger') state.danger = !state.danger;
+            else if (filter === 'reset') {
+                state.modules.clear();
+                state.os.clear();
+                state.danger = false;
+                state.q = '';
+                input.value = '';
+            } else return;
+            paint();
+            apply();
+        });
+
+        function toggle(set: Set<string>, value: string) {
+            if (set.has(value)) set.delete(value);
+            else set.add(value);
+        }
+
+        input.addEventListener('input', () => {
+            state.q = input.value;
+            apply();
+        });
+
+        // `/` focuses the filter, Escape clears it — the shell habits.
+        document.addEventListener('keydown', (event) => {
+            const target = event.target as HTMLElement | null;
+            const typing =
+                target && /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName || '');
+            if (event.key === '/' && !typing && !event.metaKey && !event.ctrlKey) {
+                event.preventDefault();
+                input.focus();
+                input.select();
+            } else if (event.key === 'Escape' && target === input) {
+                state.q = '';
+                input.value = '';
+                apply();
+            }
+        });
+
+        // Restore state from the query string so a filtered view is shareable.
+        const params = new URLSearchParams(location.search);
+        const q = params.get('q');
+        if (q) {
+            state.q = q;
+            input.value = q;
+        }
+        for (const name of params.get('module')?.split(',').filter(Boolean) ?? [])
+            state.modules.add(name);
+        for (const name of params.get('os')?.split(',').filter(Boolean) ?? []) state.os.add(name);
+        if (params.get('danger') === '1') state.danger = true;
+        paint();
+        apply();
+    }
+</script>
+
+<style>
+    .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+    }
+
+    .fx {
+        margin-top: 1.5rem;
+    }
+
+    .fx-search {
+        display: flex;
+        align-items: baseline;
+        gap: 1rem;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        background: var(--sl-color-bg);
+        padding: 0.5rem 0;
+    }
+
+    .fx-search input {
+        flex: 1;
+        font-family: var(--kk-mono);
+        font-size: 0.875rem;
+        color: var(--sl-color-text);
+        background: var(--kk-code-bg);
+        border: 1px solid var(--sl-color-hairline-light);
+        border-radius: 2px;
+        padding: 0.5rem 0.7rem;
+        min-width: 0;
+    }
+
+    .fx-search input:focus-visible {
+        outline: 2px solid var(--kk-cyan);
+        outline-offset: 1px;
+    }
+
+    .fx-count {
+        font-family: var(--kk-mono);
+        font-size: 0.8125rem;
+        color: var(--kk-fg-muted);
+        white-space: nowrap;
+        margin: 0;
+    }
+
+    .fx-filters {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        margin: 0.5rem 0 1.5rem;
+    }
+
+    .fx-group {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.3rem;
+        border: 0;
+        padding: 0;
+        margin: 0;
+    }
+
+    .fx-group legend {
+        float: left;
+        width: 4.5rem;
+        font-family: var(--kk-mono);
+        font-size: 0.6875rem;
+        letter-spacing: 0.08em;
+        color: var(--kk-fg-muted);
+        padding: 0.25rem 0 0;
+    }
+
+    .fx-modules {
+        max-height: 7.5rem;
+        overflow-y: auto;
+    }
+
+    .fx-chip {
+        font-family: var(--kk-mono);
+        font-size: 0.75rem;
+        line-height: 1.5;
+        color: var(--kk-fg-muted);
+        background: transparent;
+        border: 1px solid var(--sl-color-hairline-light);
+        border-radius: 2px;
+        padding: 0.1rem 0.45rem;
+        cursor: pointer;
+    }
+
+    .fx-chip:hover {
+        color: var(--sl-color-text);
+        border-color: var(--kk-cyan);
+    }
+
+    .fx-chip[aria-pressed='true'] {
+        color: var(--kk-bg);
+        background: var(--kk-cyan);
+        border-color: var(--kk-cyan);
+    }
+
+    .fx-chip-danger[aria-pressed='true'] {
+        background: var(--kk-red);
+        border-color: var(--kk-red);
+    }
+
+    .fx-chip-n {
+        opacity: 0.65;
+    }
+
+    .fx-reset {
+        border-style: dashed;
+    }
+
+    .fx-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .fx-row {
+        padding: 0.7rem 0;
+        border-top: 1px solid var(--sl-color-hairline);
+    }
+
+    .fx-row[hidden] {
+        display: none;
+    }
+
+    .fx-line {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        gap: 0.5rem;
+        justify-content: space-between;
+    }
+
+    .fx-name {
+        font-family: var(--kk-mono);
+        font-size: 0.9375rem;
+        color: var(--kk-cyan);
+        text-decoration: none;
+        word-break: break-all;
+    }
+
+    .fx-name:hover {
+        text-decoration: underline;
+    }
+
+    .fx-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.3rem;
+        align-items: baseline;
+    }
+
+    .fx-tags a {
+        text-decoration: none;
+    }
+
+    .fx-src {
+        color: var(--kk-fg-muted);
+    }
+
+    .fx-src:hover {
+        color: var(--kk-cyan);
+        border-color: var(--kk-cyan);
+    }
+
+    .fx-usage {
+        display: block;
+        font-family: var(--kk-mono);
+        font-size: 0.8125rem;
+        color: var(--sl-color-text);
+        margin-top: 0.3rem;
+        white-space: pre-wrap;
+        word-break: break-word;
+    }
+
+    .fx-desc {
+        font-size: 0.875rem;
+        line-height: 1.55;
+        color: var(--kk-fg-muted);
+        margin: 0.25rem 0 0;
+    }
+
+    .fx-empty {
+        font-size: 0.875rem;
+        color: var(--kk-fg-muted);
+    }
+
+    .fx-link {
+        background: none;
+        border: 0;
+        padding: 0;
+        color: var(--kk-cyan);
+        cursor: pointer;
+        font: inherit;
+        text-decoration: underline;
+    }
+
+    @media (max-width: 40rem) {
+        .fx-group legend {
+            float: none;
+            width: auto;
+        }
+    }
+</style>

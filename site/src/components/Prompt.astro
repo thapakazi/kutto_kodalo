@@ -1,0 +1,41 @@
+---
+/**
+ * The prompt this repo actually ships (modules/common/prompt.sh), rendered in
+ * its own colours:
+ *
+ *   red      ✗<rc>   non-zero exit status of the previous command
+ *   cyan     repo name and abbreviated path
+ *   magenta  branch
+ *   yellow   * dirty working tree
+ *   blue     aws:<profile>   (right prompt)
+ *   green    k8s:<context>   (right prompt)
+ */
+---
+
+<div
+    class="kk-prompt"
+    role="img"
+    aria-label="Two prompt lines. First: repo kutto_kodalo on branch revamp with unstaged changes, running shelp ssm, with AWS profile prod-admin and Kubernetes context staging on the right. Second: the same prompt after a command exited with status 1."
+>
+    <div class="kk-row">
+        <span
+            ><span class="kk-cyan">kutto_kodalo</span> <span class="kk-magenta">revamp</span><span
+                class="kk-yellow">*</span
+            >$ <span class="kk-dim">shelp ssm</span></span
+        >
+        <span
+            ><span class="kk-blue">aws:prod-admin</span> <span class="kk-green">k8s:staging</span
+            ></span
+        >
+    </div>
+    <div class="kk-row">
+        <span
+            ><span class="kk-red">✗1</span> <span class="kk-cyan">kutto_kodalo:m/c/prompt.sh</span>
+            <span class="kk-magenta">revamp</span><span class="kk-yellow">*</span>$ </span
+        >
+        <span
+            ><span class="kk-blue">aws:prod-admin</span> <span class="kk-green">k8s:staging</span
+            ></span
+        >
+    </div>
+</div>

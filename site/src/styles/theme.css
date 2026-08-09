@@ -1,0 +1,323 @@
+/*
+ * kutto_kodalo — terminal theme for Starlight.
+ *
+ * The palette is the one the repo's own zsh prompt uses (modules/common/prompt.sh):
+ *
+ *   cyan     repo name and path          -> links, accent, function names
+ *   magenta  git branch                  -> module tags
+ *   yellow   dirty working tree          -> warnings, "danger" marker
+ *   red      non-zero exit status        -> destructive
+ *   blue     AWS profile                 -> macOS badge / meta
+ *   green    kube context                -> Linux badge / success
+ *
+ * Everything here works through Starlight's documented custom properties. There
+ * is no `!important` in this file: if a rule is not taking effect, the right fix
+ * is a more specific Starlight token, not more force.
+ */
+
+:root {
+    --kk-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono',
+        monospace;
+
+    /* ------------------------------------------------------- dark (default) */
+    --kk-bg: hsl(210 20% 5%);
+    --kk-surface: hsl(212 18% 9%);
+    --kk-code-bg: hsl(212 20% 7%);
+    --kk-fg: hsl(210 16% 84%);
+    --kk-fg-strong: hsl(210 24% 95%);
+    --kk-fg-muted: hsl(211 11% 60%);
+    --kk-line: hsl(212 16% 16%);
+    --kk-line-strong: hsl(212 14% 24%);
+
+    --kk-cyan: hsl(186 68% 59%);
+    --kk-magenta: hsl(285 62% 73%);
+    --kk-yellow: hsl(41 76% 57%);
+    --kk-red: hsl(355 82% 70%);
+    --kk-blue: hsl(211 100% 71%);
+    --kk-green: hsl(107 58% 66%);
+
+    /* Starlight scale, remapped. gray-1 is the lightest in dark mode. */
+    --sl-color-white: var(--kk-fg-strong);
+    --sl-color-gray-1: hsl(210 20% 90%);
+    --sl-color-gray-2: var(--kk-fg);
+    --sl-color-gray-3: var(--kk-fg-muted);
+    --sl-color-gray-4: hsl(212 12% 40%);
+    --sl-color-gray-5: var(--kk-line-strong);
+    --sl-color-gray-6: var(--kk-surface);
+    --sl-color-gray-7: hsl(212 18% 11%);
+    --sl-color-black: var(--kk-bg);
+
+    --sl-color-accent-low: hsl(188 60% 14%);
+    --sl-color-accent: hsl(187 62% 44%);
+    --sl-color-accent-high: var(--kk-cyan);
+
+    --sl-color-text: var(--kk-fg);
+    --sl-color-text-accent: var(--kk-cyan);
+    --sl-color-text-invert: var(--kk-bg);
+    --sl-color-bg: var(--kk-bg);
+    --sl-color-bg-nav: var(--kk-bg);
+    --sl-color-bg-sidebar: var(--kk-bg);
+    --sl-color-bg-inline-code: hsl(212 18% 13%);
+    --sl-color-bg-accent: var(--kk-cyan);
+
+    --sl-color-hairline: var(--kk-line);
+    --sl-color-hairline-light: var(--kk-line);
+    --sl-color-hairline-shade: var(--kk-line);
+    --sl-color-backdrop-overlay: hsl(210 20% 4% / 0.72);
+
+    /* Asides, mapped onto the prompt's own signal colours. */
+    --sl-color-orange: var(--kk-yellow);
+    --sl-color-orange-low: hsl(41 40% 12%);
+    --sl-color-orange-high: hsl(41 80% 78%);
+    --sl-color-red: var(--kk-red);
+    --sl-color-red-low: hsl(355 40% 14%);
+    --sl-color-red-high: hsl(355 82% 82%);
+    --sl-color-green: var(--kk-green);
+    --sl-color-green-low: hsl(107 30% 12%);
+    --sl-color-green-high: hsl(107 55% 80%);
+    --sl-color-blue: var(--kk-blue);
+    --sl-color-blue-low: hsl(211 45% 15%);
+    --sl-color-blue-high: hsl(211 100% 84%);
+    --sl-color-purple: var(--kk-magenta);
+    --sl-color-purple-low: hsl(285 35% 16%);
+    --sl-color-purple-high: hsl(285 70% 85%);
+
+    /* Flat, quiet chrome — no lifted cards anywhere. */
+    --sl-shadow-sm: none;
+    --sl-shadow-md: none;
+    --sl-shadow-lg: none;
+
+    --sl-content-width: 48rem;
+    --sl-line-height: 1.7;
+    --sl-line-height-headings: 1.25;
+    --sl-text-h1: 1.9rem;
+    --sl-text-h2: 1.35rem;
+    --sl-text-h3: 1.1rem;
+}
+
+/* ------------------------------------------------------------------ light -- */
+:root[data-theme='light'] {
+    --kk-bg: hsl(45 30% 98%);
+    --kk-surface: hsl(45 22% 95%);
+    --kk-code-bg: hsl(45 24% 96%);
+    --kk-fg: hsl(213 18% 18%);
+    --kk-fg-strong: hsl(213 26% 10%);
+    --kk-fg-muted: hsl(213 9% 38%);
+    --kk-line: hsl(42 16% 87%);
+    --kk-line-strong: hsl(42 12% 76%);
+
+    --kk-cyan: hsl(187 82% 25%);
+    --kk-magenta: hsl(285 45% 40%);
+    --kk-yellow: hsl(35 95% 27%);
+    --kk-red: hsl(355 65% 41%);
+    --kk-blue: hsl(213 74% 38%);
+    --kk-green: hsl(122 45% 28%);
+
+    --sl-color-white: var(--kk-fg-strong);
+    --sl-color-gray-1: hsl(213 22% 14%);
+    --sl-color-gray-2: var(--kk-fg);
+    --sl-color-gray-3: var(--kk-fg-muted);
+    --sl-color-gray-4: hsl(213 8% 48%);
+    --sl-color-gray-5: var(--kk-line-strong);
+    --sl-color-gray-6: var(--kk-surface);
+    --sl-color-gray-7: hsl(45 26% 96%);
+    --sl-color-black: var(--kk-bg);
+
+    --sl-color-accent-low: hsl(187 40% 88%);
+    --sl-color-accent: hsl(187 82% 28%);
+    --sl-color-accent-high: var(--kk-cyan);
+
+    --sl-color-text: var(--kk-fg);
+    --sl-color-text-accent: var(--kk-cyan);
+    --sl-color-text-invert: hsl(0 0% 100%);
+    --sl-color-bg-inline-code: hsl(45 20% 92%);
+    --sl-color-bg-accent: var(--kk-cyan);
+
+    --sl-color-orange: var(--kk-yellow);
+    --sl-color-orange-low: hsl(40 60% 90%);
+    --sl-color-orange-high: hsl(35 95% 22%);
+    --sl-color-red: var(--kk-red);
+    --sl-color-red-low: hsl(355 60% 93%);
+    --sl-color-red-high: hsl(355 65% 33%);
+    --sl-color-green: var(--kk-green);
+    --sl-color-green-low: hsl(122 35% 90%);
+    --sl-color-green-high: hsl(122 50% 22%);
+    --sl-color-blue: var(--kk-blue);
+    --sl-color-blue-low: hsl(213 60% 92%);
+    --sl-color-blue-high: hsl(213 74% 30%);
+    --sl-color-purple: var(--kk-magenta);
+    --sl-color-purple-low: hsl(285 45% 93%);
+    --sl-color-purple-high: hsl(285 45% 33%);
+}
+
+/* --------------------------------------------------------------- typography */
+/* Prose stays in the system UI face — 240 one-line descriptions in monospace
+   is a wall. Everything structural is mono: it is what the tool looks like. */
+:root {
+    --sl-font-mono: var(--kk-mono);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.site-title,
+site-search button,
+.sidebar-content,
+starlight-toc,
+mobile-starlight-toc,
+.pagination-links a,
+.right-sidebar h2 {
+    font-family: var(--kk-mono);
+    letter-spacing: -0.01em;
+}
+
+.sl-markdown-content h2,
+.sl-markdown-content h3 {
+    font-weight: 600;
+}
+
+/* Function headings on the reference pages read as identifiers, not prose. */
+.sl-markdown-content h2 > code,
+.sl-markdown-content h3 > code {
+    background: none;
+    padding: 0;
+    color: var(--kk-cyan);
+    font-size: inherit;
+}
+
+.sl-markdown-content code:not(pre code) {
+    border: 1px solid var(--sl-color-hairline);
+    border-radius: 2px;
+    padding: 0.05em 0.32em;
+    font-size: 0.85em;
+}
+
+/* Horizontal rules separate every function on a reference page. Keep them
+   almost invisible so the page reads as one column, not 26 cards. */
+.sl-markdown-content hr {
+    border-color: var(--sl-color-hairline);
+    margin: 2.5rem 0;
+}
+
+.sl-markdown-content a {
+    text-underline-offset: 0.2em;
+    text-decoration-thickness: 1px;
+}
+
+/* ------------------------------------------------------------------ chrome */
+header.header {
+    border-bottom: 1px solid var(--sl-color-hairline);
+    background: var(--sl-color-bg);
+}
+
+.site-title {
+    font-weight: 600;
+    letter-spacing: 0;
+}
+
+.sidebar-pane {
+    border-inline-end: 1px solid var(--sl-color-hairline);
+    background: var(--sl-color-bg);
+}
+
+.sidebar-content a {
+    font-size: 0.8125rem;
+    border-radius: 2px;
+}
+
+.sidebar-content summary,
+.sidebar-content .large {
+    font-size: 0.75rem;
+    text-transform: lowercase;
+    letter-spacing: 0.06em;
+    color: var(--kk-fg-muted);
+}
+
+/* Starlight's search modal + buttons: square them off. */
+site-search button,
+dialog,
+.right-sidebar {
+    border-radius: 2px;
+}
+
+.right-sidebar {
+    border-inline-start: 1px solid var(--sl-color-hairline);
+}
+
+/* -------------------------------------------------------- shared utilities */
+/* Used by the landing page and the function browser. */
+.kk-prompt {
+    font-family: var(--kk-mono);
+    font-size: 0.8125rem;
+    line-height: 1.9;
+    background: var(--kk-code-bg);
+    border: 1px solid var(--sl-color-hairline);
+    border-radius: 2px;
+    padding: 0.9rem 1rem;
+    overflow-x: auto;
+    white-space: pre;
+    color: var(--kk-fg);
+}
+
+.kk-prompt .kk-row {
+    display: flex;
+    gap: 2rem;
+    justify-content: space-between;
+    align-items: baseline;
+    min-width: max-content;
+}
+
+.kk-cyan {
+    color: var(--kk-cyan);
+}
+.kk-magenta {
+    color: var(--kk-magenta);
+}
+.kk-yellow {
+    color: var(--kk-yellow);
+}
+.kk-red {
+    color: var(--kk-red);
+}
+.kk-blue {
+    color: var(--kk-blue);
+}
+.kk-green {
+    color: var(--kk-green);
+}
+.kk-dim {
+    color: var(--kk-fg-muted);
+}
+
+/* Small uppercase-free metadata pills. */
+.kk-badge {
+    display: inline-block;
+    font-family: var(--kk-mono);
+    font-size: 0.6875rem;
+    line-height: 1.5;
+    padding: 0.05rem 0.4rem;
+    border: 1px solid var(--sl-color-hairline-light);
+    border-radius: 2px;
+    color: var(--kk-fg-muted);
+    white-space: nowrap;
+}
+
+.kk-badge[data-os='darwin'] {
+    color: var(--kk-blue);
+    border-color: color-mix(in srgb, var(--kk-blue) 35%, transparent);
+}
+.kk-badge[data-os='linux'] {
+    color: var(--kk-green);
+    border-color: color-mix(in srgb, var(--kk-green) 35%, transparent);
+}
+.kk-badge[data-kind='module'] {
+    color: var(--kk-magenta);
+    border-color: color-mix(in srgb, var(--kk-magenta) 35%, transparent);
+}
+.kk-badge[data-kind='danger'] {
+    color: var(--kk-red);
+    border-color: color-mix(in srgb, var(--kk-red) 45%, transparent);
+}
