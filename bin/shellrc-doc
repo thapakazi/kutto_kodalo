@@ -163,6 +163,11 @@ FNR == 1 {
     line = $0
 
     # ---- comment line: accumulate doc block ----
+    # Opt out of the "indented, not documented" warning for deliberate cases
+    # such as lazy-loading stubs. Must be tested BEFORE the comment handler
+    # below, which consumes every comment line it sees.
+    if (line ~ /^[ \t]*#[ \t]*shellrc-doc:[ \t]*ignore/) { doc_ignore = 1; next }
+
     if (line ~ /^[ \t]*#/) {
         ctext = line
         sub(/^[ \t]*#/, "", ctext)
@@ -229,6 +234,30 @@ FNR == 1 {
         fname = substr(line, RSTART, RLENGTH)
         sub(/[ \t]*\(\)$/, "", fname)
         emit(fname, FNR)
+        next
+    }
+    # ---- an INDENTED definition is invisible to the matchers above ----
+    # The anchors are deliberate: only column-0 definitions are part of the
+    # public API. But silently dropping an indented one is how a function
+    # disappears from the docs, from shelp and from the site with no error at
+    # all -- e.g. after a reformat, or after being wrapped in an
+    # `if require ...; then` block. Warn loudly instead.
+    if (match(line, /^[ \t]+[A-Za-z_][A-Za-z0-9_]*[ \t]*\(\)/) ||
+        match(line, /^[ \t]+function[ \t]+[A-Za-z_][A-Za-z0-9_]*/)) {
+        iname = substr(line, RSTART, RLENGTH)
+        sub(/^[ \t]+/, "", iname); sub(/^function[ \t]+/, "", iname)
+        sub(/[ \t]*\(\)$/, "", iname)
+        # Only warn when a doc block is actually pending. That is the real
+        # failure -- someone documented a function and then indented it, so it
+        # vanishes silently. Without this guard the check also fires on awk
+        # functions inside embedded awk programs, and on nested shell helpers
+        # that were never meant to be public.
+        if (iname !~ /^_/ && !doc_ignore && have_block) {
+            printf("shellrc-doc: warning: %s:%d: `%s` is indented, so it is NOT documented" \
+                   " (definitions must start at column 0)\n", FILENAME, FNR, iname) > "/dev/stderr"
+        }
+        doc_ignore = 0
+        reset_block()
         next
     }
     if (match(line, /^function[ \t]+[A-Za-z_][A-Za-z0-9_]*/)) {

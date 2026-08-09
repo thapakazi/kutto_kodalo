@@ -76,15 +76,21 @@ check:
     #!/usr/bin/env bash
     set -uo pipefail
     fail=0
+    skipped=0
 
     echo "==> shellcheck"
     if command -v shellcheck >/dev/null 2>&1; then
         files=("{{ REPO }}"/lib/*.sh "{{ REPO }}"/shellrc)
         for f in "{{ REPO }}"/modules/*/*.sh; do [ -f "$f" ] && files+=("$f"); done
         for f in "{{ BIN }}"/*; do [ -f "$f" ] && files+=("$f"); done
-        shellcheck -s bash -e SC1090,SC1091,SC2034 "${files[@]}" || fail=1
+        # Must stay identical to .github/workflows/check.yml, or local and CI
+        # disagree about what counts as a finding.
+        shellcheck --shell=bash --severity=warning \
+            --exclude=SC1090,SC1091,SC2034,SC2296,SC2206,SC2154,SC2153,SC2088,SC2119,SC2120 \
+            "${files[@]}" || fail=1
     else
-        echo "   shellcheck not installed — skipped (just install adds it)"
+        echo "   shellcheck NOT INSTALLED — this check did not run"
+        skipped=1
     fi
 
     echo "==> generated docs are current"
@@ -107,8 +113,17 @@ check:
         fi
     done
 
-    [ "$fail" -eq 0 ] && echo "==> all checks passed"
-    exit "$fail"
+    if [ "$fail" -ne 0 ]; then
+        exit "$fail"
+    elif [ "${skipped:-0}" -ne 0 ]; then
+        # Never report success for a check that never ran — that is how an agent
+        # ends up reporting "all checks passed" having linted nothing.
+        echo "==> checks passed, but some were SKIPPED (see above)"
+        exit 0
+    else
+        echo "==> all checks passed"
+        exit 0
+    fi
 
 # Format every shell file with shfmt (4-space indent, matching the repo style).
 fmt:

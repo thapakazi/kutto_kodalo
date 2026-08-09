@@ -138,6 +138,7 @@ ruby_load_chruby() {
 # only when a ruby is actually selected. chruby.sh redefines this function.
 # Defined only when chruby is actually installed, so `has chruby` stays honest.
 if _lang_chruby_dir_static >/dev/null 2>&1; then
+    # shellrc-doc: ignore  (lazy-load stub, replaced on first call)
     chruby() {
         ruby_load_chruby || return 1
         chruby "$@"
@@ -200,6 +201,7 @@ node_load_nvm() {
 # Lazy stub. nvm.sh replaces this definition as soon as it is sourced. Defined
 # only when nvm is actually installed, so `has nvm` stays honest.
 if [ -s "$NVM_DIR/nvm.sh" ]; then
+    # shellrc-doc: ignore  (lazy-load stub, replaced on first call)
     nvm() {
         node_load_nvm || return 1
         nvm "$@"

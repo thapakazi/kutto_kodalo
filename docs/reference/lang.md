@@ -46,7 +46,7 @@ node_load_nvm && nvm use --lts
 
 **Requires** `nvm`
 
-**OS** any &nbsp;·&nbsp; **Source** [`modules/common/lang.sh:183`](../../modules/common/lang.sh#L183)
+**OS** any &nbsp;·&nbsp; **Source** [`modules/common/lang.sh:184`](../../modules/common/lang.sh#L184)
 
 ---
 
@@ -68,7 +68,7 @@ pip_generate_completion
 
 **Requires** (`pip` or `pip3`)
 
-**OS** any &nbsp;·&nbsp; **Source** [`modules/common/lang.sh:257`](../../modules/common/lang.sh#L257)
+**OS** any &nbsp;·&nbsp; **Source** [`modules/common/lang.sh:259`](../../modules/common/lang.sh#L259)
 
 ---
 
@@ -90,7 +90,7 @@ pip_install_user httpie
 
 **Requires** (`pip` or `pip3`)
 
-**OS** any &nbsp;·&nbsp; **Source** [`modules/common/lang.sh:223`](../../modules/common/lang.sh#L223)
+**OS** any &nbsp;·&nbsp; **Source** [`modules/common/lang.sh:225`](../../modules/common/lang.sh#L225)
 
 ---
 
@@ -134,7 +134,7 @@ ruby_remove_version <version-string>
 ruby_remove_version ruby-3.1.4
 ```
 
-**OS** any &nbsp;·&nbsp; **Source** [`modules/common/lang.sh:153`](../../modules/common/lang.sh#L153)
+**OS** any &nbsp;·&nbsp; **Source** [`modules/common/lang.sh:154`](../../modules/common/lang.sh#L154)
 
 ---
 
@@ -154,7 +154,7 @@ uv_ensure_path
 uv_ensure_path && uv tool install ruff
 ```
 
-**OS** any &nbsp;·&nbsp; **Source** [`modules/common/lang.sh:301`](../../modules/common/lang.sh#L301)
+**OS** any &nbsp;·&nbsp; **Source** [`modules/common/lang.sh:303`](../../modules/common/lang.sh#L303)
 
 ---
 

@@ -217,6 +217,21 @@ bash --noprofile --norc -c \
     "source '$REPO/shellrc' >/dev/null 2>&1; declare -F" 2>/dev/null |
     sed -e 's/^declare -f //' | LC_ALL=C sort -u > "$TMP/defined"
 
+# Everything the config puts into the command namespace, not just bash functions.
+# Aliases take precedence over binaries in an interactive shell, and zsh-only
+# modules never appear in bash's `declare -F` — both were invisible here before,
+# which let an alias shadowing a real binary pass as "no collisions".
+{
+    cat "$TMP/defined"
+    bash --noprofile --norc -c \
+        "source '$REPO/shellrc' >/dev/null 2>&1; alias" 2>/dev/null |
+        sed -e 's/^alias //' -e 's/=.*//'
+    if has zsh; then
+        zsh -f -c \
+            "source '$REPO/shellrc' >/dev/null 2>&1; print -l \${(k)functions} \${(k)aliases}" 2>/dev/null
+    fi
+} | LC_ALL=C sort -u > "$TMP/names"
+
 DB="$REPO/docs/functions.json"
 if [ ! -f "$DB" ]; then
     warn "docs/functions.json is missing — run 'just docs' for module-level reporting"
@@ -302,12 +317,12 @@ section "Name collisions"
 shadows=""
 while IFS= read -r fn; do
     case "$fn" in
-        _*) continue ;;
+        _* | "") continue ;;
     esac
     if bin="$(type -P "$fn" 2>/dev/null)" && [ -n "$bin" ]; then
         shadows="$shadows$fn -> $bin"$'\n'
     fi
-done < "$TMP/defined"
+done < "$TMP/names"
 
 if [ -z "$shadows" ]; then
     ok "no function shadows a binary on PATH"

@@ -209,17 +209,30 @@ shell_serve_http() {
 #
 # See the note in the port report: fzf ships its own, better, Ctrl-R widget, and
 # if you install fzf you should let it own this binding instead.
+# The definition stays at column 0 -- bin/shellrc-doc only sees column-0
+# definitions, and an indented one is dropped from the docs with no error.
+# Only the zle/bindkey registration is conditional.
+
+# @describe Search shell history through percol and put the result on the
+#           command line. zsh only, and only when percol is installed; fzf ships
+#           a better Ctrl-R widget and should own the binding if you have it.
+# @usage    shell_percol_history
+# @example  shell_percol_history
+# @requires percol
+# @os       any
+# @see      shelp_pick
+shell_percol_history() {
+    local reverse
+    if   has gtac; then reverse=gtac
+    elif has tac;  then reverse=tac
+    else                reverse="tail -r"
+    fi
+    BUFFER=$(fc -l -n 1 | eval "$reverse" | percol --query "$LBUFFER")
+    CURSOR=$#BUFFER
+    zle -R -c
+}
+
 if [ -n "$ZSH_VERSION" ] && has percol; then
-    shell_percol_history() {
-        local reverse
-        if   has gtac; then reverse=gtac
-        elif has tac;  then reverse=tac
-        else                reverse="tail -r"
-        fi
-        BUFFER=$(fc -l -n 1 | eval "$reverse" | percol --query "$LBUFFER")
-        CURSOR=$#BUFFER
-        zle -R -c
-    }
     zle -N shell_percol_history
     bindkey '^R' shell_percol_history
 fi

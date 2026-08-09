@@ -45,12 +45,23 @@ function_name() {
 | `@os`       | yes      | `any`, `darwin`, or `linux`.                               |
 | `@danger`   | no       | Present on anything destructive. Rendered as a warning.    |
 | `@see`      | no       | Related function names.                                    |
-| `@complete` | no       | Per-argument completion sources. See below.                |
+| `@complete` | no       | **Not implemented** — parsed by nothing. See below.        |
 
-## Completion blocks
+## Completion blocks — NOT IMPLEMENTED YET
 
-Completions are generated, not hand-written. `bin/shellrc-completions` reads
-`docs/functions.json` and emits both zsh and bash completers.
+> **Nothing in this section exists.** There is no `bin/shellrc-completions`, the
+> `@complete` tag is not parsed by `bin/shellrc-doc`, and it produces no key in
+> `docs/functions.json`. `completions/` currently holds two **hand-written** zsh
+> files (`_shelp`, `_aws_ssm_session`).
+>
+> Do not add `@complete` tags expecting them to do anything, and do not delete
+> the hand-written completions as stale generated output. This is the design
+> agreed for the generator when it is built; it is recorded here so the shape is
+> settled, not because it works today.
+
+The intended design: completions are generated, not hand-written.
+`bin/shellrc-completions` reads `docs/functions.json` and emits both zsh and
+bash completers.
 
 `@complete` maps each placeholder in `@usage` to a source of candidates:
 
@@ -91,6 +102,13 @@ Each module file starts with a header:
 
 Private helpers are prefixed `_` and are skipped by the generator.
 
+**The definition must start at column 0, and the doc block must be the comment
+lines immediately above it with no blank line between.** `bin/shellrc-doc`
+anchors its matcher at column 0, so an indented definition — one wrapped in an
+`if require ...; then` block, or moved by a reformat — is dropped from the docs
+entirely. It warns when a documented function is indented; annotate deliberate
+exceptions such as lazy-loading stubs with `# shellrc-doc: ignore`.
+
 ## Naming rules
 
 1. **`<namespace>_<verb>_<noun>`**, lowercase, underscores only. No dots, no
@@ -124,23 +142,38 @@ Private helpers are prefixed `_` and are skipped by the generator.
    think only bash will read. `local path=...` shadows zsh's `path` array, which
    is tied to `$PATH` — it empties `PATH` for the rest of that function and you
    get `cut: command not found` from a line that has nothing to do with PATH.
-   Avoid, at minimum:
+
+   The dangerous ones are **tied** to an uppercase environment variable, so
+   shadowing them silently rewrites it:
 
    ```
-   path  fpath  cdpath  manpath  module_path  mailpath  status  argv  options
-   commands  functions  aliases  signals  dirstack  psvar  prompt  watch
+   path  fpath  cdpath  manpath  mailpath  module_path  fignore
    ```
 
-   Use `target_path`, `rc`, `opts` instead. This is the single easiest way to
-   write a module that passes every bash test and then breaks only in zsh.
-7. OS-specific code belongs in `modules/darwin/` or `modules/linux/`, not behind
+   `status` is read-only and errors loudly instead. These are special but
+   harmless to shadow locally: `argv options commands functions aliases
+   dirstack psvar prompt watch`.
+
+   Use `target_path`, `rc`, `opts` instead. When unsure, check it:
+
+   ```sh
+   zsh -f -c 'print ${(t)NAME}'    # anything with "tied" or "special" is off limits
+   ```
+
+   Scope: this applies to `lib/` and `modules/`, which are sourced into zsh.
+   Scripts under `bin/` run with a bash shebang and are exempt.
+8. OS-specific code belongs in `modules/darwin/` or `modules/linux/`, not behind
    an `if` in `modules/common/`.
 
 ## Safety rules
 
-1. **Nothing executes at source time** except variable assignment and function
-   definition. No network calls, no file writes, no `git clone`, no subshells
-   that fork a process. Startup must stay under ~100ms.
+1. **Nothing executes at source time** except variable assignment, function
+   definition, and setting shell options. No network calls, no file writes, no
+   `git clone`, no subshells that fork a process. Startup must stay under 100ms.
+
+   Shell options (`setopt PROMPT_SUBST`, `bindkey`, `set -o vi`) ARE allowed —
+   that is configuration, not work, and `modules/common/prompt.sh` depends on
+   it. Forking a process is the line.
 2. Never `exit` in a sourced file — it kills the user's interactive shell.
    Use `return`.
 3. Destructive functions must call `confirm` and carry `@danger`.
