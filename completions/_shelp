@@ -1,0 +1,72 @@
+#compdef shelp
+# zsh completion for `shelp`, driven entirely by docs/functions.json.
+# Regenerate that file with `just docs` (bin/shellrc-doc) — this completion
+# needs no maintenance of its own.
+
+local _shelp_db="${SHELLRC_ROOT:-}/docs/functions.json"
+
+# name:description pairs, colons escaped so _describe does not split on them
+_shelp_pairs() {
+    [[ -r $_shelp_db ]] || return 1
+    LC_ALL=C awk '
+        /^  [{]/ { name = ""; desc = ""; priv = "false"; next }
+        /^    "name": / {
+            name = $0
+            sub(/^    "name": "/, "", name); sub(/",$/, "", name)
+            next
+        }
+        /^    "describe": / {
+            desc = $0
+            sub(/^    "describe": "/, "", desc); sub(/",$/, "", desc)
+            next
+        }
+        /^    "private": / { priv = ($0 ~ /true/) ? "true" : "false"; next }
+        /^  [}]/ {
+            if (priv == "true" || name == "") next
+            # first sentence only, keeps the completion list readable
+            if (match(desc, /\. /)) desc = substr(desc, 1, RSTART)
+            gsub(/\\"/, "\"", desc)
+            gsub(/\\\\/, "\\", desc)
+            gsub(/:/, "\\:", desc)
+            gsub(/:/, "\\:", name)
+            printf("%s:%s\n", name, desc)
+        }
+    ' "$_shelp_db"
+}
+
+_shelp_module_list() {
+    [[ -r $_shelp_db ]] || return 1
+    LC_ALL=C awk '
+        /^    "module": "/ {
+            m = $0; sub(/^    "module": "/, "", m); sub(/",$/, "", m)
+            if (!(m in seen)) { seen[m] = 1; print m }
+        }
+    ' "$_shelp_db"
+}
+
+local curcontext="$curcontext" state line ret=1
+typeset -A opt_args
+
+_arguments -C \
+    '(-h --help -m --module)'{-h,--help}'[show usage]' \
+    '(-h --help)'{-m,--module}'[list every function in one module]:module:->modules' \
+    '1:query:->queries' && ret=0
+
+case "$state" in
+    modules)
+        local -a mods
+        mods=(${(f)"$(_shelp_module_list)"})
+        _describe -t modules 'module' mods && ret=0
+        ;;
+    queries)
+        local -a funcs
+        funcs=(${(f)"$(_shelp_pairs)"})
+        if (( ${#funcs} )); then
+            _describe -t functions 'function' funcs && ret=0
+        else
+            _message 'search query (run `just docs` to build the index)'
+        fi
+        ;;
+esac
+
+return ret

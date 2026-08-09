@@ -1,18 +1,92 @@
+#!/usr/bin/env bash
+# shellrc — single entry point for bash/zsh.
 #
-# shellrc - common rc file for {zsh,bash}
-# config highly motivated from github.com/rhoit
-# 
-# cheesy fix
-if [[ -e /etc/profile.d/vte.sh ]]; then
-    source /etc/profile.d/vte.sh
-    chpwd_functions+=(__vte_osc7)
-    cd $PWD
+# Add to ~/.zshrc or ~/.bashrc:
+#     source ~/.shellrc
+#
+# Load order is explicit and dependency-safe:
+#   1. lib/       numbered, always loaded, defines the compat layer
+#   2. modules/common/   portable across every machine
+#   3. modules/<os>/     darwin or linux only
+#   4. modules/local/    machine-specific, gitignored, never committed
+#
+# Set SHELLRC_DEBUG=1 before sourcing to trace load time per file.
+
+# ---- resolve our own location (works in bash and zsh, follows symlinks) ----
+if [ -n "$ZSH_VERSION" ]; then
+    _shellrc_self="${(%):-%x}"
+elif [ -n "$BASH_VERSION" ]; then
+    _shellrc_self="${BASH_SOURCE[0]}"
+else
+    echo "shellrc: only bash and zsh are supported" >&2
+    return 1 2>/dev/null || exit 1
 fi
 
-export SHELLRCD="$HOME/.shellrc.d"
-if [[ -d $SHELLRCD ]]; then
-    for f in ~/.shellrc.d/* ~/.shellrc.d/*/*; do
-	source "$f"
+# follow symlinks without depending on GNU readlink -f
+while [ -L "$_shellrc_self" ]; do
+    _shellrc_link=$(command ls -ld -- "$_shellrc_self" | sed -e 's/.* -> //')
+    case "$_shellrc_link" in
+        /*) _shellrc_self="$_shellrc_link" ;;
+        *)  _shellrc_self="$(dirname -- "$_shellrc_self")/$_shellrc_link" ;;
+    esac
+done
+
+SHELLRC_ROOT="$(cd -- "$(dirname -- "$_shellrc_self")" && pwd -P)"
+export SHELLRC_ROOT
+unset _shellrc_self _shellrc_link
+
+# ---- generated/cache dir (never committed) ----
+export SHELLRC_CACHE="${SHELLRC_CACHE:-$HOME/.cache/shellrc}"
+[ -d "$SHELLRC_CACHE" ] || mkdir -p "$SHELLRC_CACHE"
+
+# ---- loader ----
+_shellrc_source_dir() {
+    local dir="$1" f start _had_nullglob=""
+    [ -d "$dir" ] || return 0
+    # zsh's default NOMATCH makes an unmatched glob a hard error that aborts the
+    # loop; an empty modules/local/ would otherwise break every fresh install.
+    # bash leaves the pattern literal and the -f test below skips it.
+    #
+    # Restore ONLY null_glob afterwards — never `setopt local_options`, which
+    # would also revert every option a sourced module sets (PROMPT_SUBST,
+    # `set -o vi`, the history options) the moment this function returns.
+    if [ -n "$ZSH_VERSION" ]; then
+        [[ -o null_glob ]] && _had_nullglob=1
+        setopt null_glob
+    fi
+    for f in "$dir"/*.sh; do
+        [ -f "$f" ] || continue          # unmatched glob or non-file
+        if [ -n "$SHELLRC_DEBUG" ]; then
+            start=$(date +%s%N 2>/dev/null || echo 0)
+            # shellcheck disable=SC1090
+            source "$f"
+            printf 'shellrc: %-44s %s\n' "${f#$SHELLRC_ROOT/}" \
+                "$(( ($(date +%s%N 2>/dev/null || echo 0) - start) / 1000000 ))ms" >&2
+        else
+            # shellcheck disable=SC1090
+            source "$f"
+        fi
     done
-    unset f
+    if [ -n "$ZSH_VERSION" ] && [ -z "$_had_nullglob" ]; then
+        unsetopt null_glob
+    fi
+}
+
+# 1. core libs — numbered so order is guaranteed
+_shellrc_source_dir "$SHELLRC_ROOT/lib"
+
+# 2. portable modules
+_shellrc_source_dir "$SHELLRC_ROOT/modules/common"
+
+# 3. os-specific modules (os_name is defined by lib/20-os.sh)
+_shellrc_source_dir "$SHELLRC_ROOT/modules/$(os_name)"
+
+# 4. machine-local overrides, gitignored
+_shellrc_source_dir "$SHELLRC_ROOT/modules/local"
+
+# ---- zsh completions ----
+if [ -n "$ZSH_VERSION" ] && [ -d "$SHELLRC_ROOT/completions" ]; then
+    fpath=("$SHELLRC_ROOT/completions" $fpath)
 fi
+
+unset -f _shellrc_source_dir

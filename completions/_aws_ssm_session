@@ -1,0 +1,33 @@
+#compdef aws_ssm_start_session assm
+# zsh completion for aws_ssm_start_session (back-compat alias: assm).
+#
+# Candidates come from the instance cache that aws_ssm_list_instances writes:
+#   $SHELLRC_CACHE/aws-instances-$AWS_PROFILE
+# The cache is per-profile, so switching AWS_PROFILE switches the candidate set.
+# When the cache is missing or empty we say so rather than completing nothing.
+
+local cache_dir cache_file
+local -a candidates
+
+cache_dir="${SHELLRC_CACHE:-$HOME/.cache/shellrc}"
+cache_file="$cache_dir/aws-instances-${AWS_PROFILE:-default}"
+
+if [[ -z "$AWS_PROFILE" ]]; then
+    _message -r 'AWS_PROFILE is not set'
+    return 1
+fi
+
+if [[ ! -r "$cache_file" ]]; then
+    _message -r "no instance cache at $cache_file — run aws_ssm_list_instances (assmli)"
+    return 1
+fi
+
+candidates=( ${(f)"$(awk 'NF >= 3 { print $3 }' "$cache_file" 2>/dev/null)"} )
+candidates=( ${candidates:#} )
+
+if (( ${#candidates} == 0 )); then
+    _message -r "instance cache $cache_file is empty — re-run aws_ssm_list_instances (assmli)"
+    return 1
+fi
+
+_describe -t ec2-instances 'ec2 instance' candidates

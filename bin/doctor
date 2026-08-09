@@ -1,0 +1,379 @@
+#!/usr/bin/env bash
+# doctor — read-only health check for this shell configuration.
+#
+# Reports the machine, how the config is installed, whether it loads cleanly in
+# both bash and zsh, how long it takes, which modules stayed silent because
+# their tools are missing, which function names shadow real binaries, and
+# whether the generated documentation is current.
+#
+# Exits non-zero if anything is actually broken. Warnings do not fail the run.
+#
+# Usage: bin/doctor [--quiet]
+
+set -euo pipefail
+
+# ------------------------------------------------------------------ locate --
+
+_self="${BASH_SOURCE[0]}"
+while [ -L "$_self" ]; do
+    _link=$(command ls -ld -- "$_self" | sed -e 's/.* -> //')
+    case "$_link" in
+        /*) _self="$_link" ;;
+        *)  _self="$(dirname -- "$_self")/$_link" ;;
+    esac
+done
+REPO="$(cd -- "$(dirname -- "$_self")/.." && pwd -P)"
+unset _self _link
+
+# Colours: same rules as lib/10-colors.sh. Sourced with nounset off because that
+# file tests $NO_COLOR and $TERM unguarded (correct for an interactive rc file).
+set +u
+# shellcheck source=/dev/null
+. "$REPO/lib/10-colors.sh" 2>/dev/null || {
+    C_RESET='' C_BOLD='' C_DIM='' C_RED='' C_GREEN='' C_YELLOW='' C_CYAN=''
+    C_B_RED='' C_B_GREEN='' C_B_YELLOW='' C_B_CYAN=''
+}
+set -u
+
+# From here down doctor REPORTS failures instead of aborting on them, so
+# errexit is off deliberately: a health check that stops at the first problem
+# hides every problem after it. Each check records its own pass/fail.
+set +e
+
+FAILS=0
+WARNS=0
+
+section() { printf '\n%s%s%s\n' "$C_BOLD" "$1" "$C_RESET"; }
+ok()      { printf '  %s✓%s %s\n' "$C_GREEN"  "$C_RESET" "$*"; }
+bad()     { printf '  %s✗%s %s\n' "$C_B_RED"  "$C_RESET" "$*"; FAILS=$((FAILS + 1)); }
+warn()    { printf '  %s⚠%s %s\n' "$C_YELLOW" "$C_RESET" "$*"; WARNS=$((WARNS + 1)); }
+info()    { printf '  %s%-14s%s %s\n' "$C_DIM" "$1" "$C_RESET" "$2"; }
+detail()  { printf '      %s%s%s\n' "$C_DIM" "$*" "$C_RESET"; }
+
+has() { command -v "$1" >/dev/null 2>&1; }
+
+TMP="$(mktemp -d "${TMPDIR:-/tmp}/shellrc-doctor.XXXXXXXX")"
+trap 'rm -rf "$TMP"' EXIT INT TERM
+
+printf '%s%sshellrc doctor%s  %s%s%s\n' \
+    "$C_BOLD" "$C_B_CYAN" "$C_RESET" "$C_DIM" "$REPO" "$C_RESET"
+
+# ==================================================================== system --
+
+section "System"
+
+case "$(uname -s)" in
+    Darwin) OS=darwin ;;
+    Linux)  OS=linux ;;
+    *)      OS=unknown ;;
+esac
+case "$(uname -m)" in
+    arm64 | aarch64) ARCH=arm64 ;;
+    x86_64 | amd64)  ARCH=amd64 ;;
+    *)               ARCH="$(uname -m)" ;;
+esac
+
+PKGMGR=""
+if [ "$OS" = darwin ]; then
+    has brew && PKGMGR=brew
+else
+    if   has apt-get; then PKGMGR=apt
+    elif has pacman;  then PKGMGR=pacman
+    elif has dnf;     then PKGMGR=dnf
+    fi
+fi
+
+info "os" "$OS ($ARCH) — $(uname -sr)"
+if has zsh; then
+    info "zsh" "$(zsh --version 2>/dev/null | awk '{print $2}')"
+else
+    info "zsh" "not installed"
+fi
+info "bash" "${BASH_VERSION%%(*}"
+info "login shell" "${SHELL:-unknown}"
+if [ -n "$PKGMGR" ]; then
+    info "package mgr" "$PKGMGR"
+else
+    warn "no supported package manager found (brew/apt/pacman/dnf)"
+fi
+
+# ============================================================== installation --
+
+section "Installation"
+
+info "SHELLRC_ROOT" "${SHELLRC_ROOT:-<unset in this process>}"
+
+LINK="$HOME/.shellrc"
+if [ -L "$LINK" ]; then
+    target="$(command ls -ld -- "$LINK" | sed -e 's/.* -> //')"
+    case "$target" in
+        /*) resolved="$target" ;;
+        *)  resolved="$HOME/$target" ;;
+    esac
+    if [ "$resolved" = "$REPO/shellrc" ]; then
+        ok "~/.shellrc -> $target"
+    else
+        bad "~/.shellrc points at $target, not $REPO/shellrc"
+    fi
+elif [ -e "$LINK" ]; then
+    bad "~/.shellrc exists but is a regular file, not a symlink to $REPO/shellrc"
+else
+    bad "~/.shellrc does not exist — run 'just install'"
+fi
+
+if [ -e "$HOME/.shellrc.d" ]; then
+    warn "~/.shellrc.d still exists — the new loader does not need it, safe to remove"
+fi
+
+sourced_anywhere=0
+for rc in "$HOME/.zshrc" "$HOME/.bashrc" "$HOME/.bash_profile" "$HOME/.profile"; do
+    [ -f "$rc" ] || continue
+    if grep -qE '(^|[^#[:alnum:]_])(source|\.)[[:space:]]+.*\.shellrc' "$rc" 2>/dev/null; then
+        ok "sourced from ~/${rc#"$HOME"/}"
+        sourced_anywhere=1
+    fi
+done
+if [ "$sourced_anywhere" -eq 0 ]; then
+    bad "no rc file sources ~/.shellrc — add: source ~/.shellrc"
+fi
+
+# ======================================================================= load --
+
+section "Load"
+
+load_shell() {
+    # $1 = shell binary, $2 = extra flags. Captures stdout and stderr separately.
+    local sh="$1"
+    shift
+    "$sh" "$@" -c "source '$REPO/shellrc'" >"$TMP/out.$sh" 2>"$TMP/err.$sh"
+    printf '%s' "$?" > "$TMP/rc.$sh"
+}
+
+check_load() {
+    local sh="$1" label="$2" rc
+    if ! has "$sh"; then
+        warn "$label: not installed, skipped"
+        return
+    fi
+    shift 2
+    load_shell "$sh" "$@"
+    rc="$(cat "$TMP/rc.$sh")"
+    if [ "$rc" != 0 ]; then
+        bad "$label: sourcing exited $rc"
+    fi
+    if [ -s "$TMP/err.$sh" ]; then
+        bad "$label: wrote to stderr at load time"
+        while IFS= read -r l; do detail "$l"; done < "$TMP/err.$sh"
+    elif [ "$rc" = 0 ]; then
+        ok "$label: loads clean, no stderr"
+    fi
+    if [ -s "$TMP/out.$sh" ]; then
+        warn "$label: wrote to stdout at load time (nothing should print)"
+        while IFS= read -r l; do detail "$l"; done < "$TMP/out.$sh"
+    fi
+}
+
+check_load bash "bash" --noprofile --norc
+check_load zsh  "zsh"  -f
+
+# ---- startup time: best of three, minus the bare interpreter baseline ----
+
+time_ms() {
+    # prints milliseconds for `$*`, using bash's TIMEFORMAT (no date +%N needed,
+    # which BSD date lacks)
+    local t
+    TIMEFORMAT='%3R'
+    t=$( { time "$@" >/dev/null 2>&1; } 2>&1 )
+    printf '%s' "$t" | awk '{ printf("%d", $1 * 1000) }'
+}
+
+best_ms() {
+    local i m best=999999
+    for i in 1 2 3; do
+        m="$(time_ms "$@")"
+        [ "$m" -lt "$best" ] && best="$m"
+    done
+    printf '%s' "$best"
+}
+
+if has zsh; then
+    base="$(best_ms zsh -f -c true)"
+    full="$(best_ms zsh -f -c "source '$REPO/shellrc'")"
+    net=$((full - base))
+    [ "$net" -lt 0 ] && net=0
+    if [ "$net" -gt 100 ]; then
+        warn "startup ${net}ms (over the 100ms budget; SHELLRC_DEBUG=1 shows per-file timing)"
+    else
+        ok "startup ${net}ms (budget 100ms)"
+    fi
+fi
+
+# ==================================================================== modules --
+
+section "Modules"
+
+# names of every function the config actually defined
+bash --noprofile --norc -c \
+    "source '$REPO/shellrc' >/dev/null 2>&1; declare -F" 2>/dev/null |
+    sed -e 's/^declare -f //' | LC_ALL=C sort -u > "$TMP/defined"
+
+DB="$REPO/docs/functions.json"
+if [ ! -f "$DB" ]; then
+    warn "docs/functions.json is missing — run 'just docs' for module-level reporting"
+else
+    # module<TAB>function<TAB>os, straight out of the generated database
+    LC_ALL=C awk '
+        /^  [{]/ { name = ""; mod = ""; os = "any"; next }
+        /^    "name": "/    { v = $0; sub(/^    "name": "/, "", v);   sub(/",$/, "", v); name = v; next }
+        /^    "module": "/  { v = $0; sub(/^    "module": "/, "", v); sub(/",$/, "", v); mod = v;  next }
+        /^    "os": "/      { v = $0; sub(/^    "os": "/, "", v);     sub(/",$/, "", v); os = v;   next }
+        /^  [}]/ { if (name != "") printf("%s\t%s\t%s\n", mod, name, os) }
+    ' "$DB" > "$TMP/expected"
+
+    LC_ALL=C awk -F '\t' -v os="$OS" -v defined="$TMP/defined" '
+        BEGIN { while ((getline l < defined) > 0) have[l] = 1 }
+        {
+            if ($3 != "any" && $3 != os) { na[$1] = 1; next }
+            total[$1]++
+            if ($2 in have) got[$1]++
+            if (!($1 in seen)) { seen[$1] = 1; order[++n] = $1 }
+        }
+        END {
+            for (i = 1; i <= n; i++) {
+                m = order[i]
+                if (!(m in total)) continue
+                printf("%s\t%d\t%d\n", m, got[m] + 0, total[m])
+            }
+        }
+    ' "$TMP/expected" > "$TMP/modstat"
+
+    loaded=0; partial=""; skipped=""
+    while IFS=$'\t' read -r mod got tot; do
+        if [ "$got" -eq "$tot" ]; then
+            loaded=$((loaded + 1))
+        elif [ "$got" -eq 0 ]; then
+            skipped="$skipped $mod"
+        else
+            partial="$partial $mod($got/$tot)"
+        fi
+    done < "$TMP/modstat"
+
+    ok "$loaded module(s) fully loaded"
+    [ -n "$skipped" ] && warn "skipped (dependencies missing):$skipped"
+    [ -n "$partial" ] && warn "partially loaded:$partial"
+fi
+
+# ---- what `require` recorded as missing ----
+
+missing="$(bash --noprofile --norc -c \
+    "source '$REPO/shellrc' >/dev/null 2>&1; printf '%s' \"\${SHELLRC_MISSING_DEPS:-}\"" \
+    2>/dev/null)"
+missing="$(printf '%s' "$missing" | tr ' ' '\n' | grep -v '^$' | LC_ALL=C sort -u || true)"
+
+if [ -z "$missing" ]; then
+    ok "no module reported a missing dependency"
+else
+    n="$(printf '%s\n' "$missing" | wc -l | tr -d ' ')"
+    warn "$n tool(s) requested by modules are not installed:"
+    if [ -x "$REPO/bin/bootstrap" ]; then
+        # bootstrap owns the tool -> package mapping; ask it rather than
+        # duplicating the table here
+        # shellcheck disable=SC2046
+        "$REPO/bin/bootstrap" --package-for $(printf '%s ' $missing) 2>/dev/null |
+            while IFS=$'\t' read -r tool pkg; do
+                if [ -n "$pkg" ]; then
+                    detail "$(printf '%-22s %s install %s' "$tool" "${PKGMGR:-<pkgmgr>}" "$pkg")"
+                else
+                    detail "$(printf '%-22s no known package — install manually' "$tool")"
+                fi
+            done
+    else
+        printf '%s\n' "$missing" | while IFS= read -r t; do detail "$t"; done
+    fi
+    detail "run 'bin/bootstrap' to install everything the modules ask for"
+fi
+
+# ==================================================== binary shadow checking --
+
+section "Name collisions"
+
+# A function that has the same name as a binary on PATH silently replaces it for
+# the rest of the session. This has bitten this repo repeatedly.
+shadows=""
+while IFS= read -r fn; do
+    case "$fn" in
+        _*) continue ;;
+    esac
+    if bin="$(type -P "$fn" 2>/dev/null)" && [ -n "$bin" ]; then
+        shadows="$shadows$fn -> $bin"$'\n'
+    fi
+done < "$TMP/defined"
+
+if [ -z "$shadows" ]; then
+    ok "no function shadows a binary on PATH"
+else
+    n="$(printf '%s' "$shadows" | grep -c . || true)"
+    bad "$n function(s) shadow a real binary — rename them (see docs/CONVENTIONS.md)"
+    printf '%s' "$shadows" | while IFS= read -r l; do [ -n "$l" ] && detail "$l"; done
+fi
+
+# ======================================================================= docs --
+
+section "Effective shell state"
+
+# Loading without stderr is NOT the same as loading correctly. A loader bug once
+# reverted every option the modules set (setopt local_options in the source loop)
+# and produced no output at all — the prompt silently rendered its own literal
+# source. These assertions check the end state a real interactive shell gets.
+if has zsh; then
+    state=$(zsh -f -c "source '$REPO/shellrc' >/dev/null 2>&1
+        for o in promptsubst vi incappendhistory sharehistory; do
+            [[ -o \$o ]] && print \"ok \$o\" || print \"BAD \$o\"
+        done
+        [[ -o nullglob ]] && print 'BAD nullglob-leaked' || print 'ok nullglob-restored'
+        # PROMPT correctly HOLDS the literal \$(prompt_build_string); PROMPT_SUBST
+        # expands it at redraw. So assert on the RENDERED result, not the variable.
+        rendered=\$(print -P \"\$PROMPT\" 2>/dev/null)
+        case \"\$rendered\" in
+            *'\$('*) print 'BAD prompt-renders-literal-source' ;;
+            '')      print 'BAD prompt-renders-empty' ;;
+            *)       print 'ok prompt-renders' ;;
+        esac" 2>/dev/null)
+
+    bad_state=$(printf '%s\n' "$state" | grep '^BAD ' || true)
+    if [ -z "$bad_state" ]; then
+        ok "zsh: options and prompt applied as expected"
+    else
+        bad "zsh: shell state is wrong after load"
+        printf '%s\n' "$bad_state" | while IFS= read -r b; do detail "${b#BAD }"; done
+        detail "an option set by a module is being reverted, or PROMPT never expanded"
+    fi
+else
+    warn "zsh not available — cannot verify effective shell state"
+fi
+
+section "Documentation"
+
+if [ ! -x "$REPO/bin/shellrc-doc" ]; then
+    bad "bin/shellrc-doc is missing or not executable"
+elif "$REPO/bin/shellrc-doc" --check --quiet >"$TMP/doc.out" 2>&1; then
+    ok "docs/ is up to date"
+else
+    bad "docs/ is stale — run 'just docs'"
+    while IFS= read -r l; do detail "$l"; done < "$TMP/doc.out"
+fi
+
+# ==================================================================== verdict --
+
+printf '\n'
+if [ "$FAILS" -eq 0 ] && [ "$WARNS" -eq 0 ]; then
+    printf '%s%sAll good.%s\n' "$C_BOLD" "$C_B_GREEN" "$C_RESET"
+    exit 0
+fi
+if [ "$FAILS" -eq 0 ]; then
+    printf '%s%d warning(s), nothing broken.%s\n' "$C_B_YELLOW" "$WARNS" "$C_RESET"
+    exit 0
+fi
+printf '%s%s%d problem(s), %d warning(s).%s\n' \
+    "$C_BOLD" "$C_B_RED" "$FAILS" "$WARNS" "$C_RESET"
+exit 1
