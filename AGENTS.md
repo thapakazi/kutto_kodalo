@@ -39,27 +39,12 @@ bin/               bootstrap, doctor, shellrc-doc, shelp-show
 completions/       HAND-WRITTEN zsh completions — not generated, do not delete
 docs/              generated AND committed, except CONVENTIONS.md
 attic/             retired code, never sourced
-shellrc.d/         THE OLD LAYOUT — 62 tracked files, still live. See below.
-Makefile           obsolete; superseded by the Justfile. Do not run it.
 ```
 
-### `shellrc.d/` and `Makefile` — do not touch, do not delete
-
-`shellrc.d/` is the pre-revamp flat layout. It is still tracked, still installed
-as `~/.shellrc.d` on the user's machine, and stays until the Phase 4 cutover in
-`TODO.md`. The new loader never sources it; `shellrc-doc` never scans it;
-shellcheck never lints it.
-
-Do not edit it, do not lint it, and above all **do not delete it as cruft** — the
-cutover is a deliberate, separate step.
-
-`Makefile`'s `all:` target still symlinks `~/.shellrc.d` to the old layout.
-Running `make` re-installs the pre-revamp config over the user's shell. Use
-`just`.
-
-When this file mentions `utils.sh`, `docker.sh` or `percol.sh` being invalid
-bash, it means `shellrc.d/utils.sh`, `shellrc.d/docker.sh`,
-`shellrc.d/percol.sh` — the dead originals. Not the new modules.
+The old flat `shellrc.d/` layout and its `Makefile` were removed in the Phase 4
+cutover; they survive in git history and the retired parts in `attic/`. Comments
+across the modules still cite `shellrc.d/<file>` when explaining why something
+was renamed — those are historical references, not live paths.
 
 ---
 
