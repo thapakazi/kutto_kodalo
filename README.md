@@ -1,7 +1,6 @@
 # kutto_kodalo
 
-> _kutto kodalo_ — Nepali for "a dog's hoe": a tool of no use to whoever's
-> holding it.
+> _kutto kodalo_ — Nepali for the hand tools you work a field with.
 
 Shell configuration for bash and zsh, on macOS and Linux. Every function
 documents itself, and the docs are generated from that — never hand-written.
