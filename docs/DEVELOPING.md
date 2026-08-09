@@ -62,6 +62,25 @@ bin/shellrc-doc --list-requires  # the dependency set, derived not hardcoded
 
 `--check` is what CI and `just check` run — a stale `docs/` fails the build.
 
+## Completions
+
+`bin/shellrc-completions` turns the same `@usage` and `@complete` fields into
+`completions/_shellrc_generated` (zsh) and `completions/shellrc-generated.bash`.
+`just docs` regenerates both; `just check` fails if they are stale.
+
+Most functions need no annotation — the generator infers file, directory, host
+and pid completion from the placeholder name in `@usage`. Annotate only where a
+real word list or a live source exists:
+
+```sh
+# @usage    docker_open_shell [container] [shell]
+# @complete container:!docker ps --format '{{.Names}}' shell:(bash sh zsh ash)
+```
+
+A `!command` source runs at completion time and is cached per shell, so a live
+lookup does not fork on every TAB. zsh gets the richer treatment; bash has no
+equivalent of `_arguments`, so it gets word lists and files without descriptions.
+
 ## Machine-local config
 
 Anything private, work-specific, or true only on this machine goes in

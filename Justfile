@@ -29,9 +29,14 @@ install *ARGS:
 preview:
     "{{ BIN }}/bootstrap" --dry-run
 
+# Regenerate the completions from docs/functions.json.
+completions:
+    "{{ BIN }}/shellrc-completions"
+
 # Regenerate docs/INDEX.md, docs/functions.json and docs/reference/.
 docs:
     "{{ BIN }}/shellrc-doc"
+    "{{ BIN }}/shellrc-completions"
 
 # Report the health of this machine's installation.
 doctor:
@@ -95,6 +100,9 @@ check:
 
     echo "==> generated docs are current"
     "{{ BIN }}/shellrc-doc" --check || fail=1
+
+    echo "==> generated completions are current"
+    "{{ BIN }}/shellrc-completions" --check || fail=1
 
     echo "==> loads clean in bash and zsh"
     for sh in bash zsh; do

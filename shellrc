@@ -84,9 +84,14 @@ _shellrc_source_dir "$SHELLRC_ROOT/modules/$(os_name)"
 # 4. machine-local overrides, gitignored
 _shellrc_source_dir "$SHELLRC_ROOT/modules/local"
 
-# ---- zsh completions ----
+# ---- completions ----
+# zsh picks _-prefixed files up from fpath once compinit runs (your ~/.zshrc
+# must call it). bash has no fpath, so the generated file is sourced directly.
 if [ -n "$ZSH_VERSION" ] && [ -d "$SHELLRC_ROOT/completions" ]; then
     fpath=("$SHELLRC_ROOT/completions" $fpath)
+elif [ -n "$BASH_VERSION" ] && [ -r "$SHELLRC_ROOT/completions/shellrc-generated.bash" ]; then
+    # shellcheck source=/dev/null
+    source "$SHELLRC_ROOT/completions/shellrc-generated.bash"
 fi
 
 unset -f _shellrc_source_dir

@@ -128,6 +128,7 @@ _shelp_render() {
 #           query it matches case-insensitively against function names,
 #           descriptions and usage strings.
 # @usage    shelp [-m <module>] [query]
+# @complete module:!jq -r '.[].module' "${SHELLRC_ROOT}/docs/functions.json" 2>/dev/null | sort -u
 # @example  shelp
 # @example  shelp ssm
 # @example  shelp -m docker

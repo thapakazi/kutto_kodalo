@@ -183,6 +183,7 @@ _aws_ssm_get_param_raw() {
 
 # @describe Print a decrypted SSM parameter stored under /<env>/<app>/<suffix>.
 # @usage    aws_ssm_get_param <app> [environment] [suffix]
+# @complete environment:(development staging production) suffix:(env config/appsettings.json)
 # @example  aws_ssm_get_param billing production env
 # @example  aws_ssm_get_param billing staging config/appsettings.json
 # @requires aws jq
@@ -215,6 +216,7 @@ aws_ssm_get_param_by_path() {
 # @describe Write a SecureString parameter to /<env>/<app>/<suffix>, overwriting
 #           any existing value.
 # @usage    aws_ssm_put_param <app> <environment> <suffix> <value>
+# @complete environment:(development staging production) suffix:(env config/appsettings.json)
 # @example  aws_ssm_put_param billing staging env "$(cat .env)"
 # @requires aws
 # @danger   Overwrites the parameter in place; the previous value is only
@@ -256,6 +258,7 @@ aws_ssm_put_param_by_path() {
 #           write the edited content back. The plaintext file is created with
 #           mode 600 and removed on return, on error, and on interrupt.
 # @usage    aws_ssm_edit_param <app> [environment] [suffix]
+# @complete environment:(development staging production) suffix:(env config/appsettings.json)
 # @example  aws_ssm_edit_param billing production env
 # @requires aws jq
 # @danger   Materialises a decrypted SecureString on local disk for the duration
@@ -439,6 +442,7 @@ aws_ssm_list_instances() {
 # @describe Open an SSM Session Manager shell on the first cached instance whose
 #           line matches the given substring. Refreshes the cache when missing.
 # @usage    aws_ssm_start_session <name-fragment> [ssh-user]
+# @complete ssh-user:(ubuntu ec2-user admin root)
 # @example  aws_ssm_start_session prod-worker
 # @example  aws_ssm_start_session prod-app ec2-user
 # @requires aws ec2-session

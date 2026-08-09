@@ -208,7 +208,7 @@ desktop_theme_switch light
 
 **Requires** `xdotool`, `wmctrl`
 
-**OS** Linux only &nbsp;·&nbsp; **Source** [`modules/linux/desktop.sh:208`](../../modules/linux/desktop.sh#L208)
+**OS** Linux only &nbsp;·&nbsp; **Source** [`modules/linux/desktop.sh:209`](../../modules/linux/desktop.sh#L209)
 
 ---
 

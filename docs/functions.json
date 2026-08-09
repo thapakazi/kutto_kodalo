@@ -4,7 +4,7 @@
     "module": "alacritty",
     "module_summary": "Alacritty theme management: fetch the upstream theme pool and rewrite the `import` line in alacritty.toml, optionally picking day or night.",
     "file": "modules/darwin/alacritty.sh",
-    "line": 115,
+    "line": 116,
     "describe": "Clone the upstream theme pool if missing, pull the latest themes, then list what is available.",
     "usage": "alacritty_fetch_themes",
     "examples": ["alacritty_fetch_themes"],
@@ -12,7 +12,8 @@
     "os": "darwin",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "alacritty_is_night",
@@ -27,7 +28,8 @@
     "os": "darwin",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "alacritty_list_themes",
@@ -42,14 +44,15 @@
     "os": "darwin",
     "danger": "",
     "see": ["alacritty_fetch_themes"],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "alacritty_remove_themes",
     "module": "alacritty",
     "module_summary": "Alacritty theme management: fetch the upstream theme pool and rewrite the `import` line in alacritty.toml, optionally picking day or night.",
     "file": "modules/darwin/alacritty.sh",
-    "line": 144,
+    "line": 145,
     "describe": "Delete the local theme pool.",
     "usage": "alacritty_remove_themes",
     "examples": ["alacritty_remove_themes"],
@@ -57,14 +60,15 @@
     "os": "darwin",
     "danger": "Recursively deletes $ALACRITTY_THEMES_DIR, including local edits.",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "alacritty_set_theme",
     "module": "alacritty",
     "module_summary": "Alacritty theme management: fetch the upstream theme pool and rewrite the `import` line in alacritty.toml, optionally picking day or night.",
     "file": "modules/darwin/alacritty.sh",
-    "line": 75,
+    "line": 76,
     "describe": "Point alacritty.toml at a theme from the local pool. With no argument it picks ALACRITTY_DAY_THEME or ALACRITTY_NIGHT_THEME depending on the time of day.",
     "usage": "alacritty_set_theme [theme-name]",
     "examples": ["alacritty_set_theme nord", "alacritty_set_theme            # time-of-day default"],
@@ -72,14 +76,15 @@
     "os": "darwin",
     "danger": "",
     "see": ["alacritty_list_themes"],
-    "private": false
+    "private": false,
+    "complete": "theme-name:!ls -1 \"${alacritty_themes_dir:-$HOME/.config/alacritty/themes}/themes\" 2>/dev/null | sed 's/\\.toml$//'"
   },
   {
     "name": "alacritty_setup",
     "module": "alacritty",
     "module_summary": "Alacritty theme management: fetch the upstream theme pool and rewrite the `import` line in alacritty.toml, optionally picking day or night.",
     "file": "modules/darwin/alacritty.sh",
-    "line": 157,
+    "line": 158,
     "describe": "Fetch the theme pool and apply the time-of-day theme in one go.",
     "usage": "alacritty_setup",
     "examples": ["alacritty_setup"],
@@ -87,14 +92,15 @@
     "os": "darwin",
     "danger": "",
     "see": ["alacritty_fetch_themes", "alacritty_set_theme"],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "alacritty_update_themes",
     "module": "alacritty",
     "module_summary": "Alacritty theme management: fetch the upstream theme pool and rewrite the `import` line in alacritty.toml, optionally picking day or night.",
     "file": "modules/darwin/alacritty.sh",
-    "line": 132,
+    "line": 133,
     "describe": "Pull the latest themes into the local pool.",
     "usage": "alacritty_update_themes",
     "examples": ["alacritty_update_themes"],
@@ -102,7 +108,8 @@
     "os": "darwin",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "android_list_devices",
@@ -117,7 +124,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "android_mirror",
@@ -132,7 +140,8 @@
     "os": "any",
     "danger": "",
     "see": ["android_mirror_camera"],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "android_mirror_camera",
@@ -147,7 +156,8 @@
     "os": "any",
     "danger": "",
     "see": ["android_mirror"],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "android_open_youtube",
@@ -162,7 +172,8 @@
     "os": "any",
     "danger": "",
     "see": ["android_mirror"],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "audio_mic_to_speaker",
@@ -177,7 +188,8 @@
     "os": "linux",
     "danger": "",
     "see": ["https://askubuntu.com/a/887658"],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "audio_record_mic",
@@ -192,7 +204,8 @@
     "os": "linux",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "audio_test_mic",
@@ -207,7 +220,8 @@
     "os": "linux",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "aws_ec2_diff_launch_template_versions",
@@ -222,7 +236,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "aws_ec2_find_ami",
@@ -237,14 +252,15 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "aws_iam_attach_policy",
     "module": "aws",
     "module_summary": "AWS helpers: caller identity, EC2/region inspection, SSM Parameter Store CRUD, IAM bootstrap, and Session Manager shells.",
     "file": "modules/common/aws.sh",
-    "line": 538,
+    "line": 542,
     "describe": "Attach a managed policy to an IAM user.",
     "usage": "aws_iam_attach_policy <username> <policy-arn>",
     "examples": ["aws_iam_attach_policy uploads-ci arn:aws:iam::123456789012:policy/uploads-put"],
@@ -252,14 +268,15 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "aws_iam_create_bucket_writer",
     "module": "aws",
     "module_summary": "AWS helpers: caller identity, EC2/region inspection, SSM Parameter Store CRUD, IAM bootstrap, and Session Manager shells.",
     "file": "modules/common/aws.sh",
-    "line": 557,
+    "line": 561,
     "describe": "Create an IAM user plus a bucket-scoped PutObject policy, giving you a chance to edit the policy in $EDITOR before it is created. The policy document lives in a private temp file that is removed on return.",
     "usage": "aws_iam_create_bucket_writer <username> <bucket> <policy-name>",
     "examples": ["aws_iam_create_bucket_writer uploads-ci my-uploads uploads-put"],
@@ -267,14 +284,15 @@
     "os": "any",
     "danger": "Creates real IAM principals. The attach step is printed, not run.",
     "see": ["aws_iam_attach_policy"],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "aws_iam_create_policy_from_file",
     "module": "aws",
     "module_summary": "AWS helpers: caller identity, EC2/region inspection, SSM Parameter Store CRUD, IAM bootstrap, and Session Manager shells.",
     "file": "modules/common/aws.sh",
-    "line": 523,
+    "line": 527,
     "describe": "Create a managed IAM policy from a local policy document.",
     "usage": "aws_iam_create_policy_from_file <policy-name> <policy-file>",
     "examples": ["aws_iam_create_policy_from_file uploads-put ./policy.json"],
@@ -282,14 +300,15 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "aws_iam_create_user",
     "module": "aws",
     "module_summary": "AWS helpers: caller identity, EC2/region inspection, SSM Parameter Store CRUD, IAM bootstrap, and Session Manager shells.",
     "file": "modules/common/aws.sh",
-    "line": 487,
+    "line": 491,
     "describe": "Create an IAM user.",
     "usage": "aws_iam_create_user <username>",
     "examples": ["aws_iam_create_user uploads-ci"],
@@ -297,14 +316,15 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "aws_iam_find_user_by_key",
     "module": "aws",
     "module_summary": "AWS helpers: caller identity, EC2/region inspection, SSM Parameter Store CRUD, IAM bootstrap, and Session Manager shells.",
     "file": "modules/common/aws.sh",
-    "line": 476,
+    "line": 480,
     "describe": "List IAM users whose description matches a pattern.",
     "usage": "aws_iam_find_user_by_key <pattern>",
     "examples": ["aws_iam_find_user_by_key AKIAEXAMPLE"],
@@ -312,14 +332,15 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "aws_iam_print_bucket_policy",
     "module": "aws",
     "module_summary": "AWS helpers: caller identity, EC2/region inspection, SSM Parameter Store CRUD, IAM bootstrap, and Session Manager shells.",
     "file": "modules/common/aws.sh",
-    "line": 498,
+    "line": 502,
     "describe": "Print a minimal s3:PutObject policy document for a bucket to stdout. Nothing is written to disk — redirect it yourself if you want a file.",
     "usage": "aws_iam_print_bucket_policy <bucket>",
     "examples": ["aws_iam_print_bucket_policy my-uploads > policy.json"],
@@ -327,7 +348,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "aws_list_azs",
@@ -342,7 +364,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "aws_list_regions",
@@ -357,14 +380,15 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "aws_ssm_copy_param",
     "module": "aws",
     "module_summary": "AWS helpers: caller identity, EC2/region inspection, SSM Parameter Store CRUD, IAM bootstrap, and Session Manager shells.",
     "file": "modules/common/aws.sh",
-    "line": 338,
+    "line": 341,
     "describe": "Copy one decrypted SecureString from a source account to a destination account. The value is passed in memory from the read to the write; it never touches the clipboard or disk.",
     "usage": "aws_ssm_copy_param <source-path> <dest-path> [source-profile] [dest-profile]",
     "examples": ["aws_ssm_copy_param /production/billing/env /staging/billing/env prod-ro staging-rw"],
@@ -372,14 +396,15 @@
     "os": "any",
     "danger": "Moves a decrypted secret between AWS accounts and overwrites the destination parameter. Profiles default to $SOURCE_PROFILE and $DEST_PROFILE. Double-check both before confirming.",
     "see": ["aws_ssm_get_param_by_path", "aws_ssm_put_param_by_path"],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "aws_ssm_edit_param",
     "module": "aws",
     "module_summary": "AWS helpers: caller identity, EC2/region inspection, SSM Parameter Store CRUD, IAM bootstrap, and Session Manager shells.",
     "file": "modules/common/aws.sh",
-    "line": 264,
+    "line": 267,
     "describe": "Fetch a parameter into a private temp file, open it in $EDITOR, then write the edited content back. The plaintext file is created with mode 600 and removed on return, on error, and on interrupt.",
     "usage": "aws_ssm_edit_param <app> [environment] [suffix]",
     "examples": ["aws_ssm_edit_param billing production env"],
@@ -387,14 +412,15 @@
     "os": "any",
     "danger": "Materialises a decrypted SecureString on local disk for the duration of the edit, and overwrites the stored parameter on save.",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": "environment:(development staging production) suffix:(env config/appsettings.json)"
   },
   {
     "name": "aws_ssm_edit_param_by_path",
     "module": "aws",
     "module_summary": "AWS helpers: caller identity, EC2/region inspection, SSM Parameter Store CRUD, IAM bootstrap, and Session Manager shells.",
     "file": "modules/common/aws.sh",
-    "line": 307,
+    "line": 310,
     "describe": "Edit a parameter addressed by its full path.",
     "usage": "aws_ssm_edit_param_by_path </environment/app/suffix>",
     "examples": ["aws_ssm_edit_param_by_path /production/billing/env"],
@@ -402,14 +428,15 @@
     "os": "any",
     "danger": "See aws_ssm_edit_param.",
     "see": ["aws_ssm_edit_param"],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "aws_ssm_get_param",
     "module": "aws",
     "module_summary": "AWS helpers: caller identity, EC2/region inspection, SSM Parameter Store CRUD, IAM bootstrap, and Session Manager shells.",
     "file": "modules/common/aws.sh",
-    "line": 190,
+    "line": 191,
     "describe": "Print a decrypted SSM parameter stored under /<env>/<app>/<suffix>.",
     "usage": "aws_ssm_get_param <app> [environment] [suffix]",
     "examples": ["aws_ssm_get_param billing production env", "aws_ssm_get_param billing staging config/appsettings.json"],
@@ -417,14 +444,15 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": "environment:(development staging production) suffix:(env config/appsettings.json)"
   },
   {
     "name": "aws_ssm_get_param_by_path",
     "module": "aws",
     "module_summary": "AWS helpers: caller identity, EC2/region inspection, SSM Parameter Store CRUD, IAM bootstrap, and Session Manager shells.",
     "file": "modules/common/aws.sh",
-    "line": 205,
+    "line": 206,
     "describe": "Print a decrypted SSM parameter addressed by its full path.",
     "usage": "aws_ssm_get_param_by_path </environment/app/suffix>",
     "examples": ["aws_ssm_get_param_by_path /production/billing/env"],
@@ -432,14 +460,15 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "aws_ssm_list_instances",
     "module": "aws",
     "module_summary": "AWS helpers: caller identity, EC2/region inspection, SSM Parameter Store CRUD, IAM bootstrap, and Session Manager shells.",
     "file": "modules/common/aws.sh",
-    "line": 423,
+    "line": 426,
     "describe": "Refresh the cached EC2 instance list for the active AWS_PROFILE. The cache backs both aws_ssm_start_session and its zsh completion.",
     "usage": "aws_ssm_list_instances",
     "examples": ["AWS_PROFILE=prod aws_ssm_list_instances"],
@@ -447,14 +476,15 @@
     "os": "any",
     "danger": "",
     "see": ["aws_ssm_start_session"],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "aws_ssm_list_params",
     "module": "aws",
     "module_summary": "AWS helpers: caller identity, EC2/region inspection, SSM Parameter Store CRUD, IAM bootstrap, and Session Manager shells.",
     "file": "modules/common/aws.sh",
-    "line": 322,
+    "line": 325,
     "describe": "List every SSM parameter name visible to the current credentials.",
     "usage": "aws_ssm_list_params",
     "examples": ["aws_ssm_list_params | grep production"],
@@ -462,14 +492,15 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "aws_ssm_put_env_file",
     "module": "aws",
     "module_summary": "AWS helpers: caller identity, EC2/region inspection, SSM Parameter Store CRUD, IAM bootstrap, and Session Manager shells.",
     "file": "modules/common/aws.sh",
-    "line": 380,
+    "line": 383,
     "describe": "Read a KEY=VALUE file and write each line to SSM as a SecureString under a shared prefix. Blank lines and # comments are skipped.",
     "usage": "aws_ssm_put_env_file <env-file> [prefix]",
     "examples": ["aws_ssm_put_env_file .env.production /production/billing/"],
@@ -477,14 +508,15 @@
     "os": "any",
     "danger": "Writes every line of the file into Parameter Store.",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "aws_ssm_put_param",
     "module": "aws",
     "module_summary": "AWS helpers: caller identity, EC2/region inspection, SSM Parameter Store CRUD, IAM bootstrap, and Session Manager shells.",
     "file": "modules/common/aws.sh",
-    "line": 223,
+    "line": 225,
     "describe": "Write a SecureString parameter to /<env>/<app>/<suffix>, overwriting any existing value.",
     "usage": "aws_ssm_put_param <app> <environment> <suffix> <value>",
     "examples": ["aws_ssm_put_param billing staging env \"$(cat .env)\""],
@@ -492,14 +524,15 @@
     "os": "any",
     "danger": "Overwrites the parameter in place; the previous value is only recoverable through parameter history.",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": "environment:(development staging production) suffix:(env config/appsettings.json)"
   },
   {
     "name": "aws_ssm_put_param_by_path",
     "module": "aws",
     "module_summary": "AWS helpers: caller identity, EC2/region inspection, SSM Parameter Store CRUD, IAM bootstrap, and Session Manager shells.",
     "file": "modules/common/aws.sh",
-    "line": 245,
+    "line": 247,
     "describe": "Write a SecureString parameter addressed by its full path.",
     "usage": "aws_ssm_put_param_by_path </environment/app/suffix> <value>",
     "examples": ["aws_ssm_put_param_by_path /staging/billing/env \"$(cat .env)\""],
@@ -507,14 +540,15 @@
     "os": "any",
     "danger": "Overwrites the parameter in place.",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "aws_ssm_show_examples",
     "module": "aws",
     "module_summary": "AWS helpers: caller identity, EC2/region inspection, SSM Parameter Store CRUD, IAM bootstrap, and Session Manager shells.",
     "file": "modules/common/aws.sh",
-    "line": 405,
+    "line": 408,
     "describe": "Print the two put-parameter invocations worth remembering.",
     "usage": "aws_ssm_show_examples",
     "examples": ["aws_ssm_show_examples"],
@@ -522,14 +556,15 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "aws_ssm_start_session",
     "module": "aws",
     "module_summary": "AWS helpers: caller identity, EC2/region inspection, SSM Parameter Store CRUD, IAM bootstrap, and Session Manager shells.",
     "file": "modules/common/aws.sh",
-    "line": 447,
+    "line": 451,
     "describe": "Open an SSM Session Manager shell on the first cached instance whose line matches the given substring. Refreshes the cache when missing.",
     "usage": "aws_ssm_start_session <name-fragment> [ssh-user]",
     "examples": ["aws_ssm_start_session prod-worker", "aws_ssm_start_session prod-app ec2-user"],
@@ -537,7 +572,8 @@
     "os": "any",
     "danger": "",
     "see": ["aws_ssm_list_instances"],
-    "private": false
+    "private": false,
+    "complete": "ssh-user:(ubuntu ec2-user admin root)"
   },
   {
     "name": "aws_whoami",
@@ -552,14 +588,15 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "k8s_convert_configmap_to_env",
     "module": "aws",
     "module_summary": "AWS helpers: caller identity, EC2/region inspection, SSM Parameter Store CRUD, IAM bootstrap, and Session Manager shells.",
     "file": "modules/common/aws.sh",
-    "line": 608,
+    "line": 612,
     "describe": "Convert a ConfigMap data: block into KEY=VALUE lines.",
     "usage": "k8s_convert_configmap_to_env <manifest>...",
     "examples": ["k8s_convert_configmap_to_env configmap.yaml > .env"],
@@ -567,14 +604,15 @@
     "os": "any",
     "danger": "",
     "see": ["k8s_show_configmap_data"],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "k8s_convert_configmap_to_json",
     "module": "aws",
     "module_summary": "AWS helpers: caller identity, EC2/region inspection, SSM Parameter Store CRUD, IAM bootstrap, and Session Manager shells.",
     "file": "modules/common/aws.sh",
-    "line": 618,
+    "line": 622,
     "describe": "Convert a ConfigMap data: block into one JSON object per line.",
     "usage": "k8s_convert_configmap_to_json <manifest>...",
     "examples": ["k8s_convert_configmap_to_json configmap.yaml | jq ."],
@@ -582,14 +620,15 @@
     "os": "any",
     "danger": "",
     "see": ["k8s_show_configmap_data"],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "k8s_show_configmap_data",
     "module": "aws",
     "module_summary": "AWS helpers: caller identity, EC2/region inspection, SSM Parameter Store CRUD, IAM bootstrap, and Session Manager shells.",
     "file": "modules/common/aws.sh",
-    "line": 596,
+    "line": 600,
     "describe": "Print the data: block of a Kubernetes ConfigMap manifest, stripped of its YAML indentation.",
     "usage": "k8s_show_configmap_data <manifest>...",
     "examples": ["k8s_show_configmap_data configmap.yaml"],
@@ -597,7 +636,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "calendar_agenda",
@@ -612,7 +652,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "calendar_all",
@@ -627,7 +668,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "calendar_week",
@@ -642,7 +684,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "cleanup_all",
@@ -657,7 +700,8 @@
     "os": "darwin",
     "danger": "Chains every destructive function in this module.",
     "see": ["cleanup_estimate", "cleanup_purge_ai", "cleanup_purge_dev", "cleanup_purge_apps", "cleanup_purge_vm"],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "cleanup_estimate",
@@ -672,7 +716,8 @@
     "os": "darwin",
     "danger": "",
     "see": ["cleanup_all"],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "cleanup_purge_ai",
@@ -687,7 +732,8 @@
     "os": "darwin",
     "danger": "Deletes model and VM data. The Claude VM bundle is several GB and is gated behind its own second confirmation.",
     "see": ["cleanup_estimate", "cleanup_purge_hf"],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "cleanup_purge_apps",
@@ -702,7 +748,8 @@
     "os": "darwin",
     "danger": "Deletes cached application data and every downloaded Homebrew bottle.",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "cleanup_purge_dev",
@@ -717,7 +764,8 @@
     "os": "darwin",
     "danger": "Empties package manager caches. Next build re-downloads everything.",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "cleanup_purge_hf",
@@ -732,7 +780,8 @@
     "os": "darwin",
     "danger": "Deletes downloaded model data. Re-downloading is slow and metered.",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "cleanup_purge_vm",
@@ -747,7 +796,8 @@
     "os": "darwin",
     "danger": "Removes every unused Docker image and container. Docker volumes are only touched after a separate confirmation — they hold real data.",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "b64_decode",
@@ -762,7 +812,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "b64_encode",
@@ -777,7 +828,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "clip_copy",
@@ -792,7 +844,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "clip_copy_file",
@@ -807,7 +860,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "clip_paste",
@@ -822,7 +876,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "gnu_sed",
@@ -837,7 +892,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "os_open",
@@ -852,7 +908,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "path_resolve",
@@ -867,7 +924,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "path_size",
@@ -882,7 +940,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "sed_inplace",
@@ -897,7 +956,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "timestamp",
@@ -912,7 +972,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "tmp_dir",
@@ -927,7 +988,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "tmp_file",
@@ -942,7 +1004,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "confirm",
@@ -957,7 +1020,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "current_shell",
@@ -972,7 +1036,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "has",
@@ -987,7 +1052,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "log_error",
@@ -1002,7 +1068,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "log_info",
@@ -1017,7 +1084,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "log_ok",
@@ -1032,7 +1100,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "log_warn",
@@ -1047,7 +1116,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "require",
@@ -1062,7 +1132,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "require_any",
@@ -1077,7 +1148,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "db_get_long_running_query",
@@ -1092,7 +1164,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "db_pg_gen_read_only_user_sql",
@@ -1107,7 +1180,8 @@
     "os": "any",
     "danger": "",
     "see": ["db_pg_gen_user_sql"],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "db_pg_gen_user_sql",
@@ -1122,7 +1196,8 @@
     "os": "any",
     "danger": "",
     "see": ["db_pg_gen_read_only_user_sql"],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "redis_debug_sleep",
@@ -1137,7 +1212,8 @@
     "os": "any",
     "danger": "The server serves NO requests for the whole duration. Never point this at production.",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "redis_get_keyspace",
@@ -1152,7 +1228,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "redis_get_replication",
@@ -1167,7 +1244,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "redis_sentinel_cli",
@@ -1182,7 +1260,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "desktop_find_windows",
@@ -1197,7 +1276,8 @@
     "os": "linux",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "desktop_find_windows_by_title",
@@ -1212,7 +1292,8 @@
     "os": "linux",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "desktop_i3_install_style",
@@ -1227,7 +1308,8 @@
     "os": "linux",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "desktop_i3_list_themes",
@@ -1242,7 +1324,8 @@
     "os": "linux",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "desktop_i3_set_theme",
@@ -1257,7 +1340,8 @@
     "os": "linux",
     "danger": "Rewrites your i3 config in place. Keep it in version control.",
     "see": ["desktop_i3_list_themes"],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "desktop_probe_pointer",
@@ -1272,7 +1356,8 @@
     "os": "linux",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "desktop_theme_dark",
@@ -1287,7 +1372,8 @@
     "os": "linux",
     "danger": "",
     "see": ["desktop_theme_light", "desktop_theme_switch"],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "desktop_theme_light",
@@ -1302,14 +1388,15 @@
     "os": "linux",
     "danger": "",
     "see": ["desktop_theme_dark", "desktop_theme_switch"],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "desktop_theme_switch",
     "module": "desktop",
     "module_summary": "Linux/X11 desktop odds and ends: i3 theming, ibus input method, and the synchronised dark/light theme switcher.",
     "file": "modules/linux/desktop.sh",
-    "line": 208,
+    "line": 209,
     "describe": "Switch every application to the named theme. Anything other than \"light\" or \"bright\" means dark.",
     "usage": "desktop_theme_switch [dark|light]",
     "examples": ["desktop_theme_switch light"],
@@ -1317,7 +1404,8 @@
     "os": "linux",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": "dark|light:(dark light)"
   },
   {
     "name": "docker_cache_last_container",
@@ -1332,14 +1420,15 @@
     "os": "any",
     "danger": "",
     "see": ["docker_show_logs"],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "docker_exec_service",
     "module": "docker",
     "module_summary": "Container helpers: aligned image/container tables, log inspection, compose shortcuts, network introspection, and throwaway services.",
     "file": "modules/common/docker.sh",
-    "line": 263,
+    "line": 265,
     "describe": "Run a command inside a compose service.",
     "usage": "docker_exec_service <service> [command]...",
     "examples": ["docker_exec_service app bash"],
@@ -1347,14 +1436,15 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": "service:!docker compose config --services 2>/dev/null"
   },
   {
     "name": "docker_follow_logs",
     "module": "docker",
     "module_summary": "Container helpers: aligned image/container tables, log inspection, compose shortcuts, network introspection, and throwaway services.",
     "file": "modules/common/docker.sh",
-    "line": 272,
+    "line": 275,
     "describe": "Follow the logs of one or all compose services.",
     "usage": "docker_follow_logs [service]...",
     "examples": ["docker_follow_logs app"],
@@ -1362,7 +1452,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": "service:!docker compose config --services 2>/dev/null"
   },
   {
     "name": "docker_format_output",
@@ -1377,7 +1468,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "docker_get_last_id",
@@ -1392,7 +1484,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "docker_list_images",
@@ -1407,7 +1500,8 @@
     "os": "any",
     "danger": "",
     "see": ["docker_list_images_by_size"],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "docker_list_images_by_size",
@@ -1422,14 +1516,15 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "docker_list_ips",
     "module": "docker",
     "module_summary": "Container helpers: aligned image/container tables, log inspection, compose shortcuts, network introspection, and throwaway services.",
     "file": "modules/common/docker.sh",
-    "line": 224,
+    "line": 225,
     "describe": "Print the IP address, hostname, and name of every running container.",
     "usage": "docker_list_ips",
     "examples": ["docker_list_ips"],
@@ -1437,14 +1532,15 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "docker_list_services",
     "module": "docker",
     "module_summary": "Container helpers: aligned image/container tables, log inspection, compose shortcuts, network introspection, and throwaway services.",
     "file": "modules/common/docker.sh",
-    "line": 290,
+    "line": 294,
     "describe": "List the containers of the current compose project.",
     "usage": "docker_list_services [arg]...",
     "examples": ["docker_list_services"],
@@ -1452,7 +1548,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "docker_list_tags",
@@ -1467,14 +1564,15 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "docker_open_shell",
     "module": "docker",
     "module_summary": "Container helpers: aligned image/container tables, log inspection, compose shortcuts, network introspection, and throwaway services.",
     "file": "modules/common/docker.sh",
-    "line": 173,
+    "line": 174,
     "describe": "Open an interactive shell inside a container, preferring bash and falling back to sh. Defaults to the most recent container.",
     "usage": "docker_open_shell [container] [shell]",
     "examples": ["docker_open_shell", "docker_open_shell web /bin/zsh"],
@@ -1482,14 +1580,15 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": "container:!docker ps --format '{{.Names}}' 2>/dev/null shell:(bash sh zsh ash)"
   },
   {
     "name": "docker_open_shell_last",
     "module": "docker",
     "module_summary": "Container helpers: aligned image/container tables, log inspection, compose shortcuts, network introspection, and throwaway services.",
     "file": "modules/common/docker.sh",
-    "line": 192,
+    "line": 193,
     "describe": "Open a shell in the most recently created container.",
     "usage": "docker_open_shell_last",
     "examples": ["docker_open_shell_last"],
@@ -1497,14 +1596,15 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "docker_play_create_node",
     "module": "docker",
     "module_summary": "Container helpers: aligned image/container tables, log inspection, compose shortcuts, network introspection, and throwaway services.",
     "file": "modules/common/docker.sh",
-    "line": 352,
+    "line": 356,
     "describe": "Create a Play With Docker node and point the local docker client at it. Pass the session URL shown by labs.play-with-docker.com.",
     "usage": "docker_play_create_node <session-url>",
     "examples": ["docker_play_create_node http://host3.labs.play-with-docker.com/p/35ef3b7d"],
@@ -1512,14 +1612,15 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "docker_play_remove_machines",
     "module": "docker",
     "module_summary": "Container helpers: aligned image/container tables, log inspection, compose shortcuts, network introspection, and throwaway services.",
     "file": "modules/common/docker.sh",
-    "line": 375,
+    "line": 379,
     "describe": "Delete every local docker-machine definition under ~/.docker/machine.",
     "usage": "docker_play_remove_machines",
     "examples": ["docker_play_remove_machines"],
@@ -1527,14 +1628,15 @@
     "os": "any",
     "danger": "Deletes ~/.docker/machine entirely. Prompts first.",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "docker_remove_exited_containers",
     "module": "docker",
     "module_summary": "Container helpers: aligned image/container tables, log inspection, compose shortcuts, network introspection, and throwaway services.",
     "file": "modules/common/docker.sh",
-    "line": 202,
+    "line": 203,
     "describe": "Remove every container in the exited state, after showing them.",
     "usage": "docker_remove_exited_containers",
     "examples": ["docker_remove_exited_containers"],
@@ -1542,14 +1644,15 @@
     "os": "any",
     "danger": "Removes containers permanently. Prompts first.",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "docker_restart_service",
     "module": "docker",
     "module_summary": "Container helpers: aligned image/container tables, log inspection, compose shortcuts, network introspection, and throwaway services.",
     "file": "modules/common/docker.sh",
-    "line": 281,
+    "line": 285,
     "describe": "Restart one or all compose services.",
     "usage": "docker_restart_service [service]...",
     "examples": ["docker_restart_service app"],
@@ -1557,14 +1660,15 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": "service:!docker compose config --services 2>/dev/null"
   },
   {
     "name": "docker_run_bundle",
     "module": "docker",
     "module_summary": "Container helpers: aligned image/container tables, log inspection, compose shortcuts, network introspection, and throwaway services.",
     "file": "modules/common/docker.sh",
-    "line": 300,
+    "line": 304,
     "describe": "Run bundler inside a compose service (defaults to the \"app\" service).",
     "usage": "docker_run_bundle [service]",
     "examples": ["docker_run_bundle", "docker_run_bundle worker"],
@@ -1572,14 +1676,15 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "docker_run_compose",
     "module": "docker",
     "module_summary": "Container helpers: aligned image/container tables, log inspection, compose shortcuts, network introspection, and throwaway services.",
     "file": "modules/common/docker.sh",
-    "line": 254,
+    "line": 255,
     "describe": "Run docker compose in the current project.",
     "usage": "docker_run_compose <compose-subcommand> [arg]...",
     "examples": ["docker_run_compose up -d"],
@@ -1587,14 +1692,15 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "docker_run_postgres",
     "module": "docker",
     "module_summary": "Container helpers: aligned image/container tables, log inspection, compose shortcuts, network introspection, and throwaway services.",
     "file": "modules/common/docker.sh",
-    "line": 314,
+    "line": 318,
     "describe": "Start a disposable PostgreSQL container. Generates a fresh random password for every invocation, passes it through a private temp env-file, and deletes that file on exit via a trap.",
     "usage": "docker_run_postgres [host-port] [database] [user]",
     "examples": ["docker_run_postgres", "docker_run_postgres 55432 appdb appuser"],
@@ -1602,7 +1708,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "docker_show_logs",
@@ -1617,14 +1724,15 @@
     "os": "any",
     "danger": "",
     "see": ["docker_cache_last_container"],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "docker_show_networks",
     "module": "docker",
     "module_summary": "Container helpers: aligned image/container tables, log inspection, compose shortcuts, network introspection, and throwaway services.",
     "file": "modules/common/docker.sh",
-    "line": 239,
+    "line": 240,
     "describe": "Print each docker network alongside its IPAM (subnet) configuration.",
     "usage": "docker_show_networks",
     "examples": ["docker_show_networks | jq -s ."],
@@ -1632,7 +1740,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "docker_mount_data_disk",
@@ -1647,7 +1756,8 @@
     "os": "linux",
     "danger": "",
     "see": ["docker_unmount_data_disk"],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "docker_unmount_data_disk",
@@ -1662,7 +1772,8 @@
     "os": "linux",
     "danger": "Stops the docker daemon, killing every running container. Prompts first.",
     "see": ["docker_mount_data_disk"],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "files_disk_usage",
@@ -1677,7 +1788,8 @@
     "os": "any",
     "danger": "",
     "see": ["path_size"],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "files_find_node_modules",
@@ -1692,7 +1804,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "files_list_command_path",
@@ -1707,7 +1820,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "files_locate_function",
@@ -1722,7 +1836,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "files_mkcd",
@@ -1737,7 +1852,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "files_mkdir_dated",
@@ -1752,7 +1868,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "files_purge_node_modules",
@@ -1767,7 +1884,8 @@
     "os": "any",
     "danger": "Recursively deletes directories. Confirms once, then removes them all.",
     "see": ["files_find_node_modules"],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "fun_a_to_z",
@@ -1782,7 +1900,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "fun_cow_tweet",
@@ -1797,7 +1916,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "fun_cowsay_fortune",
@@ -1812,7 +1932,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "fun_emoji",
@@ -1827,7 +1948,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "fun_eye",
@@ -1842,7 +1964,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "fun_flip",
@@ -1857,7 +1980,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "fun_flip_copy",
@@ -1872,7 +1996,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "fun_mascot",
@@ -1887,7 +2012,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "fun_mplayer_stream",
@@ -1902,7 +2028,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "fun_mplayer_vo",
@@ -1917,7 +2044,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "fun_old_tv",
@@ -1932,7 +2060,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "fun_pacman_anim",
@@ -1947,7 +2076,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "fun_remind",
@@ -1962,7 +2092,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "fun_sudo_last",
@@ -1977,7 +2108,8 @@
     "os": "any",
     "danger": "Runs your last command as root. The original alias `damn_it='sudo $(fc -ln -1)'` did this instantly, with no echo of what it was about to run and no confirmation — so a typo'd or half-remembered previous command went straight to root. This version prints the command and waits for an explicit yes.",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "fun_uptime",
@@ -1992,7 +2124,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "gcloud_dns_add_record",
@@ -2007,7 +2140,8 @@
     "os": "any",
     "danger": "Mutates live DNS for the whole zone.",
     "see": ["gcloud_dns_remove_record"],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "gcloud_dns_remove_record",
@@ -2022,7 +2156,8 @@
     "os": "any",
     "danger": "Deletes a live DNS record. Confirms first.",
     "see": ["gcloud_dns_add_record"],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "git_count_commits",
@@ -2037,7 +2172,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "git_count_commits_by_project",
@@ -2052,7 +2188,8 @@
     "os": "any",
     "danger": "",
     "see": ["git_count_commits", "git_count_commits_total"],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "git_count_commits_total",
@@ -2067,7 +2204,8 @@
     "os": "any",
     "danger": "",
     "see": ["git_count_commits_by_project"],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "git_get_default_branch",
@@ -2082,7 +2220,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "git_log_graph",
@@ -2097,7 +2236,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "git_show_recent_branches",
@@ -2112,7 +2252,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "gpg_backup",
@@ -2127,7 +2268,8 @@
     "os": "any",
     "danger": "Writes your private key. The archive is only as strong as the zip password you type — use a long one, and store the archive offline.",
     "see": ["gpg_restore"],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "gpg_list_keys",
@@ -2142,7 +2284,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "gpg_restore",
@@ -2157,14 +2300,15 @@
     "os": "any",
     "danger": "Imports a private key into your keyring and overwrites ownertrust.",
     "see": ["gpg_backup"],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "shelp",
     "module": "help",
     "module_summary": "Search the generated documentation from inside the shell. Reads docs/functions.json, which bin/shellrc-doc regenerates from the doc blocks in lib/ and modules/.",
     "file": "modules/common/help.sh",
-    "line": 137,
+    "line": 138,
     "describe": "Search the generated function documentation from the shell. With no arguments it lists every module and how many functions it has; with a query it matches case-insensitively against function names, descriptions and usage strings.",
     "usage": "shelp [-m <module>] [query]",
     "examples": ["shelp", "shelp ssm", "shelp -m docker"],
@@ -2172,14 +2316,15 @@
     "os": "any",
     "danger": "",
     "see": ["shellrc-doc"],
-    "private": false
+    "private": false,
+    "complete": "module:!jq -r '.[].module' \"${SHELLRC_ROOT}/docs/functions.json\" 2>/dev/null | sort -u"
   },
   {
     "name": "shelp_pick",
     "module": "help",
     "module_summary": "Search the generated documentation from inside the shell. Reads docs/functions.json, which bin/shellrc-doc regenerates from the doc blocks in lib/ and modules/.",
     "file": "modules/common/help.sh",
-    "line": 268,
+    "line": 269,
     "describe": "Fuzzy-find a function with a live preview of its full documentation. Prints the chosen name on stdout, so it composes: `$(shelp_pick)`. With --show it prints the whole doc entry for the selection instead. Falls back to a plain listing when fzf is not installed.",
     "usage": "shelp_pick [--show] [initial-query]",
     "examples": ["shelp_pick", "shelp_pick ssm", "eval \"$(shelp_pick)\" --help"],
@@ -2187,7 +2332,8 @@
     "os": "any",
     "danger": "",
     "see": ["shelp"],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "image_trace_to_svg",
@@ -2202,14 +2348,15 @@
     "os": "any",
     "danger": "Overwrites <output.svg> when it already exists — prompts first.",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "k8s_create_cluster_with_registry",
     "module": "kubernetes",
     "module_summary": "kubectl, kind, krew, and k9s helpers: secret inspection, debug pods, throwaway kind clusters, and evicted-pod triage.",
     "file": "modules/common/kubernetes.sh",
-    "line": 353,
+    "line": 354,
     "describe": "Create a kind cluster wired to a local image registry, using the upstream example script. The script is downloaded to a temp file, diffed against the copy you approved last time, and executed only after you confirm.",
     "usage": "k8s_create_cluster_with_registry",
     "examples": ["k8s_create_cluster_with_registry"],
@@ -2217,14 +2364,15 @@
     "os": "any",
     "danger": "Runs a script downloaded from the internet. Shows it and prompts first.",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "k8s_create_kind_cluster",
     "module": "kubernetes",
     "module_summary": "kubectl, kind, krew, and k9s helpers: secret inspection, debug pods, throwaway kind clusters, and evicted-pod triage.",
     "file": "modules/common/kubernetes.sh",
-    "line": 316,
+    "line": 317,
     "describe": "Create a kind cluster and record its name so k8s_delete_last_cluster can find it later.",
     "usage": "k8s_create_kind_cluster [name]",
     "examples": ["k8s_create_kind_cluster", "k8s_create_kind_cluster scratch"],
@@ -2232,14 +2380,15 @@
     "os": "any",
     "danger": "",
     "see": ["k8s_delete_kind_cluster"],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "k8s_create_random_cluster",
     "module": "kubernetes",
     "module_summary": "kubectl, kind, krew, and k9s helpers: secret inspection, debug pods, throwaway kind clusters, and evicted-pod triage.",
     "file": "modules/common/kubernetes.sh",
-    "line": 331,
+    "line": 332,
     "describe": "Create a kind cluster with a randomly generated name.",
     "usage": "k8s_create_random_cluster [id-length]",
     "examples": ["k8s_create_random_cluster", "k8s_create_random_cluster 10"],
@@ -2247,14 +2396,15 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "k8s_delete_kind_cluster",
     "module": "kubernetes",
     "module_summary": "kubectl, kind, krew, and k9s helpers: secret inspection, debug pods, throwaway kind clusters, and evicted-pod triage.",
     "file": "modules/common/kubernetes.sh",
-    "line": 401,
+    "line": 402,
     "describe": "Delete a kind cluster by name.",
     "usage": "k8s_delete_kind_cluster [name]",
     "examples": ["k8s_delete_kind_cluster", "k8s_delete_kind_cluster scratch"],
@@ -2262,14 +2412,15 @@
     "os": "any",
     "danger": "Destroys the cluster and everything in it. Prompts first.",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "k8s_delete_last_cluster",
     "module": "kubernetes",
     "module_summary": "kubectl, kind, krew, and k9s helpers: secret inspection, debug pods, throwaway kind clusters, and evicted-pod triage.",
     "file": "modules/common/kubernetes.sh",
-    "line": 418,
+    "line": 419,
     "describe": "Delete the kind cluster created most recently by this shellrc.",
     "usage": "k8s_delete_last_cluster",
     "examples": ["k8s_delete_last_cluster"],
@@ -2277,7 +2428,8 @@
     "os": "any",
     "danger": "Destroys the cluster and everything in it. Prompts first.",
     "see": ["k8s_create_random_cluster"],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "k8s_encode_secret",
@@ -2292,7 +2444,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "k8s_fetch_kubectl_aliases",
@@ -2307,14 +2460,15 @@
     "os": "any",
     "danger": "",
     "see": ["k8s_load_kubectl_aliases"],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "k8s_install_krew",
     "module": "kubernetes",
     "module_summary": "kubectl, kind, krew, and k9s helpers: secret inspection, debug pods, throwaway kind clusters, and evicted-pod triage.",
     "file": "modules/common/kubernetes.sh",
-    "line": 266,
+    "line": 267,
     "describe": "Download the latest krew release for this OS and architecture, show you its checksum and contents, and install it only after you agree. Nothing is piped into a shell.",
     "usage": "k8s_install_krew",
     "examples": ["k8s_install_krew"],
@@ -2322,14 +2476,15 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "k8s_list_nodes",
     "module": "kubernetes",
     "module_summary": "kubectl, kind, krew, and k9s helpers: secret inspection, debug pods, throwaway kind clusters, and evicted-pod triage.",
     "file": "modules/common/kubernetes.sh",
-    "line": 243,
+    "line": 244,
     "describe": "List nodes with their Karpenter AMI id and instance type. Nodes missing either label are skipped.",
     "usage": "k8s_list_nodes",
     "examples": ["k8s_list_nodes | sort -k3"],
@@ -2337,7 +2492,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "k8s_list_pods",
@@ -2352,7 +2508,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "k8s_load_kubectl_aliases",
@@ -2367,14 +2524,15 @@
     "os": "any",
     "danger": "",
     "see": ["k8s_fetch_kubectl_aliases"],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "k8s_print_connections",
     "module": "kubernetes",
     "module_summary": "kubectl, kind, krew, and k9s helpers: secret inspection, debug pods, throwaway kind clusters, and evicted-pod triage.",
     "file": "modules/common/kubernetes.sh",
-    "line": 175,
+    "line": 176,
     "describe": "Run netstat in every pod matching $LABEL in $NAMESPACE, optionally filtered, and report the per-pod line count. Full output is kept in a private temp directory whose path is printed at the end.",
     "usage": "k8s_print_connections [grep-pattern]...",
     "examples": ["NAMESPACE=production LABEL=app=web k8s_print_connections ESTABLISHED"],
@@ -2382,14 +2540,15 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "k8s_print_evicted_pods",
     "module": "kubernetes",
     "module_summary": "kubectl, kind, krew, and k9s helpers: secret inspection, debug pods, throwaway kind clusters, and evicted-pod triage.",
     "file": "modules/common/kubernetes.sh",
-    "line": 202,
+    "line": 203,
     "describe": "Find evicted pods in every namespace, print the eviction reason for each, then offer to delete them.",
     "usage": "k8s_print_evicted_pods",
     "examples": ["k8s_print_evicted_pods"],
@@ -2397,7 +2556,8 @@
     "os": "any",
     "danger": "Deletes the evicted pods it finds. Prompts before deleting.",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "k8s_print_secrets",
@@ -2412,14 +2572,15 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "k8s_run_debug_pod",
     "module": "kubernetes",
     "module_summary": "kubectl, kind, krew, and k9s helpers: secret inspection, debug pods, throwaway kind clusters, and evicted-pod triage.",
     "file": "modules/common/kubernetes.sh",
-    "line": 163,
+    "line": 164,
     "describe": "Launch a throwaway interactive pod and drop into a shell. The pod is deleted as soon as you exit.",
     "usage": "k8s_run_debug_pod [image] [namespace] [pod-name]",
     "examples": ["k8s_run_debug_pod", "k8s_run_debug_pod nicolaka/netshoot production netdebug"],
@@ -2427,14 +2588,15 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": "image:(ubuntu alpine debian busybox nicolaka/netshoot)"
   },
   {
     "name": "k9s_install_themes",
     "module": "kubernetes",
     "module_summary": "kubectl, kind, krew, and k9s helpers: secret inspection, debug pods, throwaway kind clusters, and evicted-pod triage.",
     "file": "modules/common/kubernetes.sh",
-    "line": 443,
+    "line": 444,
     "describe": "Install the k9s skin collection into the k9s config directory. On macOS also links the config dir into ~/Library/Application Support/, which is where k9s looks.",
     "usage": "k9s_install_themes",
     "examples": ["k9s_install_themes && k9s_set_theme solarized_dark"],
@@ -2442,14 +2604,15 @@
     "os": "any",
     "danger": "Replaces any existing skins directory. Prompts when one is present.",
     "see": ["k9s_set_theme"],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "k9s_set_theme",
     "module": "kubernetes",
     "module_summary": "kubectl, kind, krew, and k9s helpers: secret inspection, debug pods, throwaway kind clusters, and evicted-pod triage.",
     "file": "modules/common/kubernetes.sh",
-    "line": 484,
+    "line": 485,
     "describe": "Point k9s at one of the installed skins.",
     "usage": "k9s_set_theme [skin-name]",
     "examples": ["k9s_set_theme", "k9s_set_theme dracula"],
@@ -2457,7 +2620,8 @@
     "os": "any",
     "danger": "",
     "see": ["k9s_install_themes"],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "go_get_verbose",
@@ -2472,7 +2636,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "node_load_nvm",
@@ -2487,7 +2652,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "pip_generate_completion",
@@ -2502,7 +2668,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "pip_install_user",
@@ -2517,7 +2684,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "ruby_load_chruby",
@@ -2532,7 +2700,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "ruby_remove_version",
@@ -2547,7 +2716,8 @@
     "os": "any",
     "danger": "Recursively deletes the whole ruby install directory.",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "uv_ensure_path",
@@ -2562,7 +2732,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "media_shrink_video",
@@ -2577,7 +2748,8 @@
     "os": "any",
     "danger": "Overwrites <output> when it already exists — prompts first.",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "net_copy_github_keys",
@@ -2592,7 +2764,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "net_copy_ssh_pubkey",
@@ -2607,7 +2780,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "net_download_audio",
@@ -2622,7 +2796,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "net_download_format",
@@ -2637,7 +2812,8 @@
     "os": "any",
     "danger": "",
     "see": ["net_list_formats"],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "net_download_media",
@@ -2652,7 +2828,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "net_download_video",
@@ -2667,7 +2844,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "net_dump_tcp_headers",
@@ -2682,7 +2860,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "net_extract_urls",
@@ -2697,7 +2876,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "net_extract_youtube_urls",
@@ -2712,7 +2892,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "net_fetch_json",
@@ -2727,7 +2908,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "net_get_isp",
@@ -2742,7 +2924,8 @@
     "os": "any",
     "danger": "",
     "see": ["net_get_public_ip"],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "net_get_movie_info",
@@ -2757,7 +2940,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "net_get_public_ip",
@@ -2772,7 +2956,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "net_issue_letsencrypt_cert",
@@ -2787,7 +2972,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "net_list_formats",
@@ -2802,7 +2988,8 @@
     "os": "any",
     "danger": "",
     "see": ["net_download_format"],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "net_mirror_site",
@@ -2817,7 +3004,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "net_normalize_ip",
@@ -2832,7 +3020,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "net_open_github_user",
@@ -2847,7 +3036,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "net_scan_hosts",
@@ -2862,7 +3052,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "is_linux",
@@ -2877,7 +3068,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "is_macos",
@@ -2892,7 +3084,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "os_arch",
@@ -2907,7 +3100,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "os_name",
@@ -2922,7 +3116,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "os_pkg_manager",
@@ -2937,7 +3132,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "pkg_install",
@@ -2952,7 +3148,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "pacman_clean_cache",
@@ -2967,7 +3164,8 @@
     "os": "linux",
     "danger": "Deletes cached packages, so downgrading later means re-downloading.",
     "see": ["https://wiki.archlinux.org/index.php/pacman#Cleaning_the_package_cache"],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "pacman_list_orphans",
@@ -2982,7 +3180,8 @@
     "os": "linux",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "pacman_remove_orphans",
@@ -2997,7 +3196,8 @@
     "os": "linux",
     "danger": "Uninstalls packages. Read the list before saying yes.",
     "see": ["pacman_list_orphans"],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "proc_kill_port",
@@ -3012,7 +3212,8 @@
     "os": "any",
     "danger": "Sends SIGKILL. Always names the processes and confirms first; the old killp defaulted to port 3001 and killed without asking.",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "proc_top_memory",
@@ -3027,7 +3228,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "proc_watch_command",
@@ -3042,7 +3244,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "procfs_show_env",
@@ -3057,7 +3260,8 @@
     "os": "linux",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "procfs_show_passenger_threads",
@@ -3072,7 +3276,8 @@
     "os": "linux",
     "danger": "",
     "see": ["procfs_show_threads"],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "procfs_show_threads",
@@ -3087,7 +3292,8 @@
     "os": "linux",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "procfs_top_oom_scores",
@@ -3102,7 +3308,8 @@
     "os": "linux",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "prompt_build_string",
@@ -3117,7 +3324,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "prompt_context_string",
@@ -3132,7 +3340,8 @@
     "os": "any",
     "danger": "",
     "see": ["prompt_build_string"],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "shell_get_browser",
@@ -3147,7 +3356,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "shell_get_editor",
@@ -3162,7 +3372,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "shell_percol_history",
@@ -3177,7 +3388,8 @@
     "os": "any",
     "danger": "",
     "see": ["shelp_pick"],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "shell_reload",
@@ -3192,7 +3404,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "shell_retry",
@@ -3207,7 +3420,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "shell_serve_http",
@@ -3222,7 +3436,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "shell_setup_history",
@@ -3237,7 +3452,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "shell_time_command",
@@ -3252,7 +3468,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "ssh_generate_host_config",
@@ -3267,7 +3484,8 @@
     "os": "any",
     "danger": "Sources ~/.aws/keys/<account> into the current shell and replaces $SSH_CONFIG_D/<account>-<region>.config, then runs ssh_refresh_config.",
     "see": ["ssh_refresh_config"],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "ssh_generate_key",
@@ -3282,7 +3500,8 @@
     "os": "any",
     "danger": "Writes an unencrypted private key to disk. Refuses to overwrite an existing key of the same name.",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "ssh_generate_keys_all",
@@ -3297,7 +3516,8 @@
     "os": "any",
     "danger": "See ssh_generate_key.",
     "see": ["ssh_generate_key"],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "ssh_list_hosts",
@@ -3312,7 +3532,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "ssh_list_hosts_matching",
@@ -3327,7 +3548,8 @@
     "os": "any",
     "danger": "",
     "see": ["ssh_list_hosts"],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "ssh_refresh_config",
@@ -3342,7 +3564,8 @@
     "os": "any",
     "danger": "Replaces ~/.ssh/config. Hand edits made directly to that file are lost; put them in $SSH_CONFIG_D/*.config instead. A backup is written to ~/.ssh/config.<timestamp>.bak first.",
     "see": ["ssh_generate_host_config"],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "ssh_start_x2x",
@@ -3357,7 +3580,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "system_enable_webcam",
@@ -3372,7 +3596,8 @@
     "os": "linux",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "system_find_raspberry_pi",
@@ -3387,7 +3612,8 @@
     "os": "linux",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "system_free_disk_space",
@@ -3402,7 +3628,8 @@
     "os": "linux",
     "danger": "Deletes package and build caches and vacuums the systemd journal to one day of history. Everything removed is regenerable, but a later rebuild or reinstall will have to download again.",
     "see": ["path_size"],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "system_tarball_package",
@@ -3417,7 +3644,8 @@
     "os": "linux",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "system_test_webcam",
@@ -3432,7 +3660,8 @@
     "os": "linux",
     "danger": "",
     "see": ["system_enable_webcam"],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "text_copy_2fa_code",
@@ -3447,7 +3676,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "text_copy_and_announce",
@@ -3462,7 +3692,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "text_decode_base64",
@@ -3477,7 +3708,8 @@
     "os": "any",
     "danger": "",
     "see": ["text_encode_base64"],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "text_encode_base64",
@@ -3492,7 +3724,8 @@
     "os": "any",
     "danger": "",
     "see": ["text_decode_base64"],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "text_grep_env",
@@ -3507,7 +3740,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "text_load_env_file",
@@ -3522,7 +3756,8 @@
     "os": "any",
     "danger": "",
     "see": ["text_unload_env_file"],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "text_make_qrcode",
@@ -3537,7 +3772,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "text_pretty_json",
@@ -3552,7 +3788,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "text_random_password",
@@ -3567,7 +3804,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "text_show_binary",
@@ -3582,7 +3820,8 @@
     "os": "any",
     "danger": "",
     "see": ["text_show_binary_inline"],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "text_show_binary_inline",
@@ -3597,7 +3836,8 @@
     "os": "any",
     "danger": "",
     "see": ["text_show_binary"],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "text_split_lines",
@@ -3612,7 +3852,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "text_split_to_json_array",
@@ -3627,7 +3868,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "text_unload_env_file",
@@ -3642,7 +3884,8 @@
     "os": "any",
     "danger": "",
     "see": ["text_load_env_file"],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "tls_gen_self_signed",
@@ -3657,7 +3900,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "tls_get_remote_info",
@@ -3672,7 +3916,8 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   },
   {
     "name": "tls_show_cert",
@@ -3687,6 +3932,7 @@
     "os": "any",
     "danger": "",
     "see": [],
-    "private": false
+    "private": false,
+    "complete": ""
   }
 ]

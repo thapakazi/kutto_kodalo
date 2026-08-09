@@ -166,6 +166,7 @@ docker_show_logs() {
 # @describe Open an interactive shell inside a container, preferring bash and
 #           falling back to sh. Defaults to the most recent container.
 # @usage    docker_open_shell [container] [shell]
+# @complete container:!docker ps --format '{{.Names}}' 2>/dev/null shell:(bash sh zsh ash)
 # @example  docker_open_shell
 # @example  docker_open_shell web /bin/zsh
 # @requires docker
@@ -257,6 +258,7 @@ docker_run_compose() {
 
 # @describe Run a command inside a compose service.
 # @usage    docker_exec_service <service> [command]...
+# @complete service:!docker compose config --services 2>/dev/null
 # @example  docker_exec_service app bash
 # @requires docker
 # @os       any
@@ -266,6 +268,7 @@ docker_exec_service() {
 
 # @describe Follow the logs of one or all compose services.
 # @usage    docker_follow_logs [service]...
+# @complete service:!docker compose config --services 2>/dev/null
 # @example  docker_follow_logs app
 # @requires docker
 # @os       any
@@ -275,6 +278,7 @@ docker_follow_logs() {
 
 # @describe Restart one or all compose services.
 # @usage    docker_restart_service [service]...
+# @complete service:!docker compose config --services 2>/dev/null
 # @example  docker_restart_service app
 # @requires docker
 # @os       any

@@ -219,8 +219,9 @@ only on the other OS still gets through.
   zsh-only and doctor's census runs under bash. Not a missing dependency; do not
   "fix" it by removing its zsh guard. (`calendar`, `gcloud` are genuinely
   dependency-gated.)
-- **`completions/` looking stale** — it is hand-written. `@complete` and
-  `bin/shellrc-completions` in CONVENTIONS are **not implemented**.
+- **`completions/_shellrc_generated` and `shellrc-generated.bash`** are
+  generated — edit the `@complete` block and run `just docs`. `_shelp` and
+  `_aws_ssm_session` alongside them are hand-written and predate the generator.
 
 ---
 

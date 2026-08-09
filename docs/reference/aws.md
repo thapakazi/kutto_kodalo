@@ -68,7 +68,7 @@ aws_iam_attach_policy uploads-ci arn:aws:iam::123456789012:policy/uploads-put
 
 **Requires** `aws`
 
-**OS** any &nbsp;·&nbsp; **Source** [`modules/common/aws.sh:538`](../../modules/common/aws.sh#L538)
+**OS** any &nbsp;·&nbsp; **Source** [`modules/common/aws.sh:542`](../../modules/common/aws.sh#L542)
 
 ---
 
@@ -92,7 +92,7 @@ aws_iam_create_bucket_writer uploads-ci my-uploads uploads-put
 
 **Requires** `aws`
 
-**OS** any &nbsp;·&nbsp; **Source** [`modules/common/aws.sh:557`](../../modules/common/aws.sh#L557)
+**OS** any &nbsp;·&nbsp; **Source** [`modules/common/aws.sh:561`](../../modules/common/aws.sh#L561)
 
 **See also** `aws_iam_attach_policy`
 
@@ -116,7 +116,7 @@ aws_iam_create_policy_from_file uploads-put ./policy.json
 
 **Requires** `aws`
 
-**OS** any &nbsp;·&nbsp; **Source** [`modules/common/aws.sh:523`](../../modules/common/aws.sh#L523)
+**OS** any &nbsp;·&nbsp; **Source** [`modules/common/aws.sh:527`](../../modules/common/aws.sh#L527)
 
 ---
 
@@ -138,7 +138,7 @@ aws_iam_create_user uploads-ci
 
 **Requires** `aws`
 
-**OS** any &nbsp;·&nbsp; **Source** [`modules/common/aws.sh:487`](../../modules/common/aws.sh#L487)
+**OS** any &nbsp;·&nbsp; **Source** [`modules/common/aws.sh:491`](../../modules/common/aws.sh#L491)
 
 ---
 
@@ -160,7 +160,7 @@ aws_iam_find_user_by_key AKIAEXAMPLE
 
 **Requires** `aws`
 
-**OS** any &nbsp;·&nbsp; **Source** [`modules/common/aws.sh:476`](../../modules/common/aws.sh#L476)
+**OS** any &nbsp;·&nbsp; **Source** [`modules/common/aws.sh:480`](../../modules/common/aws.sh#L480)
 
 ---
 
@@ -180,7 +180,7 @@ aws_iam_print_bucket_policy <bucket>
 aws_iam_print_bucket_policy my-uploads > policy.json
 ```
 
-**OS** any &nbsp;·&nbsp; **Source** [`modules/common/aws.sh:498`](../../modules/common/aws.sh#L498)
+**OS** any &nbsp;·&nbsp; **Source** [`modules/common/aws.sh:502`](../../modules/common/aws.sh#L502)
 
 ---
 
@@ -248,7 +248,7 @@ aws_ssm_copy_param /production/billing/env /staging/billing/env prod-ro staging-
 
 **Requires** `aws`, `jq`
 
-**OS** any &nbsp;·&nbsp; **Source** [`modules/common/aws.sh:338`](../../modules/common/aws.sh#L338)
+**OS** any &nbsp;·&nbsp; **Source** [`modules/common/aws.sh:341`](../../modules/common/aws.sh#L341)
 
 **See also** `aws_ssm_get_param_by_path`, `aws_ssm_put_param_by_path`
 
@@ -274,7 +274,7 @@ aws_ssm_edit_param billing production env
 
 **Requires** `aws`, `jq`
 
-**OS** any &nbsp;·&nbsp; **Source** [`modules/common/aws.sh:264`](../../modules/common/aws.sh#L264)
+**OS** any &nbsp;·&nbsp; **Source** [`modules/common/aws.sh:267`](../../modules/common/aws.sh#L267)
 
 ---
 
@@ -298,7 +298,7 @@ aws_ssm_edit_param_by_path /production/billing/env
 
 **Requires** `aws`, `jq`
 
-**OS** any &nbsp;·&nbsp; **Source** [`modules/common/aws.sh:307`](../../modules/common/aws.sh#L307)
+**OS** any &nbsp;·&nbsp; **Source** [`modules/common/aws.sh:310`](../../modules/common/aws.sh#L310)
 
 **See also** `aws_ssm_edit_param`
 
@@ -323,7 +323,7 @@ aws_ssm_get_param billing staging config/appsettings.json
 
 **Requires** `aws`, `jq`
 
-**OS** any &nbsp;·&nbsp; **Source** [`modules/common/aws.sh:190`](../../modules/common/aws.sh#L190)
+**OS** any &nbsp;·&nbsp; **Source** [`modules/common/aws.sh:191`](../../modules/common/aws.sh#L191)
 
 ---
 
@@ -345,7 +345,7 @@ aws_ssm_get_param_by_path /production/billing/env
 
 **Requires** `aws`, `jq`
 
-**OS** any &nbsp;·&nbsp; **Source** [`modules/common/aws.sh:205`](../../modules/common/aws.sh#L205)
+**OS** any &nbsp;·&nbsp; **Source** [`modules/common/aws.sh:206`](../../modules/common/aws.sh#L206)
 
 ---
 
@@ -367,7 +367,7 @@ AWS_PROFILE=prod aws_ssm_list_instances
 
 **Requires** `aws`, `ec2-session`
 
-**OS** any &nbsp;·&nbsp; **Source** [`modules/common/aws.sh:423`](../../modules/common/aws.sh#L423)
+**OS** any &nbsp;·&nbsp; **Source** [`modules/common/aws.sh:426`](../../modules/common/aws.sh#L426)
 
 **See also** `aws_ssm_start_session`
 
@@ -391,7 +391,7 @@ aws_ssm_list_params | grep production
 
 **Requires** `aws`, `jq`
 
-**OS** any &nbsp;·&nbsp; **Source** [`modules/common/aws.sh:322`](../../modules/common/aws.sh#L322)
+**OS** any &nbsp;·&nbsp; **Source** [`modules/common/aws.sh:325`](../../modules/common/aws.sh#L325)
 
 ---
 
@@ -415,7 +415,7 @@ aws_ssm_put_env_file .env.production /production/billing/
 
 **Requires** `aws`
 
-**OS** any &nbsp;·&nbsp; **Source** [`modules/common/aws.sh:380`](../../modules/common/aws.sh#L380)
+**OS** any &nbsp;·&nbsp; **Source** [`modules/common/aws.sh:383`](../../modules/common/aws.sh#L383)
 
 ---
 
@@ -439,7 +439,7 @@ aws_ssm_put_param billing staging env "$(cat .env)"
 
 **Requires** `aws`
 
-**OS** any &nbsp;·&nbsp; **Source** [`modules/common/aws.sh:223`](../../modules/common/aws.sh#L223)
+**OS** any &nbsp;·&nbsp; **Source** [`modules/common/aws.sh:225`](../../modules/common/aws.sh#L225)
 
 ---
 
@@ -463,7 +463,7 @@ aws_ssm_put_param_by_path /staging/billing/env "$(cat .env)"
 
 **Requires** `aws`
 
-**OS** any &nbsp;·&nbsp; **Source** [`modules/common/aws.sh:245`](../../modules/common/aws.sh#L245)
+**OS** any &nbsp;·&nbsp; **Source** [`modules/common/aws.sh:247`](../../modules/common/aws.sh#L247)
 
 ---
 
@@ -483,7 +483,7 @@ aws_ssm_show_examples
 aws_ssm_show_examples
 ```
 
-**OS** any &nbsp;·&nbsp; **Source** [`modules/common/aws.sh:405`](../../modules/common/aws.sh#L405)
+**OS** any &nbsp;·&nbsp; **Source** [`modules/common/aws.sh:408`](../../modules/common/aws.sh#L408)
 
 ---
 
@@ -506,7 +506,7 @@ aws_ssm_start_session prod-app ec2-user
 
 **Requires** `aws`, `ec2-session`
 
-**OS** any &nbsp;·&nbsp; **Source** [`modules/common/aws.sh:447`](../../modules/common/aws.sh#L447)
+**OS** any &nbsp;·&nbsp; **Source** [`modules/common/aws.sh:451`](../../modules/common/aws.sh#L451)
 
 **See also** `aws_ssm_list_instances`
 
@@ -550,7 +550,7 @@ k8s_convert_configmap_to_env <manifest>...
 k8s_convert_configmap_to_env configmap.yaml > .env
 ```
 
-**OS** any &nbsp;·&nbsp; **Source** [`modules/common/aws.sh:608`](../../modules/common/aws.sh#L608)
+**OS** any &nbsp;·&nbsp; **Source** [`modules/common/aws.sh:612`](../../modules/common/aws.sh#L612)
 
 **See also** `k8s_show_configmap_data`
 
@@ -574,7 +574,7 @@ k8s_convert_configmap_to_json configmap.yaml | jq .
 
 **Requires** `jq`
 
-**OS** any &nbsp;·&nbsp; **Source** [`modules/common/aws.sh:618`](../../modules/common/aws.sh#L618)
+**OS** any &nbsp;·&nbsp; **Source** [`modules/common/aws.sh:622`](../../modules/common/aws.sh#L622)
 
 **See also** `k8s_show_configmap_data`
 
@@ -596,7 +596,7 @@ k8s_show_configmap_data <manifest>...
 k8s_show_configmap_data configmap.yaml
 ```
 
-**OS** any &nbsp;·&nbsp; **Source** [`modules/common/aws.sh:596`](../../modules/common/aws.sh#L596)
+**OS** any &nbsp;·&nbsp; **Source** [`modules/common/aws.sh:600`](../../modules/common/aws.sh#L600)
 
 ---
 

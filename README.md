@@ -29,6 +29,7 @@ shelp ssm            # search names, usage and descriptions
 shelp -m docker      # everything in one module
 shelp -i             # fuzzy picker with live preview
 Ctrl-G               # pick a function, drop it on the command line
+<TAB>                # argument completion, generated from the doc blocks
 ```
 
 ```sh

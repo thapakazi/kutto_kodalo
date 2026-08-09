@@ -48,7 +48,7 @@ docker_exec_service app bash
 
 **Requires** `docker`
 
-**OS** any &nbsp;·&nbsp; **Source** [`modules/common/docker.sh:263`](../../modules/common/docker.sh#L263)
+**OS** any &nbsp;·&nbsp; **Source** [`modules/common/docker.sh:265`](../../modules/common/docker.sh#L265)
 
 ---
 
@@ -70,7 +70,7 @@ docker_follow_logs app
 
 **Requires** `docker`
 
-**OS** any &nbsp;·&nbsp; **Source** [`modules/common/docker.sh:272`](../../modules/common/docker.sh#L272)
+**OS** any &nbsp;·&nbsp; **Source** [`modules/common/docker.sh:275`](../../modules/common/docker.sh#L275)
 
 ---
 
@@ -184,7 +184,7 @@ docker_list_ips
 
 **Requires** `docker`
 
-**OS** any &nbsp;·&nbsp; **Source** [`modules/common/docker.sh:224`](../../modules/common/docker.sh#L224)
+**OS** any &nbsp;·&nbsp; **Source** [`modules/common/docker.sh:225`](../../modules/common/docker.sh#L225)
 
 ---
 
@@ -206,7 +206,7 @@ docker_list_services
 
 **Requires** `docker`
 
-**OS** any &nbsp;·&nbsp; **Source** [`modules/common/docker.sh:290`](../../modules/common/docker.sh#L290)
+**OS** any &nbsp;·&nbsp; **Source** [`modules/common/docker.sh:294`](../../modules/common/docker.sh#L294)
 
 ---
 
@@ -252,7 +252,7 @@ docker_open_shell web /bin/zsh
 
 **Requires** `docker`
 
-**OS** any &nbsp;·&nbsp; **Source** [`modules/common/docker.sh:173`](../../modules/common/docker.sh#L173)
+**OS** any &nbsp;·&nbsp; **Source** [`modules/common/docker.sh:174`](../../modules/common/docker.sh#L174)
 
 ---
 
@@ -274,7 +274,7 @@ docker_open_shell_last
 
 **Requires** `docker`
 
-**OS** any &nbsp;·&nbsp; **Source** [`modules/common/docker.sh:192`](../../modules/common/docker.sh#L192)
+**OS** any &nbsp;·&nbsp; **Source** [`modules/common/docker.sh:193`](../../modules/common/docker.sh#L193)
 
 ---
 
@@ -296,7 +296,7 @@ docker_play_create_node http://host3.labs.play-with-docker.com/p/35ef3b7d
 
 **Requires** `docker`, `docker-machine`
 
-**OS** any &nbsp;·&nbsp; **Source** [`modules/common/docker.sh:352`](../../modules/common/docker.sh#L352)
+**OS** any &nbsp;·&nbsp; **Source** [`modules/common/docker.sh:356`](../../modules/common/docker.sh#L356)
 
 ---
 
@@ -320,7 +320,7 @@ docker_play_remove_machines
 
 **Requires** `docker-machine`
 
-**OS** any &nbsp;·&nbsp; **Source** [`modules/common/docker.sh:375`](../../modules/common/docker.sh#L375)
+**OS** any &nbsp;·&nbsp; **Source** [`modules/common/docker.sh:379`](../../modules/common/docker.sh#L379)
 
 ---
 
@@ -344,7 +344,7 @@ docker_remove_exited_containers
 
 **Requires** `docker`
 
-**OS** any &nbsp;·&nbsp; **Source** [`modules/common/docker.sh:202`](../../modules/common/docker.sh#L202)
+**OS** any &nbsp;·&nbsp; **Source** [`modules/common/docker.sh:203`](../../modules/common/docker.sh#L203)
 
 ---
 
@@ -366,7 +366,7 @@ docker_restart_service app
 
 **Requires** `docker`
 
-**OS** any &nbsp;·&nbsp; **Source** [`modules/common/docker.sh:281`](../../modules/common/docker.sh#L281)
+**OS** any &nbsp;·&nbsp; **Source** [`modules/common/docker.sh:285`](../../modules/common/docker.sh#L285)
 
 ---
 
@@ -389,7 +389,7 @@ docker_run_bundle worker
 
 **Requires** `docker`
 
-**OS** any &nbsp;·&nbsp; **Source** [`modules/common/docker.sh:300`](../../modules/common/docker.sh#L300)
+**OS** any &nbsp;·&nbsp; **Source** [`modules/common/docker.sh:304`](../../modules/common/docker.sh#L304)
 
 ---
 
@@ -411,7 +411,7 @@ docker_run_compose up -d
 
 **Requires** `docker`
 
-**OS** any &nbsp;·&nbsp; **Source** [`modules/common/docker.sh:254`](../../modules/common/docker.sh#L254)
+**OS** any &nbsp;·&nbsp; **Source** [`modules/common/docker.sh:255`](../../modules/common/docker.sh#L255)
 
 ---
 
@@ -434,7 +434,7 @@ docker_run_postgres 55432 appdb appuser
 
 **Requires** `docker`
 
-**OS** any &nbsp;·&nbsp; **Source** [`modules/common/docker.sh:314`](../../modules/common/docker.sh#L314)
+**OS** any &nbsp;·&nbsp; **Source** [`modules/common/docker.sh:318`](../../modules/common/docker.sh#L318)
 
 ---
 
@@ -482,7 +482,7 @@ docker_show_networks | jq -s .
 
 **Requires** `docker`
 
-**OS** any &nbsp;·&nbsp; **Source** [`modules/common/docker.sh:239`](../../modules/common/docker.sh#L239)
+**OS** any &nbsp;·&nbsp; **Source** [`modules/common/docker.sh:240`](../../modules/common/docker.sh#L240)
 
 ---
 

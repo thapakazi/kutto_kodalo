@@ -94,13 +94,13 @@ collect_sources > "$SRC_LIST"
 # values inside a field by RS (\036). Field order:
 #
 #   1 module  2 module-summary  3 file  4 line  5 name  6 describe  7 usage
-#   8 examples  9 requires  10 os  11 danger  12 see  13 private
+#   8 examples  9 requires  10 os  11 danger  12 see  13 private  14 complete
 
 read_parser() {
     cat <<'PARSER_AWK'
 function reset_block(   i) {
     d_describe = ""; d_usage = ""; d_os = ""; d_danger = ""; d_see = ""
-    d_req = ""; ex_n = 0; last_tag = ""; have_block = 0
+    d_req = ""; d_complete = ""; ex_n = 0; last_tag = ""; have_block = 0
 }
 function append_tag(tag, text) {
     if      (tag == "summary")  msummary   = joinl(msummary, text)
@@ -109,6 +109,7 @@ function append_tag(tag, text) {
     else if (tag == "requires") d_req      = joinl(d_req, text)
     else if (tag == "danger")   d_danger   = joinl(d_danger, text)
     else if (tag == "see")      d_see      = joinl(d_see, text)
+    else if (tag == "complete") d_complete = joinl(d_complete, text)
     else if (tag == "os")       d_os       = joinl(d_os, text)
     else if (tag == "example" && ex_n > 0) ex[ex_n] = joinl(ex[ex_n], text)
 }
@@ -141,6 +142,7 @@ function emit(name, lineno,   i, exs, private, rec) {
     rec = rec US d_danger
     rec = rec US d_see
     rec = rec US private
+    rec = rec US d_complete
     print rec
     reset_block()
 }
@@ -200,7 +202,8 @@ FNR == 1 {
                 last_tag = "example"
                 have_block = 1
             } else if (tag == "describe" || tag == "usage" || tag == "os" ||
-                       tag == "requires" || tag == "danger" || tag == "see") {
+                       tag == "requires" || tag == "danger" || tag == "see" ||
+                       tag == "complete") {
                 last_tag = tag
                 have_block = 1
                 if      (tag == "describe") d_describe = val
@@ -209,6 +212,7 @@ FNR == 1 {
                 else if (tag == "requires") d_req      = joinl(d_req, val)
                 else if (tag == "danger")   d_danger   = val
                 else if (tag == "see")      d_see      = val
+                else if (tag == "complete") d_complete = val
             } else {
                 last_tag = ""               # unknown @tag, ignore quietly
             }
@@ -390,7 +394,7 @@ BEGIN {
 {
     module = $1; msummary = $2; file = $3; line = $4; name = $5
     describe = $6; usage = $7; examples = $8; requires = $9
-    os = $10; danger = $11; see = $12; private = $13
+    os = $10; danger = $11; see = $12; private = $13; complete = $14
 
     nfun++
 
@@ -410,7 +414,8 @@ BEGIN {
     printf("    \"os\": %s,\n", jstr(os)) > json
     printf("    \"danger\": %s,\n", jstr(danger)) > json
     printf("    \"see\": %s,\n", jarr(see, "[ \t,]+")) > json
-    printf("    \"private\": %s\n", private + 0 ? "true" : "false") > json
+    printf("    \"private\": %s,\n", private + 0 ? "true" : "false") > json
+    printf("    \"complete\": %s\n", jstr(complete)) > json
     printf("  }") > json
 
     # ---------------- per-module page ----------------

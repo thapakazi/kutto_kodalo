@@ -67,6 +67,7 @@ alacritty_list_themes() {
 #           argument it picks ALACRITTY_DAY_THEME or ALACRITTY_NIGHT_THEME
 #           depending on the time of day.
 # @usage    alacritty_set_theme [theme-name]
+# @complete theme-name:!ls -1 "${alacritty_themes_dir:-$HOME/.config/alacritty/themes}/themes" 2>/dev/null | sed 's/\.toml$//'
 # @example  alacritty_set_theme nord
 # @example  alacritty_set_theme            # time-of-day default
 # @requires gsed|sed

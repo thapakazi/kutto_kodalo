@@ -1,0 +1,336 @@
+#!/usr/bin/env bash
+# shellrc-completions — generate shell completions from docs/functions.json.
+#
+# Reads the `usage` and `complete` fields that bin/shellrc-doc extracts from the
+# doc blocks, and writes:
+#
+#   completions/_shellrc_generated        zsh, autoloaded via fpath
+#   completions/shellrc-generated.bash    bash, sourced by the loader
+#
+# bash + awk only, no python/node/jq — same constraint as the rest of bin/.
+#
+# Usage: bin/shellrc-completions [--check] [--quiet]
+#
+#   --check   exit 1 if regenerating would change anything (for CI)
+#   --quiet   suppress the summary line
+
+set -uo pipefail
+
+CHECK=0
+QUIET=0
+for a in "$@"; do
+    case "$a" in
+        --check) CHECK=1 ;;
+        --quiet) QUIET=1 ;;
+        -h | --help) sed -n '2,17p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+        *) echo "shellrc-completions: unknown option: $a" >&2; exit 2 ;;
+    esac
+done
+
+_self="${BASH_SOURCE[0]}"
+while [ -L "$_self" ]; do
+    _link=$(command ls -ld -- "$_self" | sed -e 's/.* -> //')
+    case "$_link" in
+        /*) _self="$_link" ;;
+        *)  _self="$(dirname -- "$_self")/$_link" ;;
+    esac
+done
+REPO="$(cd -- "$(dirname -- "$_self")/.." && pwd -P)"
+
+DB="$REPO/docs/functions.json"
+OUT_DIR="$REPO/completions"
+ZSH_OUT="$OUT_DIR/_shellrc_generated"
+BASH_OUT="$OUT_DIR/shellrc-generated.bash"
+
+[ -f "$DB" ] || { echo "shellrc-completions: $DB missing — run 'just docs'" >&2; exit 1; }
+mkdir -p "$OUT_DIR"
+
+TMP="$(mktemp -d "${TMPDIR:-/tmp}/shellrc-comp.XXXXXXXX")"
+trap 'rm -rf "$TMP"' EXIT INT TERM
+
+# ---------------------------------------------------------------------------
+# 1. Flatten functions.json into: name \037 usage \037 complete \037 os
+# ---------------------------------------------------------------------------
+LC_ALL=C awk '
+    function unesc(s,   out, i, c, n) {
+        out = ""; n = length(s)
+        for (i = 1; i <= n; i++) {
+            c = substr(s, i, 1)
+            if (c == "\\") {
+                i++
+                c = substr(s, i, 1)
+                if      (c == "n") out = out " "
+                else if (c == "t") out = out " "
+                else if (c == "r") continue
+                else               out = out c
+            } else out = out c
+        }
+        return out
+    }
+    function val(line,   v) {
+        v = line
+        sub(/^[ \t]*"[^"]*":[ \t]*/, "", v)
+        sub(/,$/, "", v)
+        sub(/^"/, "", v); sub(/"$/, "", v)
+        return unesc(v)
+    }
+    /^  \{/            { name=""; usage=""; comp=""; os="any"; priv="false"; next }
+    /^    "name":/     { name  = val($0); next }
+    /^    "usage":/    { usage = val($0); next }
+    /^    "complete":/ { comp  = val($0); next }
+    /^    "os":/       { os    = val($0); next }
+    /^    "private":/  { priv  = val($0); next }
+    /^  \}/ {
+        if (priv == "true" || name == "") next
+        printf("%s\037%s\037%s\037%s\n", name, usage, comp, os)
+    }
+' "$DB" > "$TMP/flat"
+
+TOTAL=$(wc -l < "$TMP/flat" | tr -d ' ')
+
+# ---------------------------------------------------------------------------
+# 2. Resolve each function's positional arguments into completion actions.
+#
+#    Output: name \037 argno \037 required \037 label \037 kind \037 payload
+#    kind is one of: words | fn | cmd | file | dir | host | pid | none
+# ---------------------------------------------------------------------------
+LC_ALL=C awk -F '\037' '
+    # Split "name:source name2:source2" into C[name] = source.
+    #
+    # Splitting on spaces is wrong: a `!command` source runs to the next key and
+    # may contain spaces, quotes and pipes. So find the `key:` boundaries -- a
+    # word followed by a colon, at the start or after a space -- and take
+    # everything between them verbatim.
+    function parse_complete(spec,   i, n, nk, keys, starts, j, len, stop) {
+        nk = 0; n = length(spec); i = 1
+        while (i <= n) {
+            if (i == 1 || substr(spec, i - 1, 1) == " ") {
+                if (match(substr(spec, i), /^[A-Za-z0-9_|.-]+:/)) {
+                    nk++
+                    keys[nk]   = substr(spec, i, RLENGTH - 1)
+                    starts[nk] = i + RLENGTH
+                }
+            }
+            i++
+        }
+        for (j = 1; j <= nk; j++) {
+            if (j < nk) {
+                stop = starts[j + 1] - length(keys[j + 1]) - 1
+                len  = stop - starts[j]
+                C[keys[j]] = substr(spec, starts[j], len)
+            } else {
+                C[keys[j]] = substr(spec, starts[j])
+            }
+            sub(/[ ]+$/, "", C[keys[j]])
+        }
+    }
+
+    # Infer an action from the placeholder name alone.
+    function infer(ph) {
+        if (ph ~ /file$|^file|path$|^path|archive|image|input|output|cert/) return "file\037"
+        if (ph ~ /^dir|dir$|directory|folder/)                             return "dir\037"
+        if (ph ~ /host$|^host|server|hostname/)                            return "host\037"
+        if (ph ~ /^pid$|pid$/)                                             return "pid\037"
+        return "none\037"
+    }
+
+    function action_for(ph, src,   inner) {
+        if (src == "") return infer(ph)
+        if (substr(src, 1, 1) == "(") {                 # (a b c)
+            inner = src
+            sub(/^\(/, "", inner); sub(/\)$/, "", inner)
+            return "words\037" inner
+        }
+        if (substr(src, 1, 1) == "@") return "fn\037"  substr(src, 2)
+        if (substr(src, 1, 1) == "!") return "cmd\037" substr(src, 2)
+        if (src == ":file") return "file\037"
+        if (src == ":dir")  return "dir\037"
+        if (src == ":host") return "host\037"
+        if (src == ":pid")  return "pid\037"
+        return "none\037"
+    }
+
+    {
+        name = $1; usage = $2; comp = $3
+        delete C
+        if (comp != "") parse_complete(comp)
+
+        # Walk the usage string for <required> and [optional] placeholders.
+        argno = 0
+        rest = usage
+        sub(/^[^ ]+[ ]*/, "", rest)              # drop the function name itself
+        while (match(rest, /<[^>]+>|\[[^]]+\]/)) {
+            tok = substr(rest, RSTART, RLENGTH)
+            rest = substr(rest, RSTART + RLENGTH)
+            req = (substr(tok, 1, 1) == "<") ? 1 : 0
+            ph = tok
+            gsub(/^[<[]|[>\]]$/, "", ph)
+            if (ph ~ /^\.\.\./ || ph == "") continue
+            sub(/\.\.\.$/, "", ph)
+            argno++
+            split(action_for(ph, (ph in C) ? C[ph] : ""), A, "\037")
+            printf("%s\037%d\037%d\037%s\037%s\037%s\n", name, argno, req, ph, A[1], A[2])
+        }
+    }
+' "$TMP/flat" > "$TMP/args"
+
+# every function that has at least one completable argument, plus all the rest
+cut -d$'\037' -f1 "$TMP/flat" | LC_ALL=C sort -u > "$TMP/names"
+NAMES=$(tr '\n' ' ' < "$TMP/names")
+ANNOTATED=$(awk -F '\037' '$3 != ""' "$TMP/flat" | wc -l | tr -d ' ')
+
+# ---------------------------------------------------------------------------
+# 3. zsh
+# ---------------------------------------------------------------------------
+{
+    printf '#compdef %s\n' "$NAMES"
+    cat <<'ZHEAD'
+# DO NOT EDIT — generated by bin/shellrc-completions from docs/functions.json.
+# Change the @usage / @complete block above the function, then run `just docs`
+# followed by `just completions` (or just `just check`, which verifies both).
+
+# Candidates from a repo function or shell command. Cached per shell, because a
+# completion source that forks on every TAB makes the shell feel broken.
+typeset -gA _SHELLRC_COMP_CACHE
+
+_shellrc_comp_dyn() {
+    local key="$1" srcfn="$2" out
+    if [[ -n ${_SHELLRC_COMP_CACHE[$key]} ]]; then
+        out=${_SHELLRC_COMP_CACHE[$key]}
+    else
+        out=$("$srcfn" 2>/dev/null) || return 1
+        _SHELLRC_COMP_CACHE[$key]=$out
+    fi
+    local -a cands
+    cands=(${(f)out})
+    (( ${#cands} )) && compadd -a cands
+}
+
+ZHEAD
+
+    # Dynamic sources become their own functions. Writing the payload verbatim
+    # into a function body sidesteps every quoting problem -- inlining it into
+    # an _arguments spec truncated any source containing quotes or pipes.
+    while IFS=$'\037' read -r n argno req label kind payload; do
+        case "$kind" in
+            fn)  printf '_shellrc_src_%s_%s() { %s "$@"; }\n' "$n" "$argno" "$payload" ;;
+            cmd) printf '_shellrc_src_%s_%s() { %s\n}\n'      "$n" "$argno" "$payload" ;;
+        esac
+    done < "$TMP/args"
+    printf '\n_shellrc_generated() {\n    local curcontext="$curcontext" state line\n    case "$service" in\n'
+
+    while IFS= read -r fn; do
+        specs=""
+        maxarg=0
+        while IFS=$'\037' read -r n argno req label kind payload; do
+            [ "$n" = "$fn" ] || continue
+            [ "$argno" -gt "$maxarg" ] && maxarg=$argno
+        done < "$TMP/args"
+        [ "$maxarg" -eq 0 ] && continue
+
+        i=1
+        while [ "$i" -le "$maxarg" ]; do
+            line=$(awk -F '\037' -v f="$fn" -v a="$i" '$1==f && $2==a {print; exit}' "$TMP/args")
+            if [ -z "$line" ]; then
+                # A gap: _arguments needs contiguous positions or it mis-assigns
+                # the later ones. An empty action means "no completion here".
+                specs="$specs '${i}:arg${i}: '"
+                i=$((i + 1)); continue
+            fi
+            IFS=$'\037' read -r n argno req label kind payload <<EOF2
+$line
+EOF2
+            # ':' is the _arguments field separator; a label containing one
+            # (e.g. the placeholder "dark|light") must not leak into the spec.
+            label=$(printf '%s' "$label" | tr ':' '-')
+            case "$kind" in
+                words) specs="$specs '${i}:${label}:(${payload})'" ;;
+                fn|cmd) specs="$specs '${i}:${label}:{_shellrc_comp_dyn ${fn}_${i} _shellrc_src_${fn}_${i}}'" ;;
+                file)  specs="$specs '${i}:${label}:_files'" ;;
+                dir)   specs="$specs '${i}:${label}:_files -/'" ;;
+                host)  specs="$specs '${i}:${label}:_hosts'" ;;
+                pid)   specs="$specs '${i}:${label}:_pids'" ;;
+                *)     specs="$specs '${i}:${label}: '" ;;
+            esac
+            i=$((i + 1))
+        done
+        printf '        %s) _arguments -S%s ;;\n' "$fn" "$specs"
+    done < "$TMP/names"
+
+    cat <<'ZTAIL'
+        *) _default ;;
+    esac
+}
+
+_shellrc_generated "$@"
+ZTAIL
+} > "$TMP/zsh.new"
+
+# ---------------------------------------------------------------------------
+# 4. bash
+# ---------------------------------------------------------------------------
+{
+    cat <<'BHEAD'
+# DO NOT EDIT — generated by bin/shellrc-completions from docs/functions.json.
+#
+# bash has no equivalent of zsh's _arguments, so this is word lists, files and
+# directories only — no inline descriptions. The zsh side is richer.
+
+BHEAD
+
+    while IFS=$'\037' read -r n argno req label kind payload; do
+        case "$kind" in
+            fn)  printf '_shellrc_src_%s_%s() { %s "$@"; }\n' "$n" "$argno" "$payload" ;;
+            cmd) printf '_shellrc_src_%s_%s() { %s\n}\n'      "$n" "$argno" "$payload" ;;
+        esac
+    done < "$TMP/args"
+
+    printf '_shellrc_generated_complete() {\n    local cmd="${COMP_WORDS[0]}" cur="${COMP_WORDS[COMP_CWORD]}" pos=$COMP_CWORD\n    COMPREPLY=()\n    case "$cmd:$pos" in\n'
+
+    while IFS=$'\037' read -r n argno req label kind payload; do
+        case "$kind" in
+            words) printf '        %s:%s) COMPREPLY=( $(compgen -W "%s" -- "$cur") ); return ;;\n' "$n" "$argno" "$payload" ;;
+            fn|cmd) printf '        %s:%s) COMPREPLY=( $(compgen -W "$(_shellrc_src_%s_%s)" -- "$cur") ); return ;;\n' "$n" "$argno" "$n" "$argno" ;;
+            file)  printf '        %s:%s) COMPREPLY=( $(compgen -f -- "$cur") ); return ;;\n' "$n" "$argno" ;;
+            dir)   printf '        %s:%s) COMPREPLY=( $(compgen -d -- "$cur") ); return ;;\n' "$n" "$argno" ;;
+            host)  printf '        %s:%s) COMPREPLY=( $(compgen -A hostname -- "$cur") ); return ;;\n' "$n" "$argno" ;;
+        esac
+    done < "$TMP/args"
+
+    cat <<BTAIL
+    esac
+    COMPREPLY=( \$(compgen -f -- "\$cur") )
+}
+
+complete -F _shellrc_generated_complete $NAMES
+BTAIL
+} > "$TMP/bash.new"
+
+# ---------------------------------------------------------------------------
+# 5. write or check
+# ---------------------------------------------------------------------------
+changed=0
+for pair in "$TMP/zsh.new:$ZSH_OUT" "$TMP/bash.new:$BASH_OUT"; do
+    new="${pair%%:*}"; dest="${pair#*:}"
+    if [ ! -f "$dest" ] || ! cmp -s "$new" "$dest"; then
+        changed=1
+        if [ "$CHECK" -eq 1 ]; then
+            echo "shellrc-completions: would change: ${dest#"$REPO"/}" >&2
+        else
+            cp "$new" "$dest"
+        fi
+    fi
+done
+
+if [ "$CHECK" -eq 1 ]; then
+    if [ "$changed" -eq 1 ]; then
+        echo "shellrc-completions: completions are out of date — run 'just completions'" >&2
+        exit 1
+    fi
+    [ "$QUIET" -eq 1 ] || echo "shellrc-completions: completions are up to date"
+    exit 0
+fi
+
+WITH_ARGS=$(cut -d$'\037' -f1 "$TMP/args" | sort -u | wc -l | tr -d ' ')
+[ "$QUIET" -eq 1 ] || printf 'shellrc-completions: %s functions, %s with completable arguments, %s annotated -> %s, %s\n' \
+    "$TOTAL" "$WITH_ARGS" "$ANNOTATED" "${ZSH_OUT#"$REPO"/}" "${BASH_OUT#"$REPO"/}"

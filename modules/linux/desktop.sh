@@ -202,6 +202,7 @@ desktop_theme_light() {
 # @describe Switch every application to the named theme. Anything other than
 #           "light" or "bright" means dark.
 # @usage    desktop_theme_switch [dark|light]
+# @complete dark|light:(dark light)
 # @example  desktop_theme_switch light
 # @requires xdotool wmctrl
 # @os       linux

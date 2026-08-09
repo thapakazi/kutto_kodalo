@@ -26,7 +26,7 @@ k8s_create_cluster_with_registry
 
 **Requires** `curl`, `kind`
 
-**OS** any &nbsp;·&nbsp; **Source** [`modules/common/kubernetes.sh:353`](../../modules/common/kubernetes.sh#L353)
+**OS** any &nbsp;·&nbsp; **Source** [`modules/common/kubernetes.sh:354`](../../modules/common/kubernetes.sh#L354)
 
 ---
 
@@ -49,7 +49,7 @@ k8s_create_kind_cluster scratch
 
 **Requires** `kind`
 
-**OS** any &nbsp;·&nbsp; **Source** [`modules/common/kubernetes.sh:316`](../../modules/common/kubernetes.sh#L316)
+**OS** any &nbsp;·&nbsp; **Source** [`modules/common/kubernetes.sh:317`](../../modules/common/kubernetes.sh#L317)
 
 **See also** `k8s_delete_kind_cluster`
 
@@ -74,7 +74,7 @@ k8s_create_random_cluster 10
 
 **Requires** `kind`
 
-**OS** any &nbsp;·&nbsp; **Source** [`modules/common/kubernetes.sh:331`](../../modules/common/kubernetes.sh#L331)
+**OS** any &nbsp;·&nbsp; **Source** [`modules/common/kubernetes.sh:332`](../../modules/common/kubernetes.sh#L332)
 
 ---
 
@@ -99,7 +99,7 @@ k8s_delete_kind_cluster scratch
 
 **Requires** `kind`
 
-**OS** any &nbsp;·&nbsp; **Source** [`modules/common/kubernetes.sh:401`](../../modules/common/kubernetes.sh#L401)
+**OS** any &nbsp;·&nbsp; **Source** [`modules/common/kubernetes.sh:402`](../../modules/common/kubernetes.sh#L402)
 
 ---
 
@@ -123,7 +123,7 @@ k8s_delete_last_cluster
 
 **Requires** `kind`
 
-**OS** any &nbsp;·&nbsp; **Source** [`modules/common/kubernetes.sh:418`](../../modules/common/kubernetes.sh#L418)
+**OS** any &nbsp;·&nbsp; **Source** [`modules/common/kubernetes.sh:419`](../../modules/common/kubernetes.sh#L419)
 
 **See also** `k8s_create_random_cluster`
 
@@ -193,7 +193,7 @@ k8s_install_krew
 
 **Requires** `curl`, `tar`
 
-**OS** any &nbsp;·&nbsp; **Source** [`modules/common/kubernetes.sh:266`](../../modules/common/kubernetes.sh#L266)
+**OS** any &nbsp;·&nbsp; **Source** [`modules/common/kubernetes.sh:267`](../../modules/common/kubernetes.sh#L267)
 
 ---
 
@@ -215,7 +215,7 @@ k8s_list_nodes | sort -k3
 
 **Requires** `kubectl`, `jq`
 
-**OS** any &nbsp;·&nbsp; **Source** [`modules/common/kubernetes.sh:243`](../../modules/common/kubernetes.sh#L243)
+**OS** any &nbsp;·&nbsp; **Source** [`modules/common/kubernetes.sh:244`](../../modules/common/kubernetes.sh#L244)
 
 ---
 
@@ -283,7 +283,7 @@ NAMESPACE=production LABEL=app=web k8s_print_connections ESTABLISHED
 
 **Requires** `kubectl`
 
-**OS** any &nbsp;·&nbsp; **Source** [`modules/common/kubernetes.sh:175`](../../modules/common/kubernetes.sh#L175)
+**OS** any &nbsp;·&nbsp; **Source** [`modules/common/kubernetes.sh:176`](../../modules/common/kubernetes.sh#L176)
 
 ---
 
@@ -307,7 +307,7 @@ k8s_print_evicted_pods
 
 **Requires** `kubectl`
 
-**OS** any &nbsp;·&nbsp; **Source** [`modules/common/kubernetes.sh:202`](../../modules/common/kubernetes.sh#L202)
+**OS** any &nbsp;·&nbsp; **Source** [`modules/common/kubernetes.sh:203`](../../modules/common/kubernetes.sh#L203)
 
 ---
 
@@ -353,7 +353,7 @@ k8s_run_debug_pod nicolaka/netshoot production netdebug
 
 **Requires** `kubectl`
 
-**OS** any &nbsp;·&nbsp; **Source** [`modules/common/kubernetes.sh:163`](../../modules/common/kubernetes.sh#L163)
+**OS** any &nbsp;·&nbsp; **Source** [`modules/common/kubernetes.sh:164`](../../modules/common/kubernetes.sh#L164)
 
 ---
 
@@ -377,7 +377,7 @@ k9s_install_themes && k9s_set_theme solarized_dark
 
 **Requires** `git`
 
-**OS** any &nbsp;·&nbsp; **Source** [`modules/common/kubernetes.sh:443`](../../modules/common/kubernetes.sh#L443)
+**OS** any &nbsp;·&nbsp; **Source** [`modules/common/kubernetes.sh:444`](../../modules/common/kubernetes.sh#L444)
 
 **See also** `k9s_set_theme`
 
@@ -402,7 +402,7 @@ k9s_set_theme dracula
 
 **Requires** `k9s`
 
-**OS** any &nbsp;·&nbsp; **Source** [`modules/common/kubernetes.sh:484`](../../modules/common/kubernetes.sh#L484)
+**OS** any &nbsp;·&nbsp; **Source** [`modules/common/kubernetes.sh:485`](../../modules/common/kubernetes.sh#L485)
 
 **See also** `k9s_install_themes`
 

@@ -156,6 +156,7 @@ k8s_list_pods() {
 # @describe Launch a throwaway interactive pod and drop into a shell. The pod is
 #           deleted as soon as you exit.
 # @usage    k8s_run_debug_pod [image] [namespace] [pod-name]
+# @complete image:(ubuntu alpine debian busybox nicolaka/netshoot)
 # @example  k8s_run_debug_pod
 # @example  k8s_run_debug_pod nicolaka/netshoot production netdebug
 # @requires kubectl

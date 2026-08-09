@@ -26,7 +26,7 @@ shelp -m docker
 
 **Requires** `jq`
 
-**OS** any &nbsp;·&nbsp; **Source** [`modules/common/help.sh:137`](../../modules/common/help.sh#L137)
+**OS** any &nbsp;·&nbsp; **Source** [`modules/common/help.sh:138`](../../modules/common/help.sh#L138)
 
 **See also** `shellrc-doc`
 
@@ -52,7 +52,7 @@ eval "$(shelp_pick)" --help
 
 **Requires** `fzf`
 
-**OS** any &nbsp;·&nbsp; **Source** [`modules/common/help.sh:268`](../../modules/common/help.sh#L268)
+**OS** any &nbsp;·&nbsp; **Source** [`modules/common/help.sh:269`](../../modules/common/help.sh#L269)
 
 **See also** `shelp`
 

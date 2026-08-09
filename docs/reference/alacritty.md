@@ -24,7 +24,7 @@ alacritty_fetch_themes
 
 **Requires** `git`
 
-**OS** macOS only &nbsp;·&nbsp; **Source** [`modules/darwin/alacritty.sh:115`](../../modules/darwin/alacritty.sh#L115)
+**OS** macOS only &nbsp;·&nbsp; **Source** [`modules/darwin/alacritty.sh:116`](../../modules/darwin/alacritty.sh#L116)
 
 ---
 
@@ -88,7 +88,7 @@ alacritty_remove_themes
 alacritty_remove_themes
 ```
 
-**OS** macOS only &nbsp;·&nbsp; **Source** [`modules/darwin/alacritty.sh:144`](../../modules/darwin/alacritty.sh#L144)
+**OS** macOS only &nbsp;·&nbsp; **Source** [`modules/darwin/alacritty.sh:145`](../../modules/darwin/alacritty.sh#L145)
 
 ---
 
@@ -111,7 +111,7 @@ alacritty_set_theme            # time-of-day default
 
 **Requires** (`gsed` or `sed`)
 
-**OS** macOS only &nbsp;·&nbsp; **Source** [`modules/darwin/alacritty.sh:75`](../../modules/darwin/alacritty.sh#L75)
+**OS** macOS only &nbsp;·&nbsp; **Source** [`modules/darwin/alacritty.sh:76`](../../modules/darwin/alacritty.sh#L76)
 
 **See also** `alacritty_list_themes`
 
@@ -135,7 +135,7 @@ alacritty_setup
 
 **Requires** `git`
 
-**OS** macOS only &nbsp;·&nbsp; **Source** [`modules/darwin/alacritty.sh:157`](../../modules/darwin/alacritty.sh#L157)
+**OS** macOS only &nbsp;·&nbsp; **Source** [`modules/darwin/alacritty.sh:158`](../../modules/darwin/alacritty.sh#L158)
 
 **See also** `alacritty_fetch_themes`, `alacritty_set_theme`
 
@@ -159,7 +159,7 @@ alacritty_update_themes
 
 **Requires** `git`
 
-**OS** macOS only &nbsp;·&nbsp; **Source** [`modules/darwin/alacritty.sh:132`](../../modules/darwin/alacritty.sh#L132)
+**OS** macOS only &nbsp;·&nbsp; **Source** [`modules/darwin/alacritty.sh:133`](../../modules/darwin/alacritty.sh#L133)
 
 ---
 
