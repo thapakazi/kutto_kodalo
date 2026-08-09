@@ -153,9 +153,27 @@ shelp() {
                 "$C_BOLD" "$C_RESET"
             printf '  shelp                list every module and its function count\n'
             printf '  shelp <query>        case-insensitive search over name, description, usage\n'
-            printf '  shelp -m <module>    list every function in one module\n\n'
+            printf '  shelp -m <module>    list every function in one module\n'
+            printf '  shelp -i [query]     fuzzy picker with live preview (needs fzf)\n'
+            printf '  shelp -s <name>      show the full documentation for one function\n\n'
+            printf '  %s%s%s in zsh opens the picker and drops the name on your command line\n' \
+                "$C_BOLD" "${SHELLRC_HELP_KEY:-Ctrl-G}" "$C_RESET"
             printf '  Full index: %s/docs/INDEX.md\n' "$SHELLRC_ROOT"
             return 0
+            ;;
+        -i | --interactive)
+            shift
+            shelp_pick --show "$@"
+            return $?
+            ;;
+        -s | --show)
+            shift
+            if [ $# -eq 0 ]; then
+                log_error "shelp: -s needs a function name"
+                return 1
+            fi
+            "$SHELLRC_ROOT/bin/shelp-show" "$1"
+            return $?
             ;;
         -m | --module)
             shift
@@ -218,3 +236,91 @@ shelp() {
     printf '%s%s match%s%s\n' "$C_DIM" "$count" \
         "$([ "$count" = 1 ] || printf 'es')" "$C_RESET"
 }
+
+# ------------------------------------------------------------ fuzzy picker --
+
+# Emit `name<TAB>module<TAB>description` for every public function, for the
+# picker. The description rather than the usage, because fzf matches the whole
+# line — so you can search by what a function DOES, not just what it is called.
+# The usage string is right there in the preview pane anyway.
+_shelp_all_tsv() {
+    local db="$1"
+    if has jq; then
+        jq -r '.[] | select(.private | not)
+               | [.name, .module, (.describe | split(". ")[0] | .[0:90])] | @tsv' "$db"
+    else
+        _shelp_awk "$db" search "" |
+            LC_ALL=C awk -F '\t' '{ d = $5; sub(/\. .*$/, "", d); printf("%s\t%s\t%s\n", $1, $2, substr(d, 1, 90)) }'
+    fi
+}
+
+# @describe Fuzzy-find a function with a live preview of its full documentation.
+#           Prints the chosen name on stdout, so it composes: `$(shelp_pick)`.
+#           With --show it prints the whole doc entry for the selection instead.
+#           Falls back to a plain listing when fzf is not installed.
+# @usage    shelp_pick [--show] [initial-query]
+# @example  shelp_pick
+# @example  shelp_pick ssm
+# @example  eval "$(shelp_pick)" --help
+# @requires fzf
+# @os       any
+# @see      shelp
+shelp_pick() {
+    local db show="" query="" picked
+    db="$(_shelp_db)"
+
+    [ "${1:-}" = "--show" ] && { show=1; shift; }
+    query="${1:-}"
+
+    if [ ! -f "$db" ]; then
+        log_error "shelp_pick: $db is missing — run 'just docs'"
+        return 1
+    fi
+    if ! has fzf; then
+        log_warn "shelp_pick: fzf is not installed; showing a plain list instead"
+        log_warn "  install it with: pkg_install fzf"
+        shelp ${query:+"$query"}
+        return $?
+    fi
+
+    picked="$(
+        _shelp_all_tsv "$db" |
+        LC_ALL=C sort |
+        LC_ALL=C awk -F '\t' '{ printf("%-34s %-12s %s\n", $1, $2, $3) }' |
+        fzf --ansi --no-multi --query="$query" \
+            --height=80% --layout=reverse --border=rounded \
+            --prompt='fn > ' \
+            --header='enter: pick   ctrl-/: toggle preview   esc: cancel' \
+            --preview "'$SHELLRC_ROOT/bin/shelp-show' {1}" \
+            --preview-window='right,58%,border-left,wrap' \
+            --bind='ctrl-/:toggle-preview' |
+        awk '{print $1}'
+    )"
+
+    [ -n "$picked" ] || return 1
+
+    if [ -n "$show" ]; then
+        "$SHELLRC_ROOT/bin/shelp-show" "$picked"
+    else
+        printf '%s\n' "$picked"
+    fi
+}
+
+# ---- zsh: pick a function and drop it on the command line --------------------
+# Bound to Ctrl-G by default. Set SHELLRC_HELP_KEY=off to skip, or to another
+# key sequence (e.g. '^F') to rebind.
+
+if [ -n "$ZSH_VERSION" ] && [ "$SHELLRC_HELP_KEY" != "off" ]; then
+    _shelp_insert_widget() {
+        local sel
+        # fzf needs the terminal, so drop out of zle while it runs.
+        sel="$(shelp_pick </dev/tty >/dev/tty 2>&1 || true)"
+        sel="$(printf '%s' "$sel" | tail -1 | tr -d '\r\n')"
+        if [ -n "$sel" ]; then
+            LBUFFER="${LBUFFER}${sel} "
+        fi
+        zle reset-prompt
+    }
+    zle -N _shelp_insert_widget
+    bindkey "${SHELLRC_HELP_KEY:-^G}" _shelp_insert_widget
+fi

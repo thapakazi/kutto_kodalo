@@ -21,7 +21,7 @@ ssh_generate_host_config [account] [region] [port] [ssh-user]
 **Examples**
 
 ```sh
-ssh_generate_host_config dibya us-east-1 22 ubuntu
+ssh_generate_host_config myaccount us-east-1 22 ubuntu
 ```
 
 **Requires** `easyssh`, `aws`
@@ -163,7 +163,7 @@ ssh_start_x2x [host] [user] [direction] [display]
 **Examples**
 
 ```sh
-ssh_start_x2x 192.168.2.55 nikesh east :0.0
+ssh_start_x2x 192.0.2.10 remoteuser east :0.0
 ```
 
 **Requires** `ssh`, `x2x`

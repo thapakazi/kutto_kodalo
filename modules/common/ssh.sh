@@ -143,11 +143,11 @@ ssh_generate_keys_all() {
 # @describe Share this machine's keyboard and mouse with a remote X display over
 #           ssh, using x2x.
 # @usage    ssh_start_x2x [host] [user] [direction] [display]
-# @example  ssh_start_x2x 192.168.2.55 nikesh east :0.0
+# @example  ssh_start_x2x 192.0.2.10 remoteuser east :0.0
 # @requires ssh x2x
 # @os       any
 ssh_start_x2x() {
-    local host="${1:-192.168.2.55}" user="${2:-nikesh}"
+    local host="${1:?usage: ssh_start_x2x <host> [user] [direction] [display]}" user="${2:-$USER}"
     local direction="${3:-east}" display="${4:-:0.0}"
     log_info "ssh $host -l$user -Y x2x -$direction -to $display"
     ssh "$host" -l"$user" -Y x2x -"$direction" -to "$display"
@@ -159,7 +159,7 @@ ssh_start_x2x() {
 #           easyssh, then rebuild ~/.ssh/config. Credentials are read from
 #           ~/.aws/keys/<account>, which must be a regular file.
 # @usage    ssh_generate_host_config [account] [region] [port] [ssh-user]
-# @example  ssh_generate_host_config dibya us-east-1 22 ubuntu
+# @example  ssh_generate_host_config myaccount us-east-1 22 ubuntu
 # @requires easyssh aws
 # @danger   Sources ~/.aws/keys/<account> into the current shell and replaces
 #           $SSH_CONFIG_D/<account>-<region>.config, then runs
@@ -167,7 +167,7 @@ ssh_start_x2x() {
 # @see      ssh_refresh_config
 # @os       any
 ssh_generate_host_config() {
-    local account="${1:-dibya}" region="${2:-us-east-1}"
+    local account="${1:?usage: ssh_generate_host_config <account> [region] [port] [user]}" region="${2:-us-east-1}"
     local port="${3:-22}" ssh_user="${4:-ubuntu}"
     local keyfile fragment
 
