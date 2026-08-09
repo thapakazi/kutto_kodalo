@@ -111,6 +111,10 @@ youtube.dlmp3(){
     yt-dlp --extract-audio --audio-format mp3 "$@"
 }
 
+youtube.dlmp4(){
+    yt-dlp -f "bv*+ba/b" --merge-output-format mp4 "$@" 
+}
+
 # some crawling stuffs
 alias wget.grab.all='wget --recursive --no-clobber --page-requisites --html-extension --convert-links --restrict-file-names=windows --no-parent'
 
@@ -331,3 +335,20 @@ dushd(){
 dush(){
     dushd *
 }
+
+
+## 2fa
+2fa-fzf() {
+  local account
+  account=$(2fa -list | fzf --prompt="2FA Account > " --height=12 --layout=reverse) || return
+  if [[ -n "$account" ]]; then
+    2fa -clip "$account" > /dev/null
+    echo "Copied 2FA code for '$account' to clipboard!"
+  fi
+}
+
+## Source nunchux environment hook safely if it exists
+## tapck install https://github.com/datamadsen/nunchux with id, grab first found
+for f in "$HOME"/.tmux/plugins/nunchux-*/shell-init.*; do
+  [ -f "$f" ] && source "$f" && break
+done
