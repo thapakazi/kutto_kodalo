@@ -1,0 +1,151 @@
+# check — the regression gate.
+#
+# This repo exists to be correct on both macOS and Linux, in both bash and zsh,
+# so the matrix exercises both runners and the load check runs under both
+# interpreters. Everything here mirrors `just check`, plus `bin/doctor`.
+#
+# The four things it enforces:
+#   1. shellcheck is clean across shellrc, lib/, modules/ and bin/
+#   2. docs/ is regenerated — a changed doc block with stale docs fails
+#   3. `shellrc` sources with a zero exit and ZERO bytes on stderr, in bash and zsh
+#   4. `bin/doctor` reports no problems once the config is actually installed
+
+name: check
+
+on:
+  push:
+    branches: [gumantae]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: check-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: check (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # zsh is not on the ubuntu image; macOS ships it as the login shell.
+      - name: Install zsh and shellcheck
+        run: |
+          set -eu
+          if [ "$RUNNER_OS" = Linux ]; then
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq zsh shellcheck
+          else
+            command -v zsh >/dev/null || brew install zsh
+            command -v shellcheck >/dev/null || brew install shellcheck
+          fi
+          shellcheck --version
+
+      # ------------------------------------------------------------ 1. lint --
+      #
+      # The file list is explicit and identical to `just check`, so CI and the
+      # developer's machine lint exactly the same set.
+      #
+      # `shellrc`, modules/common/prompt.sh, modules/common/shell.sh and
+      # modules/darwin/alacritty.sh are deliberately dual-dialect: they contain
+      # zsh syntax that shellcheck (which has no zsh mode) cannot parse. The
+      # exclusions are split into two groups so the difference stays visible.
+      #
+      # TODO: lower to --severity=style and retire the "real backlog" excludes
+      #       once the findings behind them are fixed. Measured 2026-08-09 with
+      #       shellcheck 0.10.0 — 59 findings total, 33 after the pre-existing
+      #       just-check excludes, 0 at --severity=warning with the list below.
+      #       The advisory step underneath prints the full backlog every run.
+      - name: shellcheck
+        run: |
+          set -eu
+          files=(shellrc lib/*.sh bin/*)
+          for f in modules/*/*.sh; do [ -f "$f" ] && files+=("$f"); done
+          printf 'linting %d files\n' "${#files[@]}"
+          shellcheck --shell=bash --severity=warning \
+            --exclude=SC1090,SC1091,SC2034,SC2296,SC2206,SC2154,SC2153,SC2088,SC2119,SC2120 \
+            "${files[@]}"
+        # dialect / intentional — not fixable in a dual bash+zsh file:
+        #   SC1090,SC1091  dynamic `source "$f"` in the loader
+        #   SC2034         C_* colour vars are consumed by sourced modules
+        #   SC2296         zsh ${(%):-%x} parameter flags in `shellrc`
+        #   SC2206         zsh array assignment: fpath=(dir $fpath)
+        #   SC2154,SC2153  zsh-managed vars (LBUFFER, KEYMAP, zle state)
+        # real backlog — TODO: fix these and delete them from the list:
+        #   SC2088         literal ~ inside display strings in bin/{doctor,bootstrap}
+        #   SC2119,SC2120  alacritty_set_theme's optional argument
+
+      # Advisory only: the full picture down to style severity. Never blocks the
+      # build — read this step's log when clearing the backlog above.
+      - name: shellcheck full report (advisory)
+        if: always()
+        continue-on-error: true
+        run: |
+          set -u
+          files=(shellrc lib/*.sh bin/*)
+          for f in modules/*/*.sh; do [ -f "$f" ] && files+=("$f"); done
+          shellcheck --shell=bash --exclude=SC1090,SC1091,SC2034 \
+            --format=gcc "${files[@]}" || true
+
+      # --------------------------------------------------- 2. docs freshness --
+      #
+      # Runs BEFORE bootstrap, because bootstrap regenerates docs/ as its last
+      # step and would otherwise paper over a stale commit.
+      - name: docs are current
+        run: bin/shellrc-doc --check
+
+      # ------------------------------------------ 3. clean load in both shells --
+      #
+      # Zero bytes on stderr is the contract. `--noprofile --norc` / `-f` keep
+      # the runner's own dotfiles out of the measurement.
+      - name: loads clean in bash and zsh
+        run: |
+          set +e
+          fail=0
+          for sh in bash zsh; do
+            case "$sh" in
+              bash) flags=(--noprofile --norc) ;;
+              zsh)  flags=(-f) ;;
+            esac
+            err="$("$sh" "${flags[@]}" -c "source '$PWD/shellrc'" 2>&1 >/dev/null)"
+            rc=$?
+            if [ "$rc" -ne 0 ]; then
+              echo "::error::$sh exited $rc while sourcing shellrc"
+              fail=1
+            fi
+            if [ -n "$err" ]; then
+              echo "::error::$sh wrote to stderr at load time"
+              printf '  %s\n' "$err"
+              fail=1
+            fi
+            if [ "$rc" -eq 0 ] && [ -z "$err" ]; then
+              echo "$sh: clean"
+            fi
+          done
+          exit "$fail"
+
+      # --------------------------------------- 4. effective shell state --
+      #
+      # bin/doctor exits 1 on a BARE runner for reasons that are not defects:
+      # ~/.shellrc does not exist and no rc file sources it. Verified against an
+      # empty $HOME — 3 problems, every one of them installation state.
+      #
+      # So install first. `--no-install --yes` does the symlink and rc wiring and
+      # skips every package, which keeps the run fast and leaves doctor's
+      # "optional tool missing" findings as warnings. Warnings never set doctor's
+      # exit code ("N warning(s), nothing broken" exits 0) — verified locally
+      # with the wiring done and zero optional tools installed: exit 0.
+      - name: install (wiring only, no packages)
+        run: bin/bootstrap --no-install --yes
+
+      - name: doctor
+        run: bin/doctor

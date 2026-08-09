@@ -1,0 +1,108 @@
+#!/usr/bin/env bash
+# shelp-show — render the full documentation for one function.
+#
+# Standalone on purpose: fzf runs its --preview command in a separate process
+# that cannot see shell functions, so the renderer has to be an executable.
+# Also useful on its own:  bin/shelp-show clip_copy
+#
+# Usage: bin/shelp-show <function-name> [path-to-functions.json]
+
+set -uo pipefail
+
+name="${1:-}"
+if [ -z "$name" ]; then
+    echo "usage: shelp-show <function-name> [functions.json]" >&2
+    exit 2
+fi
+
+# ------------------------------------------------------------------ locate --
+
+_self="${BASH_SOURCE[0]}"
+while [ -L "$_self" ]; do
+    _link=$(command ls -ld -- "$_self" | sed -e 's/.* -> //')
+    case "$_link" in
+        /*) _self="$_link" ;;
+        *)  _self="$(dirname -- "$_self")/$_link" ;;
+    esac
+done
+REPO="$(cd -- "$(dirname -- "$_self")/.." && pwd -P)"
+
+DB="${2:-${SHELLRC_ROOT:-$REPO}/docs/functions.json}"
+[ -f "$DB" ] || { echo "shelp-show: no such database: $DB" >&2; exit 1; }
+
+# Colours, disabled when not a tty or NO_COLOR is set. fzf gives its preview a
+# tty, so highlighting survives there.
+if [ -t 1 ] && [ -z "${NO_COLOR:-}" ]; then
+    B=$'\033[1m'; DIM=$'\033[2m'; R=$'\033[0m'
+    CY=$'\033[0;36m'; GR=$'\033[0;32m'; YE=$'\033[0;33m'; RD=$'\033[1;31m'; MG=$'\033[0;35m'
+else
+    B='' DIM='' R='' CY='' GR='' YE='' RD='' MG=''
+fi
+
+if command -v jq >/dev/null 2>&1; then
+    jq -r --arg n "$name" \
+       --arg B "$B" --arg DIM "$DIM" --arg R "$R" --arg CY "$CY" \
+       --arg GR "$GR" --arg YE "$YE" --arg RD "$RD" --arg MG "$MG" '
+        .[] | select(.name == $n) |
+        [
+          ($CY + $B + .name + $R + "  " + $DIM + "(" + .module + ")" + $R),
+          ("\n" + (.describe // "")),
+          (if (.danger // "") != "" then "\n" + $RD + "! DANGER " + $R + .danger else "" end),
+          ("\n" + $B + "Usage" + $R),
+          ("  " + $GR + .usage + $R),
+          (if (.examples | length) > 0 then
+             "\n" + $B + "Examples" + $R + "\n" +
+             ([.examples[] | "  " + $YE + . + $R] | join("\n"))
+           else "" end),
+          (if (.requires | length) > 0 then
+             "\n" + $B + "Requires" + $R + "  " + $MG + (.requires | join(", ")) + $R
+           else "" end),
+          ("\n" + $B + "OS" + $R + "        " + .os),
+          ($B + "Source" + $R + "    " + $DIM + .file + ":" + (.line|tostring) + $R),
+          (if (.see | length) > 0 then
+             $B + "See also" + $R + "  " + (.see | join(", "))
+           else "" end)
+        ] | map(select(. != "")) | join("\n")
+    ' "$DB"
+    exit 0
+fi
+
+# ---- jq-free fallback: good enough to keep the picker usable without jq ----
+LC_ALL=C awk -v want="$name" -v B="$B" -v DIM="$DIM" -v R="$R" \
+             -v CY="$CY" -v GR="$GR" -v YE="$YE" -v RD="$RD" '
+    function val(line,   v) {
+        v = line
+        sub(/^[[:space:]]*"[^"]*":[[:space:]]*/, "", v)
+        sub(/,$/, "", v)
+        gsub(/^"|"$/, "", v)
+        gsub(/\\"/, "\"", v)
+        gsub(/\\n/, "\n", v)
+        gsub(/\\\\/, "\\", v)
+        return v
+    }
+    /^  \{/  { name=""; mod=""; desc=""; usage=""; os=""; danger=""; file=""; line=""; ex="" ; inex=0; next }
+    /^    "name":/     { name  = val($0); next }
+    /^    "module":/   { mod   = val($0); next }
+    /^    "describe":/ { desc  = val($0); next }
+    /^    "usage":/    { usage = val($0); next }
+    /^    "os":/       { os    = val($0); next }
+    /^    "danger":/   { danger= val($0); next }
+    /^    "file":/     { file  = val($0); next }
+    /^    "line":/     { line  = val($0); next }
+    /^    "examples": \[/ { inex=1; next }
+    inex && /^    \]/     { inex=0; next }
+    inex                  { e = val($0); if (e != "") ex = ex "  " YE e R "\n"; next }
+    /^  \}/ {
+        if (name == want) {
+            printf("%s%s%s  %s(%s)%s\n\n", CY B, name, R, DIM, mod, R)
+            if (desc   != "") printf("%s\n", desc)
+            if (danger != "") printf("\n%s! DANGER %s%s\n", RD, R, danger)
+            printf("\n%sUsage%s\n  %s%s%s\n", B, R, GR, usage, R)
+            if (ex != "") printf("\n%sExamples%s\n%s", B, R, ex)
+            printf("\n%sOS%s        %s\n", B, R, os)
+            printf("%sSource%s    %s%s:%s%s\n", B, R, DIM, file, line, R)
+            exit 0
+        }
+        next
+    }
+' "$DB"

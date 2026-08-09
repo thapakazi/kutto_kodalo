@@ -1,4 +1,53 @@
+# ---------------------------------------------------------------- secrets --
+# Never commit these. .deepsec/ is ~800MB of node_modules and holds a live
+# Vercel OIDC token.
+.deepsec/
+*.pem
+*.key
+.env
+.env.*
+!.env.example
+
+# ---------------------------------------------------- machine-local config --
+# modules/local/ is per-machine and never shared. The directory itself is
+# tracked (via .gitkeep) so the loader always has somewhere to look.
+modules/local/*
+!modules/local/.gitkeep
+
+# Private / unfinished parts of the old flat layout, kept out of the repo.
 shellrc.d/cant_share*
 shellrc.d/experimental*
-.DS_Store
 
+# -------------------------------------------------------------- generated --
+# docs/ IS committed — it is the searchable interface. Only runtime caches and
+# bootstrap's timestamped backups are ignored.
+.cache/
+*.bak-[0-9]*
+*.bak_*
+.zcompdump*
+
+# The Astro docs site in site/. Its source IS committed; everything below is
+# build output or vendored deps. site/src/content/docs/ is DERIVED from docs/ by
+# the site's prebuild step — edit docs/ (or the doc blocks it comes from), never
+# the copy.
+site/node_modules/
+site/dist/
+site/.astro/
+site/src/content/docs/
+
+# ------------------------------------------------------------ os + editors --
+.DS_Store
+**/.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+
+*~
+*.swp
+*.swo
+\#*\#
+.\#*
+.idea/
+.vscode/
+*.sublime-workspace

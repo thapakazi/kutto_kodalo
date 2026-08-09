@@ -1,0 +1,81 @@
+# pages — build the Astro docs site and publish it to GitHub Pages.
+#
+# ONE-TIME MANUAL SETUP (not yet done — the Pages API still returns 404 for this
+# repo, and turning it on is the owner's call, not this workflow's):
+#
+#     GitHub → Settings → Pages → Build and deployment → Source: "GitHub Actions"
+#
+# Until that is switched, the `deploy` job below will fail with "Get Pages site
+# failed". Nothing else needs configuring: no branch, no /docs folder, no
+# gh-pages branch. Once enabled the site publishes to
+#
+#     https://thapakazi.github.io/kutto_kodalo/
+#
+# The site is generated, not written: `bin/shellrc-doc` re-derives docs/ from the
+# @tag doc blocks in lib/ and modules/, and the Astro build in site/ turns that
+# into the published pages. Both run here, in that order, so what ships always
+# matches the shell source in the commit being deployed.
+
+name: pages
+
+on:
+  push:
+    branches: [gumantae]
+  workflow_dispatch:
+
+# Least privilege for a Pages deployment: read the repo, write a Pages
+# deployment, and mint the OIDC token deploy-pages exchanges for it.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deployment at a time. A newer push supersedes an in-flight one rather than
+# queueing behind it, so the live site converges on the newest commit.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+
+      # Regenerate docs/ from the shell source before the site consumes it, so a
+      # commit that changed a doc block but forgot `just docs` still publishes
+      # accurate pages. (check.yml fails that commit separately — this is about
+      # the deployed site never being a lie.)
+      - name: Regenerate shell docs
+        run: bin/shellrc-doc
+
+      - name: Install site dependencies
+        working-directory: site
+        run: npm ci
+
+      # The site's own prebuild step copies docs/ into site/src/content/docs/.
+      - name: Build site
+        working-directory: site
+        run: npm run build
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site/dist
+
+  deploy:
+    name: deploy
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
