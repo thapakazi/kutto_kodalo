@@ -1,7 +1,11 @@
 #compdef shelp
 # zsh completion for `shelp`, driven entirely by docs/functions.json.
-# Regenerate that file with `just docs` (bin/shellrc-doc) — this completion
-# needs no maintenance of its own.
+# Regenerate that file with `just docs` — the candidate lists need no
+# maintenance of their own; only the flag list below is hand-written.
+#
+# Hand-written rather than generated because shelp's interface is flags, and
+# @complete only describes positional arguments. bin/shellrc-completions reads
+# the #compdef line above and leaves these names alone.
 
 local _shelp_db="${SHELLRC_ROOT:-}/docs/functions.json"
 
@@ -47,18 +51,25 @@ _shelp_module_list() {
 local curcontext="$curcontext" state line ret=1
 typeset -A opt_args
 
+# The flags are mutually exclusive: each selects a different mode.
 _arguments -C \
-    '(-h --help -m --module)'{-h,--help}'[show usage]' \
-    '(-h --help)'{-m,--module}'[list every function in one module]:module:->modules' \
-    '1:query:->queries' && ret=0
+    '(- *)'{-h,--help}'[show usage]' \
+    '(- *)'{-m,--module}'[list every function in one module]:module:->modules' \
+    '(- *)'{-s,--show}'[show full documentation for one function]:function:->functions' \
+    '(- *)'{-i,--interactive}'[fuzzy picker with live preview]:initial query:->functions' \
+    '1:query:->functions' && ret=0
 
 case "$state" in
     modules)
         local -a mods
         mods=(${(f)"$(_shelp_module_list)"})
-        _describe -t modules 'module' mods && ret=0
+        if (( ${#mods} )); then
+            _describe -t modules 'module' mods && ret=0
+        else
+            _message 'module (run `just docs` to build the index)'
+        fi
         ;;
-    queries)
+    functions)
         local -a funcs
         funcs=(${(f)"$(_shelp_pairs)"})
         if (( ${#funcs} )); then

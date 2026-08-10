@@ -172,11 +172,26 @@ LC_ALL=C awk -F '\037' '
             printf("%s\037%d\037%d\037%s\037%s\037%s\n", name, argno, req, ph, A[1], A[2])
         }
     }
-' "$TMP/flat" > "$TMP/args"
+' "$TMP/flat" > "$TMP/args.all"
 
-# every function that has at least one completable argument, plus all the rest
-cut -d$'\037' -f1 "$TMP/flat" | LC_ALL=C sort -u > "$TMP/names"
+# Never claim a name a hand-written completion already claims. Two files both
+# declaring `#compdef shelp` leaves the winner down to fpath order, which is not
+# something to leave to chance. Read the #compdef line rather than guessing from
+# the filename -- _aws_ssm_session claims aws_ssm_start_session and assm.
+: > "$TMP/handwritten"
+for f in "$OUT_DIR"/_*; do
+    [ -f "$f" ] || continue
+    case "$(basename "$f")" in _shellrc_generated) continue ;; esac
+    sed -n '1s/^#compdef[[:space:]]*//p' "$f" | tr ' \t' '\n\n' >> "$TMP/handwritten"
+done
+LC_ALL=C sort -u -o "$TMP/handwritten" "$TMP/handwritten"
+
+cut -d$'\037' -f1 "$TMP/flat" | LC_ALL=C sort -u > "$TMP/all_names"
+LC_ALL=C comm -23 "$TMP/all_names" "$TMP/handwritten" > "$TMP/names"
+LC_ALL=C comm -12 "$TMP/all_names" "$TMP/handwritten" > "$TMP/skipped"
 NAMES=$(tr '\n' ' ' < "$TMP/names")
+LC_ALL=C awk -F '\037' 'NR==FNR { keep[$0]=1; next } ($1 in keep)' \
+    "$TMP/names" "$TMP/args.all" > "$TMP/args"
 ANNOTATED=$(awk -F '\037' '$3 != ""' "$TMP/flat" | wc -l | tr -d ' ')
 
 # ---------------------------------------------------------------------------
@@ -332,5 +347,9 @@ if [ "$CHECK" -eq 1 ]; then
 fi
 
 WITH_ARGS=$(cut -d$'\037' -f1 "$TMP/args" | sort -u | wc -l | tr -d ' ')
+SKIPPED=$(wc -l < "$TMP/skipped" | tr -d ' ')
+[ "$SKIPPED" -gt 0 ] && [ "$QUIET" -eq 0 ] && \
+    printf 'shellrc-completions: %s left to hand-written completions: %s\n' \
+        "$SKIPPED" "$(tr '\n' ' ' < "$TMP/skipped")"
 [ "$QUIET" -eq 1 ] || printf 'shellrc-completions: %s functions, %s with completable arguments, %s annotated -> %s, %s\n' \
     "$TOTAL" "$WITH_ARGS" "$ANNOTATED" "${ZSH_OUT#"$REPO"/}" "${BASH_OUT#"$REPO"/}"
